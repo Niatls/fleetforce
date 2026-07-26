@@ -12,13 +12,18 @@ function removeModuleTypePlugin() {
       return html
         .replace(/type="module"/gi, '')
         .replace(/crossorigin="[^"]*"/gi, '')
-        .replace(/crossorigin/gi, '');
+        .replace(/crossorigin/gi, '')
+        .replace(/\(function\(\)\{const t=document\.createElement\("link"\)\.relList;[\s\S]*?fetch\(l\.href,a\)\}\}\)\(\);?/gi, '');
     }
   };
 }
 
 export default defineConfig({
   plugins: [react(), viteSingleFile(), removeModuleTypePlugin()],
+  build: {
+    modulePreload: false,
+    target: 'es2015',
+  },
   server: {
     port: 3000,
     proxy: {
