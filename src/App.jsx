@@ -64,25 +64,31 @@ function AppContent() {
   // Try fetching from Express Backend API if online
   useEffect(() => {
     fetch('/api/vacancies')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error('Static mode: no backend server');
+        return res.json();
+      })
       .then((data) => {
         if (data.success && data.data?.length) {
           setVacancies(data.data);
         }
       })
       .catch(() => {
-        // Express backend offline, running in local standalone mode
+        // Express backend offline, running in local standalone / static mode
       });
 
     fetch('/api/candidates')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error('Static mode: no backend server');
+        return res.json();
+      })
       .then((data) => {
         if (data.success && data.data?.length) {
           setCandidates(data.data);
         }
       })
       .catch(() => {
-        // Express backend offline
+        // Express backend offline, running in static mode
       });
   }, []);
 
