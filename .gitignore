@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Production build
+dist/
+build/
+
+# Local database & logs
+*.log
+*.sqlite
+server/fleetforce_db.json
+
+# Environment variables
+.env
+.env.local
+
+# Zip archives
+*.zip
+
+# IDE & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
