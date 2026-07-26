@@ -3,7 +3,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { 
   Users, Briefcase, FileText, Settings, LogOut, Search, Filter, 
   CheckCircle, Clock, AlertTriangle, Eye, Printer, Download, Plus, 
-  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette
+  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette, MapPin, Building, Award
 } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../../data/initialData';
 
@@ -11,12 +11,20 @@ export const AdminDashboard = ({
   isOpen, 
   onClose, 
   candidates, 
-  vacancies, 
+  vacancies,
+  offices = [],
+  hubBlocks = [],
   onUpdateCandidateStatus, 
   onSaveCandidateNotes,
   onAddVacancy,
   onDeleteVacancy,
-  onUpdateVacancy
+  onUpdateVacancy,
+  onAddOffice,
+  onUpdateOffice,
+  onDeleteOffice,
+  onAddHubBlock,
+  onUpdateHubBlock,
+  onDeleteHubBlock
 }) => {
   const { lang, t } = useLanguage();
   const [activeTab, setActiveTab] = useState('candidates');
@@ -30,6 +38,105 @@ export const AdminDashboard = ({
     setCurrentTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('fleetforce_theme', newTheme);
+  };
+
+  // Office State
+  const [showOfficeModal, setShowOfficeModal] = useState(false);
+  const [editingOfficeId, setEditingOfficeId] = useState(null);
+  const [officeForm, setOfficeForm] = useState({
+    city: '',
+    flag: '🌊 Филиал',
+    address: '',
+    phone: '',
+    email: ''
+  });
+
+  const handleOpenAddOffice = () => {
+    setEditingOfficeId(null);
+    setOfficeForm({
+      city: '',
+      flag: '🌊 Филиал',
+      address: '',
+      phone: '',
+      email: ''
+    });
+    setShowOfficeModal(true);
+  };
+
+  const handleOpenEditOffice = (off) => {
+    setEditingOfficeId(off.id);
+    setOfficeForm({
+      city: off.city || '',
+      flag: off.flag || '⚓ Офис',
+      address: off.address || '',
+      phone: off.phone || '',
+      email: off.email || ''
+    });
+    setShowOfficeModal(true);
+  };
+
+  const handleSaveOffice = (e) => {
+    e.preventDefault();
+    if (editingOfficeId) {
+      if (onUpdateOffice) onUpdateOffice({ ...officeForm, id: editingOfficeId });
+    } else {
+      if (onAddOffice) onAddOffice({ ...officeForm, id: Date.now() });
+    }
+    setShowOfficeModal(false);
+  };
+
+  // Hub Block State
+  const [showHubModal, setShowHubModal] = useState(false);
+  const [editingHubId, setEditingHubId] = useState(null);
+  const [hubForm, setHubForm] = useState({
+    title: '',
+    description: '',
+    buttonText: '',
+    actionType: 'download',
+    filename: '',
+    linkUrl: '',
+    iconType: 'FileText',
+    color: 'blue'
+  });
+
+  const handleOpenAddHub = () => {
+    setEditingHubId(null);
+    setHubForm({
+      title: '',
+      description: '',
+      buttonText: '',
+      actionType: 'download',
+      filename: '',
+      linkUrl: '',
+      iconType: 'FileText',
+      color: 'blue'
+    });
+    setShowHubModal(true);
+  };
+
+  const handleOpenEditHub = (block) => {
+    setEditingHubId(block.id);
+    setHubForm({
+      title: block.title || '',
+      description: block.description || '',
+      buttonText: block.buttonText || '',
+      actionType: block.actionType || 'download',
+      filename: block.filename || '',
+      linkUrl: block.linkUrl || '',
+      iconType: block.iconType || 'FileText',
+      color: block.color || 'blue'
+    });
+    setShowHubModal(true);
+  };
+
+  const handleSaveHub = (e) => {
+    e.preventDefault();
+    if (editingHubId) {
+      if (onUpdateHubBlock) onUpdateHubBlock({ ...hubForm, id: editingHubId });
+    } else {
+      if (onAddHubBlock) onAddHubBlock({ ...hubForm, id: Date.now() });
+    }
+    setShowHubModal(false);
   };
 
   // Filter States for Candidates
@@ -223,7 +330,7 @@ export const AdminDashboard = ({
         </div>
 
         {/* Tab Buttons */}
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.8rem' }}>
+        <div style={{ display: 'flex', gap: '0.8rem', marginBottom: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.8rem', flexWrap: 'wrap' }}>
           <button 
             onClick={() => setActiveTab('candidates')}
             className={`btn ${activeTab === 'candidates' ? 'btn-primary' : 'btn-secondary'}`}
@@ -236,6 +343,20 @@ export const AdminDashboard = ({
             className={`btn ${activeTab === 'vacancies' ? 'btn-primary' : 'btn-secondary'}`}
           >
             <Briefcase size={16} /> {t('admin.tabVacancies')} ({vacancies.length})
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('offices')}
+            className={`btn ${activeTab === 'offices' ? 'btn-primary' : 'btn-secondary'}`}
+          >
+            <Building size={16} /> Филиалы и Офисы ({offices.length})
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('hub')}
+            className={`btn ${activeTab === 'hub' ? 'btn-primary' : 'btn-secondary'}`}
+          >
+            <FileText size={16} /> Инфо-Блоки и Бланки ({hubBlocks.length})
           </button>
         </div>
 
@@ -341,7 +462,94 @@ export const AdminDashboard = ({
           </div>
         )}
 
-        {/* TAB 2: VACANCY MANAGER */}
+        {/* TAB 3: OFFICES MANAGER */}
+        {activeTab === 'offices' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Управление Сетью Филиалов и Контактов</h3>
+              <button onClick={handleOpenAddOffice} className="btn btn-accent">
+                <Plus size={18} /> Добавить Филиал
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+              {offices.map((off) => (
+                <div key={off.id} className="glass-card" style={{ padding: '1.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                    <span className="badge badge-blue">{off.flag}</span>
+                    <div style={{ display: 'flex', gap: '0.4rem' }}>
+                      <button 
+                        onClick={() => handleOpenEditOffice(off)}
+                        style={{ background: 'rgba(0,139,255,0.1)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                      >
+                        <Edit size={14} /> <span style={{ fontSize: '0.75rem' }}>Изм.</span>
+                      </button>
+                      <button 
+                        onClick={() => onDeleteOffice && onDeleteOffice(off.id)}
+                        style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem' }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', marginBottom: '0.6rem' }}>{off.city}</h4>
+                  
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.4rem' }}>
+                    <div>📍 {off.address}</div>
+                    <div>📞 <strong>{off.phone}</strong></div>
+                    <div>✉️ {off.email}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: HUB BLOCKS MANAGER */}
+        {activeTab === 'hub' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Управление Блоками Морякам и Документами</h3>
+              <button onClick={handleOpenAddHub} className="btn btn-accent">
+                <Plus size={18} /> Добавить Инфо-Блок
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+              {hubBlocks.map((block) => (
+                <div key={block.id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
+                      <span className="badge badge-gold">{block.actionType ? block.actionType.toUpperCase() : 'BLOCK'}</span>
+                      <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        <button 
+                          onClick={() => handleOpenEditHub(block)}
+                          style={{ background: 'rgba(0,139,255,0.1)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                        >
+                          <Edit size={14} /> <span style={{ fontSize: '0.75rem' }}>Изм.</span>
+                        </button>
+                        <button 
+                          onClick={() => onDeleteHubBlock && onDeleteHubBlock(block.id)}
+                          style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <h4 style={{ fontSize: '1.2rem', color: '#FFFFFF', marginBottom: '0.5rem' }}>{block.title}</h4>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{block.description}</p>
+                  </div>
+
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-accent)', borderTop: '1px solid var(--border-color)', paddingTop: '0.6rem' }}>
+                    Кнопка: <strong>{block.buttonText}</strong>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {activeTab === 'vacancies' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -607,6 +815,229 @@ export const AdminDashboard = ({
                   </button>
                   <button type="submit" className="btn btn-accent">
                     {editingVacancyId ? 'Сохранить изменения' : t('admin.saveVacBtn')}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* CREATE / EDIT OFFICE MODAL */}
+        {showOfficeModal && (
+          <div className="modal-overlay" onClick={() => setShowOfficeModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', padding: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                <h3 style={{ fontSize: '1.5rem', color: '#FFFFFF' }}>
+                  {editingOfficeId ? 'Редактировать Филиал' : 'Добавить Новый Филиал'}
+                </h3>
+                <button onClick={() => setShowOfficeModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                  <X size={24} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveOffice} style={{ display: 'grid', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Город / Регион</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="Санкт-Петербург"
+                      className="form-input"
+                      value={officeForm.city}
+                      onChange={(e) => setOfficeForm({ ...officeForm, city: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Бейдж / Метка</label>
+                    <input 
+                      type="text" 
+                      placeholder="⚓ Главный Офис"
+                      className="form-input"
+                      value={officeForm.flag}
+                      onChange={(e) => setOfficeForm({ ...officeForm, flag: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Адрес офиса</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="Набережная Реки Мойки 58, Офис 402"
+                    className="form-input"
+                    value={officeForm.address}
+                    onChange={(e) => setOfficeForm({ ...officeForm, address: e.target.value })}
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Телефон</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="+7 (812) 334-55-66"
+                      className="form-input"
+                      value={officeForm.phone}
+                      onChange={(e) => setOfficeForm({ ...officeForm, phone: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Email</label>
+                    <input 
+                      type="email" 
+                      required
+                      placeholder="spb@fleetforce-crewing.com"
+                      className="form-input"
+                      value={officeForm.email}
+                      onChange={(e) => setOfficeForm({ ...officeForm, email: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+                  <button type="button" onClick={() => setShowOfficeModal(false)} className="btn btn-secondary">
+                    Отмена
+                  </button>
+                  <button type="submit" className="btn btn-accent">
+                    Сохранить Филиал
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* CREATE / EDIT HUB BLOCK MODAL */}
+        {showHubModal && (
+          <div className="modal-overlay" onClick={() => setShowHubModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '620px', padding: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                <h3 style={{ fontSize: '1.5rem', color: '#FFFFFF' }}>
+                  {editingHubId ? 'Редактировать Инфо-Блок' : 'Добавить Новый Инфо-Блок'}
+                </h3>
+                <button onClick={() => setShowHubModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                  <X size={24} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveHub} style={{ display: 'grid', gap: '1rem' }}>
+                <div className="form-group">
+                  <label className="form-label">Заголовок блока</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="BGI Standard Application"
+                    className="form-input"
+                    value={hubForm.title}
+                    onChange={(e) => setHubForm({ ...hubForm, title: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Описание блока</label>
+                  <textarea 
+                    className="form-textarea"
+                    style={{ height: '75px' }}
+                    placeholder="Описание бланка или услуги..."
+                    value={hubForm.description}
+                    onChange={(e) => setHubForm({ ...hubForm, description: e.target.value })}
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Текст на кнопке</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="Скачать анкету BGI (.DOCX)"
+                      className="form-input"
+                      value={hubForm.buttonText}
+                      onChange={(e) => setHubForm({ ...hubForm, buttonText: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Тип действия кнопки</label>
+                    <select 
+                      className="form-select"
+                      value={hubForm.actionType}
+                      onChange={(e) => setHubForm({ ...hubForm, actionType: e.target.value })}
+                    >
+                      <option value="download">Скачивание файла (download)</option>
+                      <option value="wizard">Открыть Мастер Анкеты (wizard)</option>
+                      <option value="link">Переход по ссылке / Телефон (link)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {hubForm.actionType === 'download' && (
+                  <div className="form-group">
+                    <label className="form-label">Имя скачиваемого файла</label>
+                    <input 
+                      type="text" 
+                      placeholder="BGI_Application_Form_2026.docx"
+                      className="form-input"
+                      value={hubForm.filename}
+                      onChange={(e) => setHubForm({ ...hubForm, filename: e.target.value })}
+                    />
+                  </div>
+                )}
+
+                {hubForm.actionType === 'link' && (
+                  <div className="form-group">
+                    <label className="form-label">Ссылка / Телефон (tel:)</label>
+                    <input 
+                      type="text" 
+                      placeholder="tel:+78005553535"
+                      className="form-input"
+                      value={hubForm.linkUrl}
+                      onChange={(e) => setHubForm({ ...hubForm, linkUrl: e.target.value })}
+                    />
+                  </div>
+                )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Тип иконки</label>
+                    <select 
+                      className="form-select"
+                      value={hubForm.iconType}
+                      onChange={(e) => setHubForm({ ...hubForm, iconType: e.target.value })}
+                    >
+                      <option value="FileText">FileText (Документ)</option>
+                      <option value="Download">Download (Скачивание)</option>
+                      <option value="FileCheck">FileCheck (Галочка / Чек-лист)</option>
+                      <option value="Award">Award (Награда / Тесты)</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Цветовой акцент</label>
+                    <select 
+                      className="form-select"
+                      value={hubForm.color}
+                      onChange={(e) => setHubForm({ ...hubForm, color: e.target.value })}
+                    >
+                      <option value="blue">Синий (Blue)</option>
+                      <option value="gold">Золотой (Gold)</option>
+                      <option value="emerald">Изумрудный (Emerald)</option>
+                      <option value="danger">Красный (Danger)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+                  <button type="button" onClick={() => setShowHubModal(false)} className="btn btn-secondary">
+                    Отмена
+                  </button>
+                  <button type="submit" className="btn btn-accent">
+                    Сохранить Инфо-Блок
                   </button>
                 </div>
               </form>

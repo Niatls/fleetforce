@@ -10,7 +10,12 @@ import { Footer } from './components/Footer';
 import { ApplicationWizard } from './components/ApplicationWizard/ApplicationWizard';
 import { AdminLoginModal } from './components/Admin/AdminLoginModal';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
-import { INITIAL_VACANCIES, INITIAL_CANDIDATES } from './data/initialData';
+import { 
+  INITIAL_VACANCIES, 
+  INITIAL_CANDIDATES, 
+  INITIAL_OFFICES, 
+  INITIAL_HUB_BLOCKS 
+} from './data/initialData';
 
 function AppContent() {
   const [activeSection, setActiveSection] = useState('hero');
@@ -32,6 +37,16 @@ function AppContent() {
   const [candidates, setCandidates] = useState(() => {
     const saved = localStorage.getItem('fleetforce_candidates');
     return saved ? JSON.parse(saved) : INITIAL_CANDIDATES;
+  });
+
+  const [offices, setOffices] = useState(() => {
+    const saved = localStorage.getItem('fleetforce_offices');
+    return saved ? JSON.parse(saved) : INITIAL_OFFICES;
+  });
+
+  const [hubBlocks, setHubBlocks] = useState(() => {
+    const saved = localStorage.getItem('fleetforce_hub_blocks');
+    return saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
   });
 
   // Load saved theme on startup
@@ -73,6 +88,14 @@ function AppContent() {
   useEffect(() => {
     localStorage.setItem('fleetforce_candidates', JSON.stringify(candidates));
   }, [candidates]);
+
+  useEffect(() => {
+    localStorage.setItem('fleetforce_offices', JSON.stringify(offices));
+  }, [offices]);
+
+  useEffect(() => {
+    localStorage.setItem('fleetforce_hub_blocks', JSON.stringify(hubBlocks));
+  }, [hubBlocks]);
 
   // Handlers
   const handleOpenWizard = (rank = '') => {
@@ -147,6 +170,36 @@ function AppContent() {
     fetch(`/api/vacancies/${id}`, { method: 'DELETE' }).catch(() => {});
   };
 
+  // Office Handlers
+  const handleAddOffice = (newOffice) => {
+    setOffices((prev) => [...prev, newOffice]);
+  };
+
+  const handleUpdateOffice = (updatedOffice) => {
+    setOffices((prev) =>
+      prev.map((o) => (o.id === updatedOffice.id ? updatedOffice : o))
+    );
+  };
+
+  const handleDeleteOffice = (id) => {
+    setOffices((prev) => prev.filter((o) => o.id !== id));
+  };
+
+  // Hub Block Handlers
+  const handleAddHubBlock = (newBlock) => {
+    setHubBlocks((prev) => [...prev, newBlock]);
+  };
+
+  const handleUpdateHubBlock = (updatedBlock) => {
+    setHubBlocks((prev) =>
+      prev.map((b) => (b.id === updatedBlock.id ? updatedBlock : b))
+    );
+  };
+
+  const handleDeleteHubBlock = (id) => {
+    setHubBlocks((prev) => prev.filter((b) => b.id !== id));
+  };
+
   const handleOpenAdminTrigger = () => {
     if (isAdminLoggedIn) {
       setAdminDashboardOpen(true);
@@ -181,13 +234,16 @@ function AppContent() {
       {/* Seafarer Hub / Downloads */}
       <SeafarerHub 
         onOpenWizard={() => handleOpenWizard('')}
+        hubBlocks={hubBlocks}
       />
 
       {/* Shipowners Services */}
       <ShipownerServices />
 
       {/* Offices & Contact Map */}
-      <OfficesAndContacts />
+      <OfficesAndContacts 
+        offices={offices}
+      />
 
       {/* Footer */}
       <Footer 
@@ -218,11 +274,19 @@ function AppContent() {
         onClose={() => setAdminDashboardOpen(false)}
         candidates={candidates}
         vacancies={vacancies}
+        offices={offices}
+        hubBlocks={hubBlocks}
         onUpdateCandidateStatus={handleUpdateCandidateStatus}
         onSaveCandidateNotes={handleSaveCandidateNotes}
         onAddVacancy={handleAddVacancy}
         onUpdateVacancy={handleUpdateVacancy}
         onDeleteVacancy={handleDeleteVacancy}
+        onAddOffice={handleAddOffice}
+        onUpdateOffice={handleUpdateOffice}
+        onDeleteOffice={handleDeleteOffice}
+        onAddHubBlock={handleAddHubBlock}
+        onUpdateHubBlock={handleUpdateHubBlock}
+        onDeleteHubBlock={handleDeleteHubBlock}
       />
     </div>
   );

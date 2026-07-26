@@ -349,3 +349,80 @@ export const INITIAL_CANDIDATES = [
     ]
   }
 ];
+
+export const INITIAL_OFFICES = [
+  {
+    id: 1,
+    city: 'Санкт-Петербург',
+    address: 'Санкт-Петербург, Набережная Реки Мойки 58, Офис 402',
+    phone: '+7 (812) 334-55-66',
+    email: 'spb@fleetforce-crewing.com',
+    flag: '⚓ Главный Офис'
+  },
+  {
+    id: 2,
+    city: 'Новороссийск',
+    address: 'Новороссийск, ул. Набережная Адмирала Серебрякова 15',
+    phone: '+7 (8617) 60-77-88',
+    email: 'novoros@fleetforce-crewing.com',
+    flag: '🌊 Черноморский Филиал'
+  },
+  {
+    id: 3,
+    city: 'Калининград',
+    address: 'Калининград, Ленинский проспект 81, Офис 205',
+    phone: '+7 (4012) 99-11-22',
+    email: 'kaliningrad@fleetforce-crewing.com',
+    flag: '🇪🇺 Балтийский Офис'
+  },
+  {
+    id: 4,
+    city: 'Владивосток',
+    address: 'Владивосток, ул. Светланская 45',
+    phone: '+7 (4232) 41-33-44',
+    email: 'vladivostok@fleetforce-crewing.com',
+    flag: '🌏 Дальневосточный Офис'
+  }
+];
+
+export const INITIAL_HUB_BLOCKS = [
+  {
+    id: 1,
+    title: 'BGI Standard Application',
+    description: 'Классический бланк морской анкеты группы компаний BGI в формате DOCX для офлайн заполнения.',
+    buttonText: 'Скачать бланки анкеты BGI (.DOCX)',
+    actionType: 'download',
+    filename: 'BGI_Application_Form_2026.docx',
+    iconType: 'FileText',
+    color: 'blue'
+  },
+  {
+    id: 2,
+    title: 'Legacy Marine CV Form',
+    description: 'Анкета Legacy Marine с расширенной матрицей опыта работы на танкерном флоте.',
+    buttonText: 'Скачать анкету Legacy Marine (.PDF)',
+    actionType: 'download',
+    filename: 'Legacy_Marine_Seaman_CV.pdf',
+    iconType: 'Download',
+    color: 'gold'
+  },
+  {
+    id: 3,
+    title: 'Чек-лист документов для посадки',
+    description: 'Полный перечень рабочих дипломов, подтверждений, НБЖС и медицинских комиссий (Подплав / ОУК) для рейса.',
+    buttonText: 'Заполнить онлайн',
+    actionType: 'wizard',
+    iconType: 'FileCheck',
+    color: 'emerald'
+  },
+  {
+    id: 4,
+    title: 'Подготовка к Marlins & CES тестам',
+    description: 'Официальное тестирование Marlins English Test и CES 6.0 в сертифицированных центрах СПб и Новороссийска.',
+    buttonText: 'Записаться на тест',
+    actionType: 'link',
+    linkUrl: 'tel:+78005553535',
+    iconType: 'Award',
+    color: 'danger'
+  }
+];

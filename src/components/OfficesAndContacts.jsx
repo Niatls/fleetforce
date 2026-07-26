@@ -2,39 +2,11 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { MapPin, Phone, Mail, Clock, Building } from 'lucide-react';
 
-export const OfficesAndContacts = () => {
-  const { t } = useLanguage();
+import { INITIAL_OFFICES } from '../data/initialData';
 
-  const officesList = [
-    {
-      city: t('offices.spb'),
-      address: 'Санкт-Петербург, Набережная Реки Мойки 58, Офис 402',
-      phone: '+7 (812) 334-55-66',
-      email: 'spb@fleetforce-crewing.com',
-      flag: '⚓ Главный Офис'
-    },
-    {
-      city: t('offices.novoros'),
-      address: 'Новороссийск, ул. Набережная Адмирала Серебрякова 15',
-      phone: '+7 (8617) 60-77-88',
-      email: 'novoros@fleetforce-crewing.com',
-      flag: '🌊 Черноморский Филиал'
-    },
-    {
-      city: t('offices.kaliningrad'),
-      address: 'Калининград, Ленинский проспект 81, Офис 205',
-      phone: '+7 (4012) 99-11-22',
-      email: 'kaliningrad@fleetforce-crewing.com',
-      flag: '🇪🇺 Балтийский Офис'
-    },
-    {
-      city: t('offices.vladivostok'),
-      address: 'Владивосток, ул. Светланская 45',
-      phone: '+7 (4232) 41-33-44',
-      email: 'vladivostok@fleetforce-crewing.com',
-      flag: '🌏 Дальневосточный Офис'
-    }
-  ];
+export const OfficesAndContacts = ({ offices = INITIAL_OFFICES }) => {
+  const { t } = useLanguage();
+  const officesList = offices && offices.length > 0 ? offices : INITIAL_OFFICES;
 
   return (
     <section id="offices" style={{ padding: '5rem 0', background: 'var(--bg-surface)' }}>

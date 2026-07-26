@@ -20,35 +20,35 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
       position: 'sticky',
       top: 0,
       zIndex: 900,
-      background: 'rgba(6, 13, 25, 0.85)',
-      backdropFilter: 'blur(16px)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+      background: 'rgba(15, 23, 42, 0.9)',
+      backdropFilter: 'blur(20px)',
+      borderBottom: '1px solid var(--border-color)'
     }}>
       <div className="container" style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        height: '76px'
+        height: '84px'
       }}>
         {/* Brand Logo */}
         <div 
           onClick={() => handleNavClick('hero')} 
-          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', cursor: 'pointer' }}
         >
           <div style={{
-            width: '42px',
-            height: '42px',
+            width: '46px',
+            height: '46px',
             borderRadius: '12px',
             overflow: 'hidden',
-            boxShadow: '0 0 15px rgba(0, 139, 255, 0.4)',
-            border: '1px solid rgba(255, 255, 255, 0.15)'
+            boxShadow: '0 0 20px rgba(2, 132, 199, 0.4)',
+            border: '1px solid rgba(255, 255, 255, 0.2)'
           }}>
             <img src="/favicon.png" alt="FleetForce Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div>
             <span style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '1.45rem',
+              fontSize: '1.55rem',
               fontWeight: 800,
               letterSpacing: '-0.03em',
               background: 'linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%)',
@@ -57,14 +57,14 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
             }}>
               Fleet<span style={{ color: 'var(--color-accent)', WebkitTextFillColor: 'var(--color-accent)' }}>Force</span>
             </span>
-            <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600 }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.14em', fontWeight: 600 }}>
               Crewing Alliance
             </div>
           </div>
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '1.8rem' }}>
+        <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '2.8rem' }}>
           <button 
             onClick={() => handleNavClick('vacancies')}
             className={`nav-link ${activeSection === 'vacancies' ? 'active' : ''}`}
@@ -73,15 +73,15 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               border: 'none',
               color: activeSection === 'vacancies' ? 'var(--color-accent)' : 'var(--text-primary)',
               fontWeight: 600,
-              fontSize: '0.92rem',
+              fontSize: '0.95rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem',
+              gap: '0.5rem',
               transition: 'var(--transition-fast)'
             }}
           >
-            <Briefcase size={16} />
+            <Briefcase size={17} />
             {t('nav.vacancies')}
           </button>
 
@@ -92,15 +92,15 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               border: 'none',
               color: 'var(--color-gold)',
               fontWeight: 600,
-              fontSize: '0.92rem',
+              fontSize: '0.95rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem',
+              gap: '0.5rem',
               transition: 'var(--transition-fast)'
             }}
           >
-            <FileText size={16} />
+            <FileText size={17} />
             {t('nav.application')}
           </button>
 
@@ -111,14 +111,14 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               border: 'none',
               color: 'var(--text-primary)',
               fontWeight: 600,
-              fontSize: '0.92rem',
+              fontSize: '0.95rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem'
+              gap: '0.5rem'
             }}
           >
-            <Building2 size={16} />
+            <Building2 size={17} />
             {t('nav.shipowners')}
           </button>
 
@@ -129,20 +129,20 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               border: 'none',
               color: 'var(--text-primary)',
               fontWeight: 600,
-              fontSize: '0.92rem',
+              fontSize: '0.95rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem'
+              gap: '0.5rem'
             }}
           >
-            <Users size={16} />
+            <Users size={17} />
             {t('nav.offices')}
           </button>
         </nav>
 
         {/* Action Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
           {/* Language Switcher */}
           <button 
             onClick={toggleLanguage}
@@ -151,32 +151,32 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem',
-              padding: '0.4rem 0.75rem',
+              gap: '0.45rem',
+              padding: '0.5rem 0.85rem',
               borderRadius: 'var(--radius-md)'
             }}
           >
-            <Globe size={15} color="var(--color-accent)" />
-            <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>{t('nav.langSwitch')}</span>
+            <Globe size={16} color="var(--color-accent)" />
+            <span style={{ fontWeight: 700, fontSize: '0.88rem' }}>{t('nav.langSwitch')}</span>
           </button>
 
           {/* Hotline Button */}
           <a 
             href="tel:+78005553535" 
             className="btn btn-secondary btn-sm hotline-btn"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.5rem 0.9rem' }}
           >
-            <Phone size={14} color="var(--color-emerald)" />
-            <span style={{ fontSize: '0.82rem' }}>{t('nav.hotline')}</span>
+            <Phone size={15} color="var(--color-emerald)" />
+            <span style={{ fontSize: '0.85rem' }}>{t('nav.hotline')}</span>
           </a>
 
           {/* Admin Panel Button */}
           <button 
             onClick={onOpenAdmin}
             className="btn btn-primary btn-sm"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.5rem 1rem' }}
           >
-            <Lock size={14} />
+            <Lock size={15} />
             <span>{t('nav.adminLogin')}</span>
           </button>
 
