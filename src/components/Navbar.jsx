@@ -39,13 +39,11 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
             width: '42px',
             height: '42px',
             borderRadius: '12px',
-            background: 'linear-gradient(135deg, #008BFF 0%, #004499 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(0, 139, 255, 0.4)'
+            overflow: 'hidden',
+            boxShadow: '0 0 15px rgba(0, 139, 255, 0.4)',
+            border: '1px solid rgba(255, 255, 255, 0.15)'
           }}>
-            <Anchor size={24} color="#FFFFFF" />
+            <img src="/favicon.png" alt="FleetForce Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div>
             <span style={{
