@@ -426,3 +426,10 @@ export const INITIAL_HUB_BLOCKS = [
     color: 'danger'
   }
 ];
+
+export const INITIAL_STATS = [
+  { id: 1, number: '140+', labelRu: 'Активных вакансий', labelEn: 'Active Vacancies', color: 'blue' },
+  { id: 2, number: '38,000+', labelRu: 'Моряков в базе', labelEn: 'Seafarers in Database', color: 'emerald' },
+  { id: 3, number: '65+', labelRu: 'Судовладельцев', labelEn: 'Partner Shipowners', color: 'gold' },
+  { id: 4, number: '6', labelRu: 'Офисов в РФ и СНГ', labelEn: 'Branch Offices', color: 'white' }
+];

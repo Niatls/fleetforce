@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Search, ShieldCheck, FileText, ChevronRight, Anchor, Award, Users, Ship } from 'lucide-react';
-import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../data/initialData';
+import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel, INITIAL_STATS } from '../data/initialData';
 
-export const Hero = ({ onSearch, onOpenWizard }) => {
+export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS }) => {
   const { lang, t } = useLanguage();
   const [selectedRank, setSelectedRank] = useState('');
   const [selectedVessel, setSelectedVessel] = useState('');
+
+  const statsList = stats && stats.length > 0 ? stats : INITIAL_STATS;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -15,6 +17,14 @@ export const Hero = ({ onSearch, onOpenWizard }) => {
     if (vacanciesSection) {
       vacanciesSection.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const getStatColor = (colorStr) => {
+    if (colorStr === 'emerald') return 'var(--color-emerald)';
+    if (colorStr === 'gold') return 'var(--color-gold)';
+    if (colorStr === 'danger') return 'var(--color-danger)';
+    if (colorStr === 'white') return '#FFFFFF';
+    return 'var(--color-accent)';
   };
 
   return (
@@ -154,25 +164,16 @@ export const Hero = ({ onSearch, onOpenWizard }) => {
             paddingTop: '2.5rem',
             borderTop: '1px solid rgba(255, 255, 255, 0.08)'
           }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--color-accent)', fontFamily: 'var(--font-display)' }}>140+</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('hero.statsVacancies')}</div>
-            </div>
-
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--color-emerald)', fontFamily: 'var(--font-display)' }}>38,000+</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('hero.statsSeafarers')}</div>
-            </div>
-
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--color-gold)', fontFamily: 'var(--font-display)' }}>65+</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('hero.statsOwners')}</div>
-            </div>
-
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'var(--font-display)' }}>6</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('hero.statsOffices')}</div>
-            </div>
+            {statsList.map((st) => (
+              <div key={st.id} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: getStatColor(st.color), fontFamily: 'var(--font-display)' }}>
+                  {st.number}
+                </div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                  {lang === 'ru' ? st.labelRu : (st.labelEn || st.labelRu)}
+                </div>
+              </div>
+            ))}
           </div>
 
         </div>

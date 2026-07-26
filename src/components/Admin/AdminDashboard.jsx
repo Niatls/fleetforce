@@ -3,7 +3,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { 
   Users, Briefcase, FileText, Settings, LogOut, Search, Filter, 
   CheckCircle, Clock, AlertTriangle, Eye, Printer, Download, Plus, 
-  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette, MapPin, Building, Award
+  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette, MapPin, Building, Award, TrendingUp
 } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../../data/initialData';
 
@@ -14,6 +14,7 @@ export const AdminDashboard = ({
   vacancies,
   offices = [],
   hubBlocks = [],
+  stats = [],
   onUpdateCandidateStatus, 
   onSaveCandidateNotes,
   onAddVacancy,
@@ -24,7 +25,8 @@ export const AdminDashboard = ({
   onDeleteOffice,
   onAddHubBlock,
   onUpdateHubBlock,
-  onDeleteHubBlock
+  onDeleteHubBlock,
+  onUpdateStats
 }) => {
   const { lang, t } = useLanguage();
   const [activeTab, setActiveTab] = useState('candidates');
@@ -376,6 +378,13 @@ export const AdminDashboard = ({
           >
             <FileText size={16} /> Инфо-Блоки и Бланки ({hubBlocks.length})
           </button>
+
+          <button 
+            onClick={() => setActiveTab('stats')}
+            className={`btn ${activeTab === 'stats' ? 'btn-primary' : 'btn-secondary'}`}
+          >
+            <TrendingUp size={16} /> Счетчики и Показатели ({stats.length})
+          </button>
         </div>
 
         {/* TAB 1: CANDIDATES DATABASE */}
@@ -568,6 +577,87 @@ export const AdminDashboard = ({
             </div>
           </div>
         )}
+
+        {/* TAB 5: STATS COUNTERS MANAGER */}
+        {activeTab === 'stats' && (
+          <div>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF', marginBottom: '0.4rem' }}>Управление Главными Счетчиками (Hero Stats)</h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                Изменяйте цифры и подписи 4 ключевых показателей агентства на главной странице сайта.
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+              {stats.map((st) => (
+                <div key={st.id} className="glass-card" style={{ padding: '1.5rem', display: 'grid', gap: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.6rem' }}>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Показатель #{st.id}</span>
+                    <span className="badge badge-blue">{st.color.toUpperCase()}</span>
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Значение (Число / Текст)</label>
+                    <input 
+                      type="text" 
+                      className="form-input"
+                      value={st.number}
+                      onChange={(e) => {
+                        const updated = stats.map(s => s.id === st.id ? { ...s, number: e.target.value } : s);
+                        if (onUpdateStats) onUpdateStats(updated);
+                      }}
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Подпись (Русский)</label>
+                    <input 
+                      type="text" 
+                      className="form-input"
+                      value={st.labelRu}
+                      onChange={(e) => {
+                        const updated = stats.map(s => s.id === st.id ? { ...s, labelRu: e.target.value } : s);
+                        if (onUpdateStats) onUpdateStats(updated);
+                      }}
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Подпись (English)</label>
+                    <input 
+                      type="text" 
+                      className="form-input"
+                      value={st.labelEn || ''}
+                      onChange={(e) => {
+                        const updated = stats.map(s => s.id === st.id ? { ...s, labelEn: e.target.value } : s);
+                        if (onUpdateStats) onUpdateStats(updated);
+                      }}
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Цветовой акцент</label>
+                    <select 
+                      className="form-select"
+                      value={st.color}
+                      onChange={(e) => {
+                        const updated = stats.map(s => s.id === st.id ? { ...s, color: e.target.value } : s);
+                        if (onUpdateStats) onUpdateStats(updated);
+                      }}
+                    >
+                      <option value="blue">Голубой (Blue)</option>
+                      <option value="emerald">Изумрудный (Emerald)</option>
+                      <option value="gold">Золотой (Gold)</option>
+                      <option value="white">Белый (White)</option>
+                      <option value="danger">Красный (Danger)</option>
+                    </select>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'vacancies' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>

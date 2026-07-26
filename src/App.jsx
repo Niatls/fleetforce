@@ -14,7 +14,8 @@ import {
   INITIAL_VACANCIES, 
   INITIAL_CANDIDATES, 
   INITIAL_OFFICES, 
-  INITIAL_HUB_BLOCKS 
+  INITIAL_HUB_BLOCKS,
+  INITIAL_STATS
 } from './data/initialData';
 
 function AppContent() {
@@ -47,6 +48,11 @@ function AppContent() {
   const [hubBlocks, setHubBlocks] = useState(() => {
     const saved = localStorage.getItem('fleetforce_hub_blocks');
     return saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
+  });
+
+  const [stats, setStats] = useState(() => {
+    const saved = localStorage.getItem('fleetforce_stats');
+    return saved ? JSON.parse(saved) : INITIAL_STATS;
   });
 
   // Load saved theme on startup
@@ -97,7 +103,14 @@ function AppContent() {
     localStorage.setItem('fleetforce_hub_blocks', JSON.stringify(hubBlocks));
   }, [hubBlocks]);
 
+  useEffect(() => {
+    localStorage.setItem('fleetforce_stats', JSON.stringify(stats));
+  }, [stats]);
+
   // Handlers
+  const handleUpdateStats = (newStats) => {
+    setStats(newStats);
+  };
   const handleOpenWizard = (rank = '', vesselType = '') => {
     setWizardParams({ rank, vesselType });
     setWizardOpen(true);
@@ -222,6 +235,7 @@ function AppContent() {
       <Hero 
         onSearch={(filters) => setSearchFilter(filters)}
         onOpenWizard={() => handleOpenWizard('')}
+        stats={stats}
       />
 
       {/* Vacancy Board */}
@@ -277,6 +291,7 @@ function AppContent() {
         vacancies={vacancies}
         offices={offices}
         hubBlocks={hubBlocks}
+        stats={stats}
         onUpdateCandidateStatus={handleUpdateCandidateStatus}
         onSaveCandidateNotes={handleSaveCandidateNotes}
         onAddVacancy={handleAddVacancy}
@@ -288,6 +303,7 @@ function AppContent() {
         onAddHubBlock={handleAddHubBlock}
         onUpdateHubBlock={handleUpdateHubBlock}
         onDeleteHubBlock={handleDeleteHubBlock}
+        onUpdateStats={handleUpdateStats}
       />
     </div>
   );
