@@ -38,10 +38,12 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES }) => {
                   <span>{off.address}</span>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                  <Phone size={16} color="var(--color-emerald)" />
-                  <a href={`tel:${off.phone}`} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{off.phone}</a>
-                </div>
+                {off.phone && (
+                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <Phone size={16} color="var(--color-emerald)" />
+                    <a href={`tel:${off.phone}`} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{off.phone}</a>
+                  </div>
+                )}
 
                 <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
                   <Mail size={16} color="var(--color-gold)" />

@@ -524,7 +524,7 @@ export const AdminDashboard = ({
                   
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.4rem' }}>
                     <div>📍 {off.address}</div>
-                    <div>📞 <strong>{off.phone}</strong></div>
+                    {off.phone && <div>📞 <strong>{off.phone}</strong></div>}
                     <div>✉️ {off.email}</div>
                   </div>
                 </div>
@@ -997,11 +997,10 @@ export const AdminDashboard = ({
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
                   <div className="form-group">
-                    <label className="form-label">Телефон</label>
+                    <label className="form-label">Телефон (необязательно)</label>
                     <input 
                       type="text" 
-                      required
-                      placeholder="+7 (812) 334-55-66"
+                      placeholder="+7 (812) 334-55-66 (необязательно)"
                       className="form-input"
                       value={officeForm.phone}
                       onChange={(e) => setOfficeForm({ ...officeForm, phone: e.target.value })}
