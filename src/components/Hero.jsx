@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Search, ShieldCheck, FileText, ChevronRight, Anchor, Award, Users, Ship } from 'lucide-react';
-import { MARITIME_RANKS, VESSEL_TYPES } from '../data/initialData';
+import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../data/initialData';
 
 export const Hero = ({ onSearch, onOpenWizard }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const [selectedRank, setSelectedRank] = useState('');
   const [selectedVessel, setSelectedVessel] = useState('');
 
@@ -104,7 +104,7 @@ export const Hero = ({ onSearch, onOpenWizard }) => {
               >
                 <option value="">{t('hero.searchRankPlaceholder')}</option>
                 {MARITIME_RANKS.map((r) => (
-                  <option key={r} value={r}>{r}</option>
+                  <option key={r} value={r}>{getRankLabel(r, lang)}</option>
                 ))}
               </select>
             </div>
@@ -118,7 +118,7 @@ export const Hero = ({ onSearch, onOpenWizard }) => {
               >
                 <option value="">{t('hero.searchVesselPlaceholder')}</option>
                 {VESSEL_TYPES.map((v) => (
-                  <option key={v} value={v}>{v}</option>
+                  <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
                 ))}
               </select>
             </div>

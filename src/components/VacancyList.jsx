@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Search, Flame, DollarSign, Calendar, MapPin, Anchor, ArrowRight, X, CheckCircle, Info } from 'lucide-react';
-import { MARITIME_RANKS, VESSEL_TYPES } from '../data/initialData';
+import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../data/initialData';
 
 export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   const [selectedRank, setSelectedRank] = useState(searchFilter?.rank || '');
   const [selectedVessel, setSelectedVessel] = useState(searchFilter?.vesselType || '');
@@ -80,7 +80,7 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
               >
                 <option value="">{t('vacancies.filterAllRanks')}</option>
                 {MARITIME_RANKS.map((r) => (
-                  <option key={r} value={r}>{r}</option>
+                  <option key={r} value={r}>{getRankLabel(r, lang)}</option>
                 ))}
               </select>
             </div>
@@ -94,7 +94,7 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
               >
                 <option value="">{t('vacancies.filterAllVessels')}</option>
                 {VESSEL_TYPES.map((v) => (
-                  <option key={v} value={v}>{v}</option>
+                  <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
                 ))}
               </select>
             </div>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { X, CheckCircle2, ChevronRight, ChevronLeft, Plus, Trash2, Upload, FileText, Download, UserCheck, ShieldCheck, Printer } from 'lucide-react';
-import { MARITIME_RANKS, VESSEL_TYPES } from '../../data/initialData';
+import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel, getEnglishLevelLabel, ENGLISH_LEVELS_TRANSLATIONS } from '../../data/initialData';
 
 export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', onSubmitSuccess }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
 
@@ -303,7 +303,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', onSubmitS
                       onChange={(e) => handleChange('appliedRank', e.target.value)}
                     >
                       {MARITIME_RANKS.map((r) => (
-                        <option key={r} value={r}>{r}</option>
+                        <option key={r} value={r}>{getRankLabel(r, lang)}</option>
                       ))}
                     </select>
                   </div>
@@ -316,7 +316,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', onSubmitS
                       onChange={(e) => handleChange('alternativeRank', e.target.value)}
                     >
                       {MARITIME_RANKS.map((r) => (
-                        <option key={r} value={r}>{r}</option>
+                        <option key={r} value={r}>{getRankLabel(r, lang)}</option>
                       ))}
                     </select>
                   </div>
@@ -349,7 +349,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', onSubmitS
                       onChange={(e) => handleChange('preferredVessels', e.target.value)}
                     >
                       {VESSEL_TYPES.map((v) => (
-                        <option key={v} value={v}>{v}</option>
+                        <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
                       ))}
                     </select>
                   </div>
@@ -361,10 +361,9 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', onSubmitS
                       value={formData.englishLevel}
                       onChange={(e) => handleChange('englishLevel', e.target.value)}
                     >
-                      <option value="Fluent / Advanced">Fluent / Advanced</option>
-                      <option value="Good / Upper-Intermediate">Good / Upper-Intermediate</option>
-                      <option value="Intermediate / Marlins 75%+">Intermediate / Marlins 75%+</option>
-                      <option value="Basic">Basic</option>
+                      {Object.keys(ENGLISH_LEVELS_TRANSLATIONS).map((lvl) => (
+                        <option key={lvl} value={lvl}>{getEnglishLevelLabel(lvl, lang)}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -479,7 +478,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', onSubmitS
                           onChange={(e) => handleSeaServiceChange(idx, 'vesselType', e.target.value)}
                         >
                           {VESSEL_TYPES.map((v) => (
-                            <option key={v} value={v}>{v}</option>
+                            <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
                           ))}
                         </select>
 

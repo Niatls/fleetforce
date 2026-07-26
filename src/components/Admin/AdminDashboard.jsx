@@ -5,7 +5,7 @@ import {
   CheckCircle, Clock, AlertTriangle, Eye, Printer, Download, Plus, 
   Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck
 } from 'lucide-react';
-import { MARITIME_RANKS, VESSEL_TYPES } from '../../data/initialData';
+import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../../data/initialData';
 
 export const AdminDashboard = ({ 
   isOpen, 
@@ -18,7 +18,7 @@ export const AdminDashboard = ({
   onDeleteVacancy,
   onUpdateVacancy
 }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const [activeTab, setActiveTab] = useState('candidates');
 
   // Filter States for Candidates
@@ -164,7 +164,7 @@ export const AdminDashboard = ({
               >
                 <option value="">Все должности</option>
                 {MARITIME_RANKS.map((r) => (
-                  <option key={r} value={r}>{r}</option>
+                  <option key={r} value={r}>{getRankLabel(r, lang)}</option>
                 ))}
               </select>
             </div>
@@ -371,7 +371,7 @@ export const AdminDashboard = ({
                   onChange={(e) => setVacancyForm({ ...vacancyForm, rank: e.target.value })}
                 >
                   {MARITIME_RANKS.map((r) => (
-                    <option key={r} value={r}>{r}</option>
+                    <option key={r} value={r}>{getRankLabel(r, lang)}</option>
                   ))}
                 </select>
 
@@ -381,7 +381,7 @@ export const AdminDashboard = ({
                   onChange={(e) => setVacancyForm({ ...vacancyForm, vesselType: e.target.value })}
                 >
                   {VESSEL_TYPES.map((v) => (
-                    <option key={v} value={v}>{v}</option>
+                    <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
                   ))}
                 </select>
 

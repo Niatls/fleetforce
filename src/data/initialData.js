@@ -28,6 +28,148 @@ export const VESSEL_TYPES = [
   "Tugboat / Dredger"
 ];
 
+export const RANKS_TRANSLATIONS = {
+  "Master / Captain": {
+    ru: "Капитан (Master / Captain)",
+    en: "Master / Captain"
+  },
+  "Chief Officer / 1st Mate": {
+    ru: "Старший помощник (Chief Officer)",
+    en: "Chief Officer / 1st Mate"
+  },
+  "2nd Officer": {
+    ru: "2-й помощник (2nd Officer)",
+    en: "2nd Officer"
+  },
+  "3rd Officer": {
+    ru: "3-й помощник (3rd Officer)",
+    en: "3rd Officer"
+  },
+  "Chief Engineer": {
+    ru: "Старший механик (Chief Engineer)",
+    en: "Chief Engineer"
+  },
+  "2nd Engineer": {
+    ru: "2-й механик (2nd Engineer)",
+    en: "2nd Engineer"
+  },
+  "3rd Engineer": {
+    ru: "3-й механик (3rd Engineer)",
+    en: "3rd Engineer"
+  },
+  "4th Engineer": {
+    ru: "4-й механик (4th Engineer)",
+    en: "4th Engineer"
+  },
+  "Electro-Technical Officer (ETO)": {
+    ru: "Электромеханик (ETO)",
+    en: "Electro-Technical Officer (ETO)"
+  },
+  "Bosun": {
+    ru: "Боцман (Bosun)",
+    en: "Bosun"
+  },
+  "Able Seaman (AB)": {
+    ru: "Матрос 1-го класса (AB)",
+    en: "Able Seaman (AB)"
+  },
+  "Ordinary Seaman (OS)": {
+    ru: "Матрос 2-го класса (OS)",
+    en: "Ordinary Seaman (OS)"
+  },
+  "Oiler / Motorman": {
+    ru: "Моторист 1-го класса (Oiler)",
+    en: "Oiler / Motorman"
+  },
+  "Fitter / Welder": {
+    ru: "Токарь / Сварщик (Fitter)",
+    en: "Fitter / Welder"
+  },
+  "Chief Cook": {
+    ru: "Судовой повар (Chief Cook)",
+    en: "Chief Cook"
+  },
+  "Messman": {
+    ru: "Буфетчик / Дневальный (Messman)",
+    en: "Messman"
+  }
+};
+
+export const VESSEL_TYPES_TRANSLATIONS = {
+  "Oil Tanker (Aframax/VLCC)": {
+    ru: "Нефтяной танкер (Oil Tanker)",
+    en: "Oil Tanker (Aframax/VLCC)"
+  },
+  "Chemical / Product Tanker": {
+    ru: "Химовоз / Продуктовоз (Chemical Tanker)",
+    en: "Chemical / Product Tanker"
+  },
+  "LNG / LPG Carrier": {
+    ru: "Газовоз (LNG / LPG Carrier)",
+    en: "LNG / LPG Carrier"
+  },
+  "Container Ship (5000+ TEU)": {
+    ru: "Контейнеровоз (Container Ship)",
+    en: "Container Ship (5000+ TEU)"
+  },
+  "Bulk Carrier (Capesize/Panamax)": {
+    ru: "Балкер (Bulk Carrier)",
+    en: "Bulk Carrier (Capesize/Panamax)"
+  },
+  "General Cargo / Heavy Lift": {
+    ru: "Сухогруз / Тяжеловес (General Cargo)",
+    en: "General Cargo / Heavy Lift"
+  },
+  "Offshore Support / AHTS / PSV": {
+    ru: "Офшорный флот / AHTS / PSV",
+    en: "Offshore Support / AHTS / PSV"
+  },
+  "Tugboat / Dredger": {
+    ru: "Буксир / Дреджер (Tugboat)",
+    en: "Tugboat / Dredger"
+  }
+};
+
+export const ENGLISH_LEVELS_TRANSLATIONS = {
+  "Fluent / Advanced": {
+    ru: "Свободный / Advanced",
+    en: "Fluent / Advanced"
+  },
+  "Good / Upper-Intermediate": {
+    ru: "Хороший / Upper-Intermediate",
+    en: "Good / Upper-Intermediate"
+  },
+  "Intermediate / Marlins 75%+": {
+    ru: "Средний / Marlins 75%+",
+    en: "Intermediate / Marlins 75%+"
+  },
+  "Basic": {
+    ru: "Базовый / Basic",
+    en: "Basic"
+  }
+};
+
+export const getRankLabel = (rank, lang = 'ru') => {
+  if (RANKS_TRANSLATIONS[rank]) {
+    return RANKS_TRANSLATIONS[rank][lang] || rank;
+  }
+  return rank;
+};
+
+export const getVesselLabel = (vessel, lang = 'ru') => {
+  if (VESSEL_TYPES_TRANSLATIONS[vessel]) {
+    return VESSEL_TYPES_TRANSLATIONS[vessel][lang] || vessel;
+  }
+  return vessel;
+};
+
+export const getEnglishLevelLabel = (level, lang = 'ru') => {
+  if (ENGLISH_LEVELS_TRANSLATIONS[level]) {
+    return ENGLISH_LEVELS_TRANSLATIONS[level][lang] || level;
+  }
+  return level;
+};
+
 export const INITIAL_VACANCIES = [
   {
     id: 1,
