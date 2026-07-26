@@ -71,6 +71,17 @@ app.post('/api/vacancies', (req, res) => {
   res.status(201).json({ success: true, data: newVac });
 });
 
+app.put('/api/vacancies/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const index = db.vacancies.findIndex((v) => v.id === id);
+  if (index !== -1) {
+    db.vacancies[index] = { ...db.vacancies[index], ...req.body, id };
+    saveDatabase(db);
+    return res.json({ success: true, data: db.vacancies[index] });
+  }
+  res.status(404).json({ success: false, message: 'Vacancy not found' });
+});
+
 app.delete('/api/vacancies/:id', (req, res) => {
   const id = Number(req.params.id);
   db.vacancies = db.vacancies.filter((v) => v.id !== id);

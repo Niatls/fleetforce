@@ -123,6 +123,18 @@ function AppContent() {
     }).catch(() => {});
   };
 
+  const handleUpdateVacancy = (updatedVac) => {
+    setVacancies((prev) =>
+      prev.map((v) => (v.id === updatedVac.id ? updatedVac : v))
+    );
+
+    fetch(`/api/vacancies/${updatedVac.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedVac)
+    }).catch(() => {});
+  };
+
   const handleDeleteVacancy = (id) => {
     setVacancies((prev) => prev.filter((v) => v.id !== id));
 
@@ -203,6 +215,7 @@ function AppContent() {
         onUpdateCandidateStatus={handleUpdateCandidateStatus}
         onSaveCandidateNotes={handleSaveCandidateNotes}
         onAddVacancy={handleAddVacancy}
+        onUpdateVacancy={handleUpdateVacancy}
         onDeleteVacancy={handleDeleteVacancy}
       />
     </div>

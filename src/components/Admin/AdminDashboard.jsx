@@ -27,22 +27,54 @@ export const AdminDashboard = ({
   const [filterRank, setFilterRank] = useState('');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
 
-  // New Vacancy Modal State
+  // Vacancy Modal State
   const [showVacancyModal, setShowVacancyModal] = useState(false);
-  const [vacancyForm, setVacancyForm] = useState({
+  const [editingVacancyId, setEditingVacancyId] = useState(null);
+
+  const initialVacancyForm = {
     title: '',
     rank: MARITIME_RANKS[0],
     vesselType: VESSEL_TYPES[0],
     dwt: '47,000 DWT',
     salary: '$8,500',
     contract: '4 months',
-    joiningPort: 'Rotterdam',
+    joiningPort: 'Rotterdam, Netherlands',
     joiningDate: '15.08.2026',
     urgent: false,
     active: true,
     requirements: ['Valid STCW Certs', 'Advanced Tanker endorsement'],
     responsibilities: 'Standard rank duties on merchant fleet vessel.'
-  });
+  };
+
+  const [vacancyForm, setVacancyForm] = useState(initialVacancyForm);
+
+  const handleOpenAddVacancy = () => {
+    setEditingVacancyId(null);
+    setVacancyForm({
+      ...initialVacancyForm,
+      title: MARITIME_RANKS[0]
+    });
+    setShowVacancyModal(true);
+  };
+
+  const handleOpenEditVacancy = (vac) => {
+    setEditingVacancyId(vac.id);
+    setVacancyForm({
+      title: vac.title || vac.rank || '',
+      rank: vac.rank || MARITIME_RANKS[0],
+      vesselType: vac.vesselType || VESSEL_TYPES[0],
+      dwt: vac.dwt || '',
+      salary: vac.salary || '',
+      contract: vac.contract || '',
+      joiningPort: vac.joiningPort || '',
+      joiningDate: vac.joiningDate || '',
+      urgent: !!vac.urgent,
+      active: vac.active !== undefined ? vac.active : true,
+      requirements: vac.requirements || ['Valid STCW Certs'],
+      responsibilities: vac.responsibilities || 'Standard duties'
+    });
+    setShowVacancyModal(true);
+  };
 
   if (!isOpen) return null;
 
@@ -63,10 +95,22 @@ export const AdminDashboard = ({
   // Handle Vacancy Submit
   const handleSaveVacancy = (e) => {
     e.preventDefault();
-    onAddVacancy({
-      ...vacancyForm,
-      id: Date.now()
-    });
+    if (editingVacancyId) {
+      if (onUpdateVacancy) {
+        onUpdateVacancy({
+          ...vacancyForm,
+          id: editingVacancyId
+        });
+      }
+    } else {
+      if (onAddVacancy) {
+        onAddVacancy({
+          ...vacancyForm,
+          id: Date.now()
+        });
+      }
+    }
+    setEditingVacancyId(null);
     setShowVacancyModal(false);
   };
 
@@ -372,55 +416,116 @@ export const AdminDashboard = ({
           </div>
         )}
 
-        {/* CREATE VACANCY MODAL */}
+        {/* CREATE / EDIT VACANCY MODAL */}
         {showVacancyModal && (
           <div className="modal-overlay" onClick={() => setShowVacancyModal(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', padding: '2rem' }}>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1.2rem', color: '#FFFFFF' }}>{t('admin.addVacancyBtn')}</h3>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '620px', padding: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                <h3 style={{ fontSize: '1.5rem', color: '#FFFFFF' }}>
+                  {editingVacancyId ? 'Редактировать Вакансию' : t('admin.addVacancyBtn')}
+                </h3>
+                <button onClick={() => setShowVacancyModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                  <X size={24} />
+                </button>
+              </div>
+
               <form onSubmit={handleSaveVacancy} style={{ display: 'grid', gap: '1rem' }}>
-                <input 
-                  type="text" 
-                  required
-                  placeholder={t('admin.vacTitle')}
-                  className="form-input"
-                  value={vacancyForm.title}
-                  onChange={(e) => setVacancyForm({ ...vacancyForm, title: e.target.value })}
-                />
-
-                <select 
-                  className="form-select"
-                  value={vacancyForm.rank}
-                  onChange={(e) => setVacancyForm({ ...vacancyForm, rank: e.target.value })}
-                >
-                  {MARITIME_RANKS.map((r) => (
-                    <option key={r} value={r}>{getRankLabel(r, lang)}</option>
-                  ))}
-                </select>
-
-                <select 
-                  className="form-select"
-                  value={vacancyForm.vesselType}
-                  onChange={(e) => setVacancyForm({ ...vacancyForm, vesselType: e.target.value })}
-                >
-                  {VESSEL_TYPES.map((v) => (
-                    <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
-                  ))}
-                </select>
+                <div className="form-group">
+                  <label className="form-label">Заголовок вакансии</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder={t('admin.vacTitle')}
+                    className="form-input"
+                    value={vacancyForm.title}
+                    onChange={(e) => setVacancyForm({ ...vacancyForm, title: e.target.value })}
+                  />
+                </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Должность</label>
+                    <select 
+                      className="form-select"
+                      value={vacancyForm.rank}
+                      onChange={(e) => setVacancyForm({ ...vacancyForm, rank: e.target.value })}
+                    >
+                      {MARITIME_RANKS.map((r) => (
+                        <option key={r} value={r}>{getRankLabel(r, lang)}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Тип судна</label>
+                    <select 
+                      className="form-select"
+                      value={vacancyForm.vesselType}
+                      onChange={(e) => setVacancyForm({ ...vacancyForm, vesselType: e.target.value })}
+                    >
+                      {VESSEL_TYPES.map((v) => (
+                        <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Оклад ($ / мес)</label>
+                    <input 
+                      type="text" 
+                      placeholder="Оклад (e.g. $12,500)"
+                      className="form-input"
+                      value={vacancyForm.salary}
+                      onChange={(e) => setVacancyForm({ ...vacancyForm, salary: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Длительность контракта</label>
+                    <input 
+                      type="text" 
+                      placeholder="Контракт (e.g. 4 months)"
+                      className="form-input"
+                      value={vacancyForm.contract}
+                      onChange={(e) => setVacancyForm({ ...vacancyForm, contract: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">DWT / Двигатель</label>
+                    <input 
+                      type="text" 
+                      placeholder="47,000 DWT (MAN B&W)"
+                      className="form-input"
+                      value={vacancyForm.dwt}
+                      onChange={(e) => setVacancyForm({ ...vacancyForm, dwt: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Порт посадки</label>
+                    <input 
+                      type="text" 
+                      placeholder="Роттердам, Нидерланды"
+                      className="form-input"
+                      value={vacancyForm.joiningPort}
+                      onChange={(e) => setVacancyForm({ ...vacancyForm, joiningPort: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Дата готовности</label>
                   <input 
                     type="text" 
-                    placeholder="Оклад (e.g. $12,500)"
+                    placeholder="15.08.2026"
                     className="form-input"
-                    value={vacancyForm.salary}
-                    onChange={(e) => setVacancyForm({ ...vacancyForm, salary: e.target.value })}
-                  />
-                  <input 
-                    type="text" 
-                    placeholder="Контракт (e.g. 4 months)"
-                    className="form-input"
-                    value={vacancyForm.contract}
-                    onChange={(e) => setVacancyForm({ ...vacancyForm, contract: e.target.value })}
+                    value={vacancyForm.joiningDate}
+                    onChange={(e) => setVacancyForm({ ...vacancyForm, joiningDate: e.target.value })}
                   />
                 </div>
 
@@ -431,7 +536,7 @@ export const AdminDashboard = ({
                       checked={vacancyForm.urgent}
                       onChange={(e) => setVacancyForm({ ...vacancyForm, urgent: e.target.checked })}
                     />
-                    <span>Пометить как СРОЧНАЯ!</span>
+                    <span style={{ color: vacancyForm.urgent ? 'var(--color-danger)' : 'var(--text-primary)', fontWeight: 600 }}>Пометить как СРОЧНАЯ! (HOT)</span>
                   </label>
                 </div>
 
@@ -440,7 +545,7 @@ export const AdminDashboard = ({
                     Отмена
                   </button>
                   <button type="submit" className="btn btn-accent">
-                    {t('admin.saveVacBtn')}
+                    {editingVacancyId ? 'Сохранить изменения' : t('admin.saveVacBtn')}
                   </button>
                 </div>
               </form>
