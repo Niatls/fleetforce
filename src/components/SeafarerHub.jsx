@@ -8,14 +8,23 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS }) =>
   const { t } = useLanguage();
   const blocksList = hubBlocks && hubBlocks.length > 0 ? hubBlocks : INITIAL_HUB_BLOCKS;
 
-  const handleDownloadForm = (filename) => {
+  const handleDownloadBlock = (block) => {
+    if (block && block.fileData) {
+      const a = document.createElement('a');
+      a.href = block.fileData;
+      a.download = block.filename || 'Seafarer_Document.docx';
+      a.click();
+      return;
+    }
+
+    const filename = block?.filename || 'Seafarer_CV_Form.docx';
     const content = `FLEETFORCE CREWING AGENCY - SEAFARER APPLICATION FORM TEMPLATE\n=======================================================\n\nFull Name: ___________________________________________\nApplied Rank: ________________________________________\nDate of Birth: ________________________________________\nPassport No: _________________________________________\nSeaman's Book No: ____________________________________\nPhone / Email: _______________________________________\n\nSEA EXPERIENCE MATRIX:\n1. Vessel: ____________ Type: ________ DWT: ________ Rank: ________\n2. Vessel: ____________ Type: ________ DWT: ________ Rank: ________\n\nSignature: __________________________ Date: ___________`;
     
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename || 'Seafarer_CV_Form.docx';
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -70,7 +79,7 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS }) =>
                   {block.buttonText || 'Подробнее'}
                 </a>
               ) : (
-                <button onClick={() => handleDownloadForm(block.filename)} className="btn btn-secondary" style={{ width: '100%' }}>
+                <button onClick={() => handleDownloadBlock(block)} className="btn btn-secondary" style={{ width: '100%' }}>
                   <Download size={16} /> {block.buttonText || t('seafarersHub.downloadBgiForm')}
                 </button>
               )}

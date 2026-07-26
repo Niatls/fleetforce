@@ -94,10 +94,26 @@ export const AdminDashboard = ({
     buttonText: '',
     actionType: 'download',
     filename: '',
+    fileData: null,
     linkUrl: '',
     iconType: 'FileText',
     color: 'blue'
   });
+
+  const handleHubFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setHubForm((prev) => ({
+        ...prev,
+        filename: file.name,
+        fileData: event.target.result
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleOpenAddHub = () => {
     setEditingHubId(null);
@@ -107,6 +123,7 @@ export const AdminDashboard = ({
       buttonText: '',
       actionType: 'download',
       filename: '',
+      fileData: null,
       linkUrl: '',
       iconType: 'FileText',
       color: 'blue'
@@ -122,6 +139,7 @@ export const AdminDashboard = ({
       buttonText: block.buttonText || '',
       actionType: block.actionType || 'download',
       filename: block.filename || '',
+      fileData: block.fileData || null,
       linkUrl: block.linkUrl || '',
       iconType: block.iconType || 'FileText',
       color: block.color || 'blue'
@@ -977,15 +995,33 @@ export const AdminDashboard = ({
                 </div>
 
                 {hubForm.actionType === 'download' && (
-                  <div className="form-group">
-                    <label className="form-label">Имя скачиваемого файла</label>
-                    <input 
-                      type="text" 
-                      placeholder="BGI_Application_Form_2026.docx"
-                      className="form-input"
-                      value={hubForm.filename}
-                      onChange={(e) => setHubForm({ ...hubForm, filename: e.target.value })}
-                    />
+                  <div style={{ display: 'grid', gap: '0.8rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label" style={{ color: 'var(--color-accent)' }}>📎 Загрузить файл с компьютера (.docx, .pdf, .zip, .xlsx)</label>
+                      <input 
+                        type="file" 
+                        onChange={handleHubFileSelect}
+                        className="form-input"
+                        style={{ padding: '0.5rem', cursor: 'pointer' }}
+                      />
+                    </div>
+
+                    {hubForm.fileData && (
+                      <div style={{ fontSize: '0.82rem', color: 'var(--color-emerald)', background: 'var(--color-emerald-light)', padding: '0.5rem 0.8rem', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid rgba(16,185,129,0.3)' }}>
+                        <CheckCircle size={15} /> Файл прикреплен и готов к скачиванию: <strong>{hubForm.filename}</strong>
+                      </div>
+                    )}
+
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Имя файла при сохранении пользователем</label>
+                      <input 
+                        type="text" 
+                        placeholder="BGI_Application_Form_2026.docx"
+                        className="form-input"
+                        value={hubForm.filename}
+                        onChange={(e) => setHubForm({ ...hubForm, filename: e.target.value })}
+                      />
+                    </div>
                   </div>
                 )}
 
