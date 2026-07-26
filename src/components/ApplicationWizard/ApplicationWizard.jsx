@@ -36,6 +36,8 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
     usVisa: 'C1/D',
     schengenVisa: 'Yes',
 
+    attachedFiles: [],
+
     seaService: [
       {
         id: 1,
@@ -54,6 +56,47 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
     photoFileName: '',
     consent: false
   });
+
+  // Update initial fields when modal opens for a specific vacancy
+  React.useEffect(() => {
+    if (isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        appliedRank: initialRank || prev.appliedRank || MARITIME_RANKS[0],
+        preferredVessels: initialVesselType || prev.preferredVessels || VESSEL_TYPES[0]
+      }));
+    }
+  }, [isOpen, initialRank, initialVesselType]);
+
+  const handleFileUpload = (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const fileObj = {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          size: (file.size / 1024).toFixed(1) + ' KB',
+          type: file.type || file.name.split('.').pop(),
+          dataUrl: event.target.result
+        };
+        setFormData((prev) => ({
+          ...prev,
+          attachedFiles: [...(prev.attachedFiles || []), fileObj]
+        }));
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleRemoveFile = (fileId) => {
+    setFormData((prev) => ({
+      ...prev,
+      attachedFiles: (prev.attachedFiles || []).filter((f) => f.id !== fileId)
+    }));
+  };
 
   if (!isOpen) return null;
 
@@ -538,24 +581,49 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
               {/* STEP 5 */}
               {step === 5 && (
                 <div style={{ display: 'grid', gap: '1.5rem' }}>
-                  <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '2px dashed var(--border-color)' }}>
-                    <Upload size={36} color="var(--color-accent)" style={{ marginBottom: '0.8rem' }} />
-                    <h4>{t('wizard.uploadCv')}</h4>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                      Форматы PDF, DOCX, JPG до 15 Мб
+                  <div className="glass-card" style={{ padding: '1.8rem', textAlign: 'center', border: '2px dashed var(--color-accent)', borderRadius: 'var(--radius-md)', background: 'rgba(0,139,255,0.03)' }}>
+                    <Upload size={40} color="var(--color-accent)" style={{ marginBottom: '0.8rem' }} />
+                    <h4 style={{ fontSize: '1.2rem', marginBottom: '0.4rem', color: '#FFFFFF' }}>Прикрепите Ваши документы и резюме</h4>
+                    <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '1.2rem' }}>
+                      Форматы: <strong>.doc, .docx, .pdf, .jpg, .png, .zip</strong> (до 25 Мб каждый)
                     </p>
-                    <input 
-                      type="file" 
-                      onChange={(e) => handleChange('cvFileName', e.target.files[0]?.name || '')}
-                      style={{ margin: '0 auto' }}
-                    />
-                    {formData.cvFileName && (
-                      <div style={{ marginTop: '0.8rem', color: 'var(--color-emerald)', fontWeight: 600 }}>
-                        <FileText size={16} style={{ verticalAlign: 'middle', marginRight: '6px' }} />
-                        {formData.cvFileName}
-                      </div>
-                    )}
+                    
+                    <label className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', margin: '0 auto' }}>
+                      <Plus size={18} />
+                      <span>Выбрать документы с компьютера</span>
+                      <input 
+                        type="file" 
+                        multiple
+                        accept=".doc,.docx,.pdf,.jpg,.jpeg,.png,.zip,.txt"
+                        onChange={handleFileUpload}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
                   </div>
+
+                  {formData.attachedFiles && formData.attachedFiles.length > 0 && (
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                      <h5 style={{ color: 'var(--color-emerald)', marginBottom: '0.8rem', fontSize: '0.95rem' }}>
+                        ✓ Прикреплено файлов: {formData.attachedFiles.length}
+                      </h5>
+                      <div style={{ display: 'grid', gap: '0.6rem' }}>
+                        {formData.attachedFiles.map((file) => (
+                          <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-surface)', padding: '0.6rem 1rem', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                              <FileText size={18} color="var(--color-accent)" />
+                              <div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF' }}>{file.name}</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{file.size}</div>
+                              </div>
+                            </div>
+                            <button type="button" onClick={() => handleRemoveFile(file.id)} style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer' }}>
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.8rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
                     <input 

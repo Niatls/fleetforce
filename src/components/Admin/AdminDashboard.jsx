@@ -3,13 +3,14 @@ import { useLanguage } from '../../context/LanguageContext';
 import { 
   Users, Briefcase, FileText, Settings, LogOut, Search, Filter, 
   CheckCircle, Clock, AlertTriangle, Eye, Printer, Download, Plus, 
-  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette, MapPin, Building, Award, TrendingUp
+  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette, MapPin, Building, Award, TrendingUp, ArrowLeft
 } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../../data/initialData';
 
 export const AdminDashboard = ({ 
   isOpen, 
-  onClose, 
+  onClose,
+  onBackToSite,
   candidates, 
   vacancies,
   offices = [],
@@ -290,6 +291,9 @@ export const AdminDashboard = ({
           </div>
 
           <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+            <button onClick={onBackToSite || onClose} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-accent)' }}>
+              <ArrowLeft size={15} /> На главный сайт
+            </button>
             <button onClick={handleExportCSV} className="btn btn-secondary btn-sm">
               <Download size={15} /> Экспорт базы (.CSV)
             </button>
@@ -791,6 +795,33 @@ export const AdminDashboard = ({
                   ))}
                 </tbody>
               </table>
+
+              {/* Attached Candidate Documents */}
+              {selectedCandidate.attachedFiles && selectedCandidate.attachedFiles.length > 0 && (
+                <div style={{ marginBottom: '1.5rem', background: 'rgba(0,139,255,0.06)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(0,139,255,0.25)' }}>
+                  <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <FileText size={18} /> 4. Attached Documents / Прикрепленные файлы ({selectedCandidate.attachedFiles.length})
+                  </h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.8rem' }}>
+                    {selectedCandidate.attachedFiles.map((file, fIdx) => (
+                      <div key={file.id || fIdx} style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginRight: '0.5rem' }}>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{file.size || 'FILE'}</div>
+                        </div>
+                        <a 
+                          href={file.dataUrl} 
+                          download={file.name} 
+                          className="btn btn-secondary btn-sm"
+                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', flexShrink: 0, textDecoration: 'none' }}
+                        >
+                          <Download size={13} /> Скачать
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Manager Notes */}
               <div className="no-print" style={{ background: 'var(--bg-surface-elevated)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>

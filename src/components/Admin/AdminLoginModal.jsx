@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Lock, X, Key, UserCheck, AlertCircle } from 'lucide-react';
 
-export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
+export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess }) => {
   const { t } = useLanguage();
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('admin123');
@@ -30,7 +30,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             </div>
             <h3 style={{ fontSize: '1.3rem', color: '#FFFFFF' }}>Вход в админ-панель</h3>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+          <button onClick={onBackToSite || onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
             <X size={22} />
           </button>
         </div>
@@ -73,6 +73,14 @@ export const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         <div style={{ marginTop: '1.2rem', textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
           Демо-пароль по умолчанию: <strong>admin / admin123</strong>
         </div>
+
+        {onBackToSite && (
+          <div style={{ marginTop: '1.2rem', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '0.8rem' }}>
+            <button type="button" onClick={onBackToSite} style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', fontSize: '0.88rem', fontWeight: 600 }}>
+              ← Вернуться на главный сайт
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

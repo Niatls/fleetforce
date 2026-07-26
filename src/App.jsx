@@ -22,12 +22,41 @@ function AppContent() {
   const [activeSection, setActiveSection] = useState('hero');
   const [searchFilter, setSearchFilter] = useState({ rank: '', vesselType: '' });
 
-  // Modals state
+  // Modals & Page View state
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardParams, setWizardParams] = useState({ rank: '', vesselType: '' });
-  const [adminLoginOpen, setAdminLoginOpen] = useState(false);
-  const [adminDashboardOpen, setAdminDashboardOpen] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+  // Standalone Page View: 'main' or 'admin'
+  const [currentPage, setCurrentPage] = useState(() => {
+    return window.location.hash === '#/admin' ? 'admin' : 'main';
+  });
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#/admin') {
+        setCurrentPage('admin');
+      } else {
+        setCurrentPage('main');
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const navigateToAdmin = () => {
+    window.location.hash = '#/admin';
+    setCurrentPage('admin');
+  };
+
+  const navigateToMain = () => {
+    window.location.hash = '';
+    setCurrentPage('main');
+  };
+
+  const handleOpenAdminTrigger = () => {
+    navigateToAdmin();
+  };
 
   // Data State with LocalStorage Persistence Fallback
   const [vacancies, setVacancies] = useState(() => {
@@ -219,14 +248,48 @@ function AppContent() {
     setHubBlocks((prev) => prev.filter((b) => b.id !== id));
   };
 
-  const handleOpenAdminTrigger = () => {
-    if (isAdminLoggedIn) {
-      setAdminDashboardOpen(true);
-    } else {
-      setAdminLoginOpen(true);
+  // Standalone Admin Page View
+  if (currentPage === 'admin') {
+    if (!isAdminLoggedIn) {
+      return (
+        <AdminLoginModal 
+          isOpen={true}
+          onClose={navigateToMain}
+          onBackToSite={navigateToMain}
+          onLoginSuccess={() => {
+            setIsAdminLoggedIn(true);
+          }}
+        />
+      );
     }
-  };
 
+    return (
+      <AdminDashboard 
+        isOpen={true}
+        onClose={navigateToMain}
+        onBackToSite={navigateToMain}
+        candidates={candidates}
+        vacancies={vacancies}
+        offices={offices}
+        hubBlocks={hubBlocks}
+        stats={stats}
+        onUpdateCandidateStatus={handleUpdateCandidateStatus}
+        onSaveCandidateNotes={handleSaveCandidateNotes}
+        onAddVacancy={handleAddVacancy}
+        onUpdateVacancy={handleUpdateVacancy}
+        onDeleteVacancy={handleDeleteVacancy}
+        onAddOffice={handleAddOffice}
+        onUpdateOffice={handleUpdateOffice}
+        onDeleteOffice={handleDeleteOffice}
+        onAddHubBlock={handleAddHubBlock}
+        onUpdateHubBlock={handleUpdateHubBlock}
+        onDeleteHubBlock={handleDeleteHubBlock}
+        onUpdateStats={handleUpdateStats}
+      />
+    );
+  }
+
+  // Public Main Website
   return (
     <div className="app-layout">
       {/* Top Navbar */}
@@ -277,39 +340,6 @@ function AppContent() {
         initialRank={wizardParams.rank}
         initialVesselType={wizardParams.vesselType}
         onSubmitSuccess={handleCandidateSubmit}
-      />
-
-      {/* Admin Login Modal */}
-      <AdminLoginModal 
-        isOpen={adminLoginOpen}
-        onClose={() => setAdminLoginOpen(false)}
-        onLoginSuccess={() => {
-          setIsAdminLoggedIn(true);
-          setAdminDashboardOpen(true);
-        }}
-      />
-
-      {/* Admin Control Dashboard Modal */}
-      <AdminDashboard 
-        isOpen={adminDashboardOpen}
-        onClose={() => setAdminDashboardOpen(false)}
-        candidates={candidates}
-        vacancies={vacancies}
-        offices={offices}
-        hubBlocks={hubBlocks}
-        stats={stats}
-        onUpdateCandidateStatus={handleUpdateCandidateStatus}
-        onSaveCandidateNotes={handleSaveCandidateNotes}
-        onAddVacancy={handleAddVacancy}
-        onUpdateVacancy={handleUpdateVacancy}
-        onDeleteVacancy={handleDeleteVacancy}
-        onAddOffice={handleAddOffice}
-        onUpdateOffice={handleUpdateOffice}
-        onDeleteOffice={handleDeleteOffice}
-        onAddHubBlock={handleAddHubBlock}
-        onUpdateHubBlock={handleUpdateHubBlock}
-        onDeleteHubBlock={handleDeleteHubBlock}
-        onUpdateStats={handleUpdateStats}
       />
     </div>
   );
