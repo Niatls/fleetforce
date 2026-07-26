@@ -20,15 +20,14 @@ export const Footer = ({ onOpenAdmin }) => {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
               <div style={{
-                width: '32px',
-                height: '32px',
+                width: '34px',
+                height: '34px',
                 borderRadius: '8px',
-                background: 'var(--color-accent)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
+                overflow: 'hidden',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 0 10px rgba(0, 139, 255, 0.3)'
               }}>
-                <Anchor size={18} color="#FFFFFF" />
+                <img src="/favicon.png" alt="FleetForce Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', fontWeight: 800, color: '#FFFFFF' }}>
                 Fleet<span style={{ color: 'var(--color-accent)' }}>Force</span>
