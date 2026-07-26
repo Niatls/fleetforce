@@ -3,7 +3,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { X, CheckCircle2, ChevronRight, ChevronLeft, Plus, Trash2, Upload, FileText, Download, UserCheck, ShieldCheck, Printer } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel, getEnglishLevelLabel, ENGLISH_LEVELS_TRANSLATIONS } from '../../data/initialData';
 
-export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', onSubmitSuccess }) => {
+export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVesselType = '', onSubmitSuccess }) => {
   const { lang, t } = useLanguage();
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
@@ -20,11 +20,11 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', onSubmitS
     shoeSize: '42',
     overallSize: 'L / 50',
 
-    appliedRank: initialRank || 'Master / Captain',
+    appliedRank: initialRank || MARITIME_RANKS[0],
     alternativeRank: 'Chief Officer / 1st Mate',
     minSalary: '8000',
     readyDate: new Date().toISOString().split('T')[0],
-    preferredVessels: 'Chemical / Product Tanker',
+    preferredVessels: initialVesselType || VESSEL_TYPES[0],
     englishLevel: 'Good / Upper-Intermediate',
 
     passportNo: '',

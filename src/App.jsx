@@ -23,7 +23,7 @@ function AppContent() {
 
   // Modals state
   const [wizardOpen, setWizardOpen] = useState(false);
-  const [wizardInitialRank, setWizardInitialRank] = useState('');
+  const [wizardParams, setWizardParams] = useState({ rank: '', vesselType: '' });
   const [adminLoginOpen, setAdminLoginOpen] = useState(false);
   const [adminDashboardOpen, setAdminDashboardOpen] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -98,13 +98,13 @@ function AppContent() {
   }, [hubBlocks]);
 
   // Handlers
-  const handleOpenWizard = (rank = '') => {
-    setWizardInitialRank(rank);
+  const handleOpenWizard = (rank = '', vesselType = '') => {
+    setWizardParams({ rank, vesselType });
     setWizardOpen(true);
   };
 
   const handleApplyVacancy = (vac) => {
-    handleOpenWizard(vac.rank || vac.title);
+    handleOpenWizard(vac.rank || vac.title || '', vac.vesselType || '');
   };
 
   const handleCandidateSubmit = (newCandidate) => {
@@ -254,7 +254,8 @@ function AppContent() {
       <ApplicationWizard 
         isOpen={wizardOpen}
         onClose={() => setWizardOpen(false)}
-        initialRank={wizardInitialRank}
+        initialRank={wizardParams.rank}
+        initialVesselType={wizardParams.vesselType}
         onSubmitSuccess={handleCandidateSubmit}
       />
 

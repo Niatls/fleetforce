@@ -572,7 +572,7 @@ export const AdminDashboard = ({
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Управление Мобильным Фондом Вакансий</h3>
-              <button onClick={() => setShowVacancyModal(true)} className="btn btn-accent">
+              <button onClick={handleOpenAddVacancy} className="btn btn-accent">
                 <Plus size={18} /> {t('admin.addVacancyBtn')}
               </button>
             </div>
@@ -582,12 +582,25 @@ export const AdminDashboard = ({
                 <div key={vac.id} className="glass-card" style={{ padding: '1.5rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
                     <div>
-                      <span className="badge badge-blue">{vac.vesselType}</span>
+                      <span className="badge badge-blue">{getVesselLabel(vac.vesselType, lang)}</span>
                       <h4 style={{ fontSize: '1.2rem', marginTop: '0.4rem', color: '#FFFFFF' }}>{vac.title}</h4>
                     </div>
-                    <button onClick={() => onDeleteVacancy(vac.id)} style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer' }}>
-                      <Trash2 size={18} />
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                      <button 
+                        onClick={() => handleOpenEditVacancy(vac)} 
+                        title="Редактировать вакансию"
+                        style={{ background: 'rgba(0,139,255,0.1)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                      >
+                        <Edit size={14} /> <span style={{ fontSize: '0.8rem' }}>Изм.</span>
+                      </button>
+                      <button 
+                        onClick={() => onDeleteVacancy(vac.id)} 
+                        title="Удалить вакансию"
+                        style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem' }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
 
                   <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-emerald)', marginBottom: '1rem' }}>
@@ -598,6 +611,7 @@ export const AdminDashboard = ({
                     <div>DWT / Двигатель: <strong>{vac.dwt}</strong></div>
                     <div>Контракт: <strong>{vac.contract}</strong></div>
                     <div>Порт посадки: <strong>{vac.joiningPort}</strong></div>
+                    <div>Дата готовности: <strong style={{ color: 'var(--color-gold)' }}>{vac.joiningDate}</strong></div>
                   </div>
                 </div>
               ))}
