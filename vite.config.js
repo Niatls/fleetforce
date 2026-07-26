@@ -1,28 +1,46 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { viteSingleFile } from 'vite-plugin-singlefile';
 
-// Custom plugin to remove type="module" and crossorigin attributes from built index.html
-// so that double-clicking file:///.../index.html on local disk works 100% in Chrome/Edge without CORS errors.
-function removeModuleTypePlugin() {
+function removeModuleAttributePlugin() {
   return {
-    name: 'remove-module-type',
+    name: 'remove-module-attribute',
     enforce: 'post',
     transformIndexHtml(html) {
-      return html
+      // Remove type="module" and crossorigin, and move script tag to bottom of body so #root exists
+      let cleanHtml = html
         .replace(/type="module"/gi, '')
         .replace(/crossorigin="[^"]*"/gi, '')
-        .replace(/crossorigin/gi, '')
-        .replace(/\(function\(\)\{const t=document\.createElement\("link"\)\.relList;[\s\S]*?fetch\(l\.href,a\)\}\}\)\(\);?/gi, '');
+        .replace(/crossorigin/gi, '');
+
+      // Extract script tag and place it before </body>
+      const scriptTagMatch = cleanHtml.match(/<script\s+src="\.\/assets\/index\.js"><\/script>/i);
+      if (scriptTagMatch) {
+        cleanHtml = cleanHtml.replace(scriptTagMatch[0], '');
+        cleanHtml = cleanHtml.replace('</body>', '  ' + scriptTagMatch[0] + '\n  </body>');
+      } else {
+        // Fallback defer
+        cleanHtml = cleanHtml.replace('<script', '<script defer');
+      }
+
+      return cleanHtml;
     }
   };
 }
 
 export default defineConfig({
-  plugins: [react(), viteSingleFile(), removeModuleTypePlugin()],
+  base: './',
+  plugins: [react(), removeModuleAttributePlugin()],
   build: {
-    modulePreload: false,
     target: 'es2015',
+    modulePreload: false,
+    rollupOptions: {
+      output: {
+        format: 'iife',
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
+      },
+    },
   },
   server: {
     port: 3000,
