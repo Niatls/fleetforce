@@ -91,8 +91,15 @@ export const AdminDashboard = ({
         {/* Admin Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'var(--color-accent-light)', color: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Anchor size={24} />
+            <div style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              boxShadow: '0 0 15px rgba(0, 139, 255, 0.4)',
+              border: '1px solid rgba(255, 255, 255, 0.15)'
+            }}>
+              <img src="/favicon.png" alt="FleetForce Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div>
               <h2 style={{ fontSize: '1.6rem', color: '#FFFFFF' }}>{t('admin.portalTitle')}</h2>
@@ -271,6 +278,8 @@ export const AdminDashboard = ({
         {selectedCandidate && (
           <div className="modal-overlay" onClick={() => setSelectedCandidate(null)}>
             <div className="modal-content printable-cv" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '850px', padding: '2.5rem' }}>
+              
+              {/* Screen Modal Actions */}
               <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                   <FileCheck size={24} color="var(--color-accent)" />
@@ -286,50 +295,63 @@ export const AdminDashboard = ({
                 </div>
               </div>
 
+              {/* Printable Header (Visible on print) */}
+              <div className="printable-header-only" style={{ borderBottom: '2px solid #003366', paddingBottom: '10px', marginBottom: '15px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <h2 style={{ fontSize: '1.4rem', color: '#003366', margin: 0, textTransform: 'uppercase' }}>FleetForce Crewing Alliance</h2>
+                    <div style={{ fontSize: '0.85rem', color: '#555' }}>International Seafarer Application Dossier | Ref: {selectedCandidate.id}</div>
+                  </div>
+                  <div style={{ textAlign: 'right', fontSize: '0.8rem', color: '#555' }}>
+                    Date: {new Date().toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+
               {/* Dossier Body */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem', marginBottom: '2rem' }}>
-                <div>
-                  <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.6rem' }}>Личные Данные</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.6rem' }}>1. Personal Details / Личные данные</h4>
                   <div style={{ fontSize: '0.9rem', display: 'grid', gap: '0.4rem' }}>
-                    <div><strong>ФИО:</strong> {selectedCandidate.fullName}</div>
-                    <div><strong>Телефон:</strong> {selectedCandidate.phone}</div>
-                    <div><strong>Email:</strong> {selectedCandidate.email}</div>
-                    <div><strong>Гражданство:</strong> {selectedCandidate.citizenship}</div>
-                    <div><strong>Дата рождения:</strong> {selectedCandidate.dob}</div>
+                    <div><strong>Full Name / ФИО:</strong> {selectedCandidate.fullName}</div>
+                    <div><strong>Phone / Телефон:</strong> {selectedCandidate.phone}</div>
+                    <div><strong>Email / Эл. почта:</strong> {selectedCandidate.email}</div>
+                    <div><strong>Citizenship / Гражданство:</strong> {selectedCandidate.citizenship}</div>
+                    <div><strong>Date of Birth / Дата рождения:</strong> {selectedCandidate.dob}</div>
                   </div>
                 </div>
 
-                <div>
-                  <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.6rem' }}>Морская Квалификация</h4>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.6rem' }}>2. Position & Qualification / Квалификация</h4>
                   <div style={{ fontSize: '0.9rem', display: 'grid', gap: '0.4rem' }}>
-                    <div><strong>Желаемая должность:</strong> {selectedCandidate.appliedRank}</div>
-                    <div><strong>Желаемый оклад:</strong> ${selectedCandidate.minSalary} / мес</div>
-                    <div><strong>Дата готовности:</strong> {selectedCandidate.readyDate}</div>
-                    <div><strong>Marlins English Score:</strong> {selectedCandidate.marlinsScore}</div>
+                    <div><strong>Applied Rank / Должность:</strong> {selectedCandidate.appliedRank}</div>
+                    <div><strong>Desired Salary / Оклад:</strong> ${selectedCandidate.minSalary} / month</div>
+                    <div><strong>Availability / Готовность:</strong> {selectedCandidate.readyDate}</div>
+                    <div><strong>Marlins Score / Английский:</strong> {selectedCandidate.marlinsScore} ({selectedCandidate.englishLevel})</div>
                   </div>
                 </div>
               </div>
 
               {/* Sea Experience Matrix */}
-              <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.8rem' }}>Опыт работы на судах (Sea Experience Matrix)</h4>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', marginBottom: '2rem' }}>
+              <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.8rem' }}>3. Sea Experience Record Matrix / Опыт работы в море</h4>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
                 <thead>
                   <tr style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid var(--border-color)' }}>
-                    <th style={{ padding: '0.5rem' }}>Судно</th>
-                    <th style={{ padding: '0.5rem' }}>Тип</th>
-                    <th style={{ padding: '0.5rem' }}>DWT / Engine</th>
-                    <th style={{ padding: '0.5rem' }}>Должность</th>
-                    <th style={{ padding: '0.5rem' }}>Период</th>
+                    <th style={{ padding: '0.6rem' }}>Vessel Name</th>
+                    <th style={{ padding: '0.6rem' }}>Type</th>
+                    <th style={{ padding: '0.6rem' }}>DWT / Engine</th>
+                    <th style={{ padding: '0.6rem' }}>Rank</th>
+                    <th style={{ padding: '0.6rem' }}>Sign On / Off</th>
                   </tr>
                 </thead>
                 <tbody>
                   {selectedCandidate.seaService?.map((s, idx) => (
                     <tr key={idx} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '0.5rem', fontWeight: 600 }}>{s.vesselName}</td>
+                      <td style={{ padding: '0.5rem', fontWeight: 600 }}>{s.vesselName || 'N/A'}</td>
                       <td style={{ padding: '0.5rem' }}>{s.vesselType}</td>
-                      <td style={{ padding: '0.5rem' }}>{s.dwtGrt}</td>
+                      <td style={{ padding: '0.5rem' }}>{s.dwtGrt} / {s.engineBhp}</td>
                       <td style={{ padding: '0.5rem' }}>{s.rankHeld}</td>
-                      <td style={{ padding: '0.5rem' }}>{s.dateFrom} - {s.dateTo}</td>
+                      <td style={{ padding: '0.5rem' }}>{s.dateFrom} — {s.dateTo}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -281,31 +281,78 @@ button, input, select, textarea {
 
 /* Printable CV Styles */
 @media print {
+  /* Hide main website layout, background sections, navbar, footer, buttons */
+  header, nav, section, footer, .navbar-wrapper, .no-print, .btn {
+    display: none !important;
+  }
+
   body {
     background: #FFFFFF !important;
     color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  .navbar, .footer, .btn, .no-print {
+
+  #root > .app-layout > *:not(.modal-overlay) {
     display: none !important;
   }
+
+  .modal-overlay {
+    position: static !important;
+    background: #FFFFFF !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .modal-content {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    padding: 0 !important;
+  }
+
   .printable-cv {
-    padding: 20px;
-    background: #FFFFFF;
-    color: #000000;
+    padding: 10mm 15mm !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
     box-shadow: none !important;
     border: none !important;
   }
-  .printable-cv h1, .printable-cv h2, .printable-cv h3 {
+
+  .printable-cv * {
+    color: #000000 !important;
+    background: transparent !important;
+    border-color: #CCCCCC !important;
+  }
+
+  .printable-cv h1, .printable-cv h2, .printable-cv h3, .printable-cv h4 {
     color: #003366 !important;
   }
+
   .printable-cv table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 10px !important;
+    margin-bottom: 15px !important;
   }
+
   .printable-cv th, .printable-cv td {
-    border: 1px solid #CCCCCC;
-    padding: 6px 10px;
-    font-size: 11px;
+    border: 1px solid #999999 !important;
+    padding: 6px 10px !important;
+    font-size: 10pt !important;
+    text-align: left !important;
+  }
+
+  .printable-cv th {
+    background-color: #F0F4F8 !important;
+    font-weight: bold !important;
+    color: #003366 !important;
   }
 }
