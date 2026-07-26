@@ -1,36 +1,37 @@
 /* FleetForce Maritime Crewing Agency Design System */
-:root {
+/* FleetForce Maritime Crewing Agency Design System */
+:root, [data-theme="ocean-soft"] {
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display: 'Outfit', 'Inter', sans-serif;
 
-  /* Maritime Color Palette */
-  --bg-deep: #060D19;
-  --bg-surface: #0E1B2E;
-  --bg-surface-elevated: #152742;
-  --bg-card: rgba(18, 33, 56, 0.75);
+  /* Maritime Color Palette - Soft Ocean Slate (Default) */
+  --bg-deep: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-surface-elevated: #334155;
+  --bg-card: rgba(30, 41, 59, 0.82);
   
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(0, 139, 255, 0.3);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-glow: rgba(2, 132, 199, 0.35);
 
-  --text-primary: #F0F4F8;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
   
-  --color-accent: #008BFF;
-  --color-accent-hover: #0076D6;
-  --color-accent-light: rgba(0, 139, 255, 0.15);
+  --color-accent: #0284c7;
+  --color-accent-hover: #0369a1;
+  --color-accent-light: rgba(2, 132, 199, 0.18);
 
   --color-emerald: #10B981;
-  --color-emerald-light: rgba(16, 185, 129, 0.15);
+  --color-emerald-light: rgba(16, 185, 129, 0.18);
 
-  --color-gold: #F59E0B;
-  --color-gold-light: rgba(245, 158, 11, 0.15);
+  --color-gold: #f59e0b;
+  --color-gold-light: rgba(245, 158, 11, 0.18);
 
-  --color-danger: #EF4444;
-  --color-danger-light: rgba(239, 68, 68, 0.15);
+  --color-danger: #ef4444;
+  --color-danger-light: rgba(239, 68, 68, 0.18);
 
-  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.25);
-  --shadow-glow: 0 0 25px rgba(0, 139, 255, 0.2);
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 25px rgba(2, 132, 199, 0.2);
   --glass-backdrop: blur(16px);
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -38,6 +39,65 @@
   --radius-full: 9999px;
   --transition-fast: 0.18s ease;
   --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light Daylight Theme */
+[data-theme="light-daylight"] {
+  --bg-deep: #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #e2e8f0;
+  --bg-card: rgba(255, 255, 255, 0.9);
+
+  --border-color: #cbd5e1;
+  --border-glow: rgba(2, 132, 199, 0.3);
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+
+  --color-accent: #0284c7;
+  --color-accent-hover: #0369a1;
+  --color-accent-light: rgba(2, 132, 199, 0.12);
+
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Classic Deep Navy Theme */
+[data-theme="deep-navy"] {
+  --bg-deep: #060D19;
+  --bg-surface: #0E1B2E;
+  --bg-surface-elevated: #152742;
+  --bg-card: rgba(18, 33, 56, 0.85);
+
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 139, 255, 0.3);
+
+  --text-primary: #F0F4F8;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  --color-accent: #008BFF;
+  --color-accent-hover: #0076D6;
+  --color-accent-light: rgba(0, 139, 255, 0.15);
+}
+
+/* Emerald Sea Theme */
+[data-theme="emerald-sea"] {
+  --bg-deep: #062024;
+  --bg-surface: #0a3237;
+  --bg-surface-elevated: #0e434a;
+  --bg-card: rgba(10, 50, 55, 0.85);
+
+  --border-color: rgba(0, 210, 198, 0.2);
+  --border-glow: rgba(0, 210, 198, 0.35);
+
+  --text-primary: #f0fdfa;
+  --text-secondary: #99f6e4;
+  --text-muted: #5eead4;
+
+  --color-accent: #0d9488;
+  --color-accent-hover: #0f766e;
+  --color-accent-light: rgba(13, 148, 136, 0.2);
 }
 
 * {

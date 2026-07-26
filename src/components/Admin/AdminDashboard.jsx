@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { 
   Users, Briefcase, FileText, Settings, LogOut, Search, Filter, 
   CheckCircle, Clock, AlertTriangle, Eye, Printer, Download, Plus, 
-  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck
+  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette
 } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../../data/initialData';
 
@@ -20,6 +20,17 @@ export const AdminDashboard = ({
 }) => {
   const { lang, t } = useLanguage();
   const [activeTab, setActiveTab] = useState('candidates');
+
+  // Theme State
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    return localStorage.getItem('fleetforce_theme') || 'ocean-soft';
+  });
+
+  const handleThemeChange = (newTheme) => {
+    setCurrentTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('fleetforce_theme', newTheme);
+  };
 
   // Filter States for Candidates
   const [searchCandidate, setSearchCandidate] = useState('');
@@ -157,6 +168,56 @@ export const AdminDashboard = ({
             </button>
             <button onClick={onClose} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-danger)' }}>
               <LogOut size={15} /> {t('admin.logout')}
+            </button>
+          </div>
+        </div>
+
+        {/* Theme Switcher Control Bar */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'rgba(255, 255, 255, 0.04)',
+          border: '1px solid var(--border-color)',
+          padding: '0.75rem 1.2rem',
+          borderRadius: 'var(--radius-md)',
+          marginBottom: '1.5rem',
+          flexWrap: 'wrap',
+          gap: '0.8rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <Palette size={18} color="var(--color-accent)" />
+            <span>Цветовая схема портала:</span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button 
+              onClick={() => handleThemeChange('ocean-soft')}
+              className={`btn btn-sm ${currentTheme === 'ocean-soft' ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem' }}
+            >
+              🌊 Спокойный Океан (Soft Slate)
+            </button>
+            <button 
+              onClick={() => handleThemeChange('light-daylight')}
+              className={`btn btn-sm ${currentTheme === 'light-daylight' ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem' }}
+            >
+              ☀️ Светлая Дневная (Light)
+            </button>
+            <button 
+              onClick={() => handleThemeChange('deep-navy')}
+              className={`btn btn-sm ${currentTheme === 'deep-navy' ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem' }}
+            >
+              🌙 Ночной Тёмный (Classic)
+            </button>
+            <button 
+              onClick={() => handleThemeChange('emerald-sea')}
+              className={`btn btn-sm ${currentTheme === 'emerald-sea' ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem' }}
+            >
+              🌿 Изумрудная Волна (Teal)
             </button>
           </div>
         </div>

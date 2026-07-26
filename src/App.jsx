@@ -34,6 +34,12 @@ function AppContent() {
     return saved ? JSON.parse(saved) : INITIAL_CANDIDATES;
   });
 
+  // Load saved theme on startup
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('fleetforce_theme') || 'ocean-soft';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+
   // Try fetching from Express Backend API if online
   useEffect(() => {
     fetch('/api/vacancies')
