@@ -281,6 +281,11 @@ button, input, select, textarea {
 
 /* Printable CV Styles */
 @media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+
   /* Hide main website layout, background sections, navbar, footer, buttons */
   header, nav, section, footer, .navbar-wrapper, .no-print, .btn {
     display: none !important;
