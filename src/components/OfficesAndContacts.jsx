@@ -6,7 +6,7 @@ import { INITIAL_OFFICES } from '../data/initialData';
 
 export const OfficesAndContacts = ({ offices = INITIAL_OFFICES }) => {
   const { t } = useLanguage();
-  const officesList = offices && offices.length > 0 ? offices : INITIAL_OFFICES;
+  const officesList = (offices && offices.length > 0 ? offices : INITIAL_OFFICES).filter(o => o.active !== false && !o.hidden);
 
   return (
     <section id="offices" style={{ padding: '5rem 0', background: 'var(--bg-surface)' }}>

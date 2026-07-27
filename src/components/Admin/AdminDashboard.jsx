@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { 
   Users, Briefcase, FileText, Settings, LogOut, Search, Filter, 
-  CheckCircle, Clock, AlertTriangle, Eye, Printer, Download, Plus, 
+  CheckCircle, Clock, AlertTriangle, Eye, EyeOff, Printer, Download, Plus, 
   Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette, MapPin, Building, Award, TrendingUp, ArrowLeft, Paperclip, ExternalLink, Shield, Mail
 } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../../data/initialData';
@@ -17,6 +17,11 @@ export const AdminDashboard = ({
   hubBlocks = [],
   stats = [],
   shipownerRequests = [],
+  sectionVisibility = { hero: true, vacancies: true, hub: true, shipowners: true, offices: true },
+  onToggleSectionVisibility,
+  onToggleVacancyActive,
+  onToggleOfficeActive,
+  onToggleHubBlockActive,
   onUpdateCandidateStatus, 
   onSaveCandidateNotes,
   onUpdateCandidateFiles,
@@ -521,6 +526,51 @@ export const AdminDashboard = ({
           </div>
         </div>
 
+        {/* Section Visibility Control Bar */}
+        <div style={{ background: 'var(--bg-surface-elevated)', padding: '1rem 1.2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <Eye size={18} color="var(--color-accent)" />
+            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF' }}>Видимость разделов на сайте:</span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <button 
+              type="button"
+              onClick={() => onToggleSectionVisibility && onToggleSectionVisibility('hero')}
+              style={{ fontSize: '0.78rem', background: sectionVisibility.hero ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', color: sectionVisibility.hero ? 'var(--color-emerald)' : 'var(--color-danger)', border: `1px solid ${sectionVisibility.hero ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '6px', padding: '0.35rem 0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+            >
+              {sectionVisibility.hero ? <Eye size={13} /> : <EyeOff size={13} />} Главный Баннер & Поиск
+            </button>
+            <button 
+              type="button"
+              onClick={() => onToggleSectionVisibility && onToggleSectionVisibility('vacancies')}
+              style={{ fontSize: '0.78rem', background: sectionVisibility.vacancies ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', color: sectionVisibility.vacancies ? 'var(--color-emerald)' : 'var(--color-danger)', border: `1px solid ${sectionVisibility.vacancies ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '6px', padding: '0.35rem 0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+            >
+              {sectionVisibility.vacancies ? <Eye size={13} /> : <EyeOff size={13} />} Доска Вакансий
+            </button>
+            <button 
+              type="button"
+              onClick={() => onToggleSectionVisibility && onToggleSectionVisibility('hub')}
+              style={{ fontSize: '0.78rem', background: sectionVisibility.hub ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', color: sectionVisibility.hub ? 'var(--color-emerald)' : 'var(--color-danger)', border: `1px solid ${sectionVisibility.hub ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '6px', padding: '0.35rem 0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+            >
+              {sectionVisibility.hub ? <Eye size={13} /> : <EyeOff size={13} />} Инфо-Блоки Морякам
+            </button>
+            <button 
+              type="button"
+              onClick={() => onToggleSectionVisibility && onToggleSectionVisibility('shipowners')}
+              style={{ fontSize: '0.78rem', background: sectionVisibility.shipowners ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', color: sectionVisibility.shipowners ? 'var(--color-emerald)' : 'var(--color-danger)', border: `1px solid ${sectionVisibility.shipowners ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '6px', padding: '0.35rem 0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+            >
+              {sectionVisibility.shipowners ? <Eye size={13} /> : <EyeOff size={13} />} Блок Судовладельцев
+            </button>
+            <button 
+              type="button"
+              onClick={() => onToggleSectionVisibility && onToggleSectionVisibility('offices')}
+              style={{ fontSize: '0.78rem', background: sectionVisibility.offices ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', color: sectionVisibility.offices ? 'var(--color-emerald)' : 'var(--color-danger)', border: `1px solid ${sectionVisibility.offices ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '6px', padding: '0.35rem 0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+            >
+              {sectionVisibility.offices ? <Eye size={13} /> : <EyeOff size={13} />} Сеть Офисов
+            </button>
+          </div>
+        </div>
+
         {/* Tab Buttons */}
         <div style={{ display: 'flex', gap: '0.8rem', marginBottom: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.8rem', flexWrap: 'wrap' }}>
           <button 
@@ -811,6 +861,25 @@ export const AdminDashboard = ({
                     <span className="badge badge-blue">{off.flag}</span>
                     <div style={{ display: 'flex', gap: '0.4rem' }}>
                       <button 
+                        type="button"
+                        onClick={() => onToggleOfficeActive && onToggleOfficeActive(off.id)}
+                        title={off.active === false ? "Показать филиал на сайте" : "Скрыть филиал с сайта"}
+                        style={{ 
+                          background: off.active === false ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)', 
+                          border: `1px solid ${off.active === false ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, 
+                          color: off.active === false ? 'var(--color-danger)' : 'var(--color-emerald)', 
+                          borderRadius: '6px', 
+                          cursor: 'pointer', 
+                          padding: '0.3rem 0.5rem', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '0.2rem' 
+                        }}
+                      >
+                        {off.active === false ? <EyeOff size={14} /> : <Eye size={14} />}
+                        <span style={{ fontSize: '0.75rem' }}>{off.active === false ? 'Скрыт' : 'Виден'}</span>
+                      </button>
+                      <button 
                         onClick={() => handleOpenEditOffice(off)}
                         style={{ background: 'rgba(0,139,255,0.1)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
                       >
@@ -855,6 +924,25 @@ export const AdminDashboard = ({
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
                       <span className="badge badge-gold">{block.actionType ? block.actionType.toUpperCase() : 'BLOCK'}</span>
                       <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        <button 
+                          type="button"
+                          onClick={() => onToggleHubBlockActive && onToggleHubBlockActive(block.id)}
+                          title={block.active === false ? "Показать инфо-блок на сайте" : "Скрыть инфо-блок с сайта"}
+                          style={{ 
+                            background: block.active === false ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)', 
+                            border: `1px solid ${block.active === false ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, 
+                            color: block.active === false ? 'var(--color-danger)' : 'var(--color-emerald)', 
+                            borderRadius: '6px', 
+                            cursor: 'pointer', 
+                            padding: '0.3rem 0.5rem', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '0.2rem' 
+                          }}
+                        >
+                          {block.active === false ? <EyeOff size={14} /> : <Eye size={14} />}
+                          <span style={{ fontSize: '0.75rem' }}>{block.active === false ? 'Скрыт' : 'Виден'}</span>
+                        </button>
                         <button 
                           onClick={() => handleOpenEditHub(block)}
                           style={{ background: 'rgba(0,139,255,0.1)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
@@ -981,6 +1069,25 @@ export const AdminDashboard = ({
                       <h4 style={{ fontSize: '1.2rem', marginTop: '0.4rem', color: '#FFFFFF' }}>{vac.title}</h4>
                     </div>
                     <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                      <button 
+                        type="button"
+                        onClick={() => onToggleVacancyActive && onToggleVacancyActive(vac.id)}
+                        title={vac.active === false ? "Показать вакансию на сайте" : "Скрыть вакансию с сайта"}
+                        style={{ 
+                          background: vac.active === false ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)', 
+                          border: `1px solid ${vac.active === false ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, 
+                          color: vac.active === false ? 'var(--color-danger)' : 'var(--color-emerald)', 
+                          borderRadius: '6px', 
+                          cursor: 'pointer', 
+                          padding: '0.35rem 0.5rem', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '0.2rem' 
+                        }}
+                      >
+                        {vac.active === false ? <EyeOff size={14} /> : <Eye size={14} />}
+                        <span style={{ fontSize: '0.78rem' }}>{vac.active === false ? 'Скрыта' : 'Видна'}</span>
+                      </button>
                       <button 
                         onClick={() => handleOpenEditVacancy(vac)} 
                         title="Редактировать вакансию"

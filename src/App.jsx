@@ -92,6 +92,21 @@ function AppContent() {
     return saved ? JSON.parse(saved) : INITIAL_SHIPOWNER_REQUESTS;
   });
 
+  const [sectionVisibility, setSectionVisibility] = useState(() => {
+    const saved = localStorage.getItem('fleetforce_section_visibility');
+    return saved ? JSON.parse(saved) : {
+      hero: true,
+      vacancies: true,
+      hub: true,
+      shipowners: true,
+      offices: true
+    };
+  });
+
+  useEffect(() => {
+    localStorage.setItem('fleetforce_section_visibility', JSON.stringify(sectionVisibility));
+  }, [sectionVisibility]);
+
   // Load saved theme on startup
   useEffect(() => {
     const savedTheme = localStorage.getItem('fleetforce_theme') || 'ocean-soft';
@@ -300,6 +315,31 @@ function AppContent() {
     setHubBlocks((prev) => prev.filter((b) => b.id !== id));
   };
 
+  const handleToggleVacancyActive = (id) => {
+    setVacancies((prev) =>
+      prev.map((v) => (v.id === id ? { ...v, active: v.active === false ? true : false } : v))
+    );
+  };
+
+  const handleToggleOfficeActive = (id) => {
+    setOffices((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, active: o.active === false ? true : false } : o))
+    );
+  };
+
+  const handleToggleHubBlockActive = (id) => {
+    setHubBlocks((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, active: b.active === false ? true : false } : b))
+    );
+  };
+
+  const handleToggleSectionVisibility = (sectionKey) => {
+    setSectionVisibility((prev) => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey]
+    }));
+  };
+
   const handleLogoutAdmin = () => {
     localStorage.removeItem('fleetforce_admin_auth');
     setIsAdminLoggedIn(false);
@@ -333,6 +373,11 @@ function AppContent() {
         hubBlocks={hubBlocks}
         stats={stats}
         shipownerRequests={shipownerRequests}
+        sectionVisibility={sectionVisibility}
+        onToggleSectionVisibility={handleToggleSectionVisibility}
+        onToggleVacancyActive={handleToggleVacancyActive}
+        onToggleOfficeActive={handleToggleOfficeActive}
+        onToggleHubBlockActive={handleToggleHubBlockActive}
         onUpdateCandidateStatus={handleUpdateCandidateStatus}
         onSaveCandidateNotes={handleSaveCandidateNotes}
         onUpdateCandidateFiles={handleUpdateCandidateFiles}
@@ -364,34 +409,44 @@ function AppContent() {
       />
 
       {/* Hero Section */}
-      <Hero 
-        onSearch={(filters) => setSearchFilter(filters)}
-        onOpenWizard={() => handleOpenWizard('')}
-        stats={stats}
-      />
+      {sectionVisibility.hero && (
+        <Hero 
+          onSearch={(filters) => setSearchFilter(filters)}
+          onOpenWizard={() => handleOpenWizard('')}
+          stats={stats}
+        />
+      )}
 
       {/* Vacancy Board */}
-      <VacancyList 
-        vacancies={vacancies}
-        searchFilter={searchFilter}
-        onApplyVacancy={handleApplyVacancy}
-      />
+      {sectionVisibility.vacancies && (
+        <VacancyList 
+          vacancies={vacancies}
+          searchFilter={searchFilter}
+          onApplyVacancy={handleApplyVacancy}
+        />
+      )}
 
       {/* Seafarer Hub / Downloads */}
-      <SeafarerHub 
-        onOpenWizard={() => handleOpenWizard('')}
-        hubBlocks={hubBlocks}
-      />
+      {sectionVisibility.hub && (
+        <SeafarerHub 
+          onOpenWizard={() => handleOpenWizard('')}
+          hubBlocks={hubBlocks}
+        />
+      )}
 
       {/* Shipowners Services */}
-      <ShipownerServices 
-        onRequestSubmit={handleAddShipownerRequest}
-      />
+      {sectionVisibility.shipowners && (
+        <ShipownerServices 
+          onRequestSubmit={handleAddShipownerRequest}
+        />
+      )}
 
       {/* Offices & Contact Map */}
-      <OfficesAndContacts 
-        offices={offices}
-      />
+      {sectionVisibility.offices && (
+        <OfficesAndContacts 
+          offices={offices}
+        />
+      )}
 
       {/* Footer */}
       <Footer 

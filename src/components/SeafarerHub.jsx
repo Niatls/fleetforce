@@ -6,7 +6,7 @@ import { INITIAL_HUB_BLOCKS } from '../data/initialData';
 
 export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS }) => {
   const { t } = useLanguage();
-  const blocksList = hubBlocks && hubBlocks.length > 0 ? hubBlocks : INITIAL_HUB_BLOCKS;
+  const blocksList = (hubBlocks && hubBlocks.length > 0 ? hubBlocks : INITIAL_HUB_BLOCKS).filter(b => b.active !== false && !b.hidden);
 
   const handleDownloadBlock = (block) => {
     if (block && block.fileData) {
