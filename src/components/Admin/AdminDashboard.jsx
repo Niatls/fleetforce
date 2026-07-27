@@ -3,7 +3,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { 
   Users, Briefcase, FileText, Settings, LogOut, Search, Filter, 
   CheckCircle, Clock, AlertTriangle, Eye, Printer, Download, Plus, 
-  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette, MapPin, Building, Award, TrendingUp, ArrowLeft
+  Trash2, Edit, Save, X, ChevronRight, Anchor, FileCheck, Palette, MapPin, Building, Award, TrendingUp, ArrowLeft, Paperclip, ExternalLink
 } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../../data/initialData';
 
@@ -18,6 +18,7 @@ export const AdminDashboard = ({
   stats = [],
   onUpdateCandidateStatus, 
   onSaveCandidateNotes,
+  onUpdateCandidateFiles,
   onAddVacancy,
   onDeleteVacancy,
   onUpdateVacancy,
@@ -163,8 +164,56 @@ export const AdminDashboard = ({
   // Filter States for Candidates
   const [searchCandidate, setSearchCandidate] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
-  const [filterRank, setFilterRank] = useState('');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [previewFile, setPreviewFile] = useState(null);
+
+  // Handle document upload by admin
+  const handleAdminFileUpload = (candidateId, e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    const cand = candidates.find((c) => c.id === candidateId);
+    const existingFiles = cand?.attachedFiles || [];
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const fileObj = {
+          id: 'adm-' + Date.now() + Math.random(),
+          name: file.name,
+          size: (file.size / 1024).toFixed(1) + ' KB',
+          type: file.type || file.name.split('.').pop(),
+          dataUrl: event.target.result
+        };
+        const updatedFiles = [...existingFiles, fileObj];
+        if (onUpdateCandidateFiles) {
+          onUpdateCandidateFiles(candidateId, updatedFiles);
+        }
+        if (selectedCandidate && selectedCandidate.id === candidateId) {
+          setSelectedCandidate((prev) => ({
+            ...prev,
+            attachedFiles: updatedFiles
+          }));
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle document deletion by admin
+  const handleAdminFileDelete = (candidateId, fileId) => {
+    const cand = candidates.find((c) => c.id === candidateId);
+    const updatedFiles = (cand?.attachedFiles || []).filter((f) => f.id !== fileId);
+    if (onUpdateCandidateFiles) {
+      onUpdateCandidateFiles(candidateId, updatedFiles);
+    }
+    if (selectedCandidate && selectedCandidate.id === candidateId) {
+      setSelectedCandidate((prev) => ({
+        ...prev,
+        attachedFiles: updatedFiles
+      }));
+    }
+  };
 
   // Vacancy Modal State
   const [showVacancyModal, setShowVacancyModal] = useState(false);
@@ -454,6 +503,7 @@ export const AdminDashboard = ({
                     <th style={{ padding: '1rem' }}>{t('admin.colRank')}</th>
                     <th style={{ padding: '1rem' }}>Marlins</th>
                     <th style={{ padding: '1rem' }}>{t('admin.colReadyDate')}</th>
+                    <th style={{ padding: '1rem' }}>Документы</th>
                     <th style={{ padding: '1rem' }}>{t('admin.colStatus')}</th>
                     <th style={{ padding: '1rem', textAlign: 'right' }}>{t('admin.colActions')}</th>
                   </tr>
@@ -475,6 +525,20 @@ export const AdminDashboard = ({
                         {cand.readyDate}
                       </td>
                       <td style={{ padding: '1rem' }}>
+                        {cand.attachedFiles && cand.attachedFiles.length > 0 ? (
+                          <button 
+                            onClick={() => setSelectedCandidate(cand)}
+                            className="badge badge-gold" 
+                            style={{ border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.3rem 0.6rem', fontSize: '0.78rem' }}
+                            title="Нажмите чтобы просмотреть прикрепленные файлы"
+                          >
+                            <Paperclip size={13} /> {cand.attachedFiles.length} {cand.attachedFiles.length === 1 ? 'файл' : 'файла'}
+                          </button>
+                        ) : (
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Нет файлов</span>
+                        )}
+                      </td>
+                      <td style={{ padding: '1rem' }}>
                         <select 
                           value={cand.status} 
                           onChange={(e) => onUpdateCandidateStatus(cand.id, e.target.value)}
@@ -489,13 +553,23 @@ export const AdminDashboard = ({
                         </select>
                       </td>
                       <td style={{ padding: '1rem', textAlign: 'right' }}>
-                        <button 
-                          onClick={() => setSelectedCandidate(cand)}
-                          className="btn btn-secondary btn-sm"
-                          style={{ marginRight: '0.4rem' }}
-                        >
-                          <Eye size={14} /> {t('admin.viewDossier')}
-                        </button>
+                        <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
+                          <button 
+                            onClick={() => setSelectedCandidate(cand)}
+                            className="btn btn-secondary btn-sm"
+                          >
+                            <Eye size={14} /> {t('admin.viewDossier')}
+                          </button>
+                          {cand.attachedFiles && cand.attachedFiles.length > 0 && (
+                            <button 
+                              onClick={() => setPreviewFile(cand.attachedFiles[0])}
+                              className="btn btn-primary btn-sm"
+                              title="Быстрый просмотр первого документа"
+                            >
+                              <FileText size={14} /> Файл
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -809,31 +883,75 @@ export const AdminDashboard = ({
               </table>
 
               {/* Attached Candidate Documents */}
-              {selectedCandidate.attachedFiles && selectedCandidate.attachedFiles.length > 0 && (
-                <div style={{ marginBottom: '1.5rem', background: 'rgba(0,139,255,0.06)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(0,139,255,0.25)' }}>
-                  <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <FileText size={18} /> 4. Attached Documents / Прикрепленные файлы ({selectedCandidate.attachedFiles.length})
+              <div className="no-print" style={{ marginBottom: '1.5rem', background: 'rgba(0,139,255,0.06)', padding: '1.2rem', borderRadius: '10px', border: '1px solid rgba(0,139,255,0.25)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.8rem' }}>
+                  <h4 style={{ color: 'var(--color-accent)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem' }}>
+                    <Paperclip size={18} /> 4. Attached Documents / Прикрепленные файлы ({selectedCandidate.attachedFiles?.length || 0})
                   </h4>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.8rem' }}>
+
+                  <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer', gap: '0.4rem', color: 'var(--color-emerald)', borderColor: 'rgba(16,185,129,0.3)' }}>
+                    <Plus size={14} /> Добавить документ к анкете
+                    <input 
+                      type="file" 
+                      multiple 
+                      accept=".doc,.docx,.pdf,.jpg,.jpeg,.png,.zip" 
+                      style={{ display: 'none' }}
+                      onChange={(e) => handleAdminFileUpload(selectedCandidate.id, e)} 
+                    />
+                  </label>
+                </div>
+
+                {selectedCandidate.attachedFiles && selectedCandidate.attachedFiles.length > 0 ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '0.8rem' }}>
                     {selectedCandidate.attachedFiles.map((file, fIdx) => (
-                      <div key={file.id || fIdx} style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginRight: '0.5rem' }}>
-                          <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{file.size || 'FILE'}</div>
+                      <div key={file.id || fIdx} style={{ background: 'var(--bg-surface)', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.6rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', overflow: 'hidden' }}>
+                          <FileText size={20} color="var(--color-accent)" style={{ flexShrink: 0 }} />
+                          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={file.name}>
+                              {file.name}
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{file.size || 'Документ'}</div>
+                          </div>
                         </div>
-                        <a 
-                          href={file.dataUrl} 
-                          download={file.name} 
-                          className="btn btn-secondary btn-sm"
-                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', flexShrink: 0, textDecoration: 'none' }}
-                        >
-                          <Download size={13} /> Скачать
-                        </a>
+
+                        <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.5rem' }}>
+                          <button 
+                            type="button"
+                            onClick={() => setPreviewFile(file)}
+                            className="btn btn-secondary btn-sm"
+                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', gap: '0.3rem' }}
+                            title="Просмотреть файл онлайн"
+                          >
+                            <Eye size={13} /> Просмотр
+                          </button>
+                          <a 
+                            href={file.dataUrl} 
+                            download={file.name} 
+                            className="btn btn-primary btn-sm"
+                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', textDecoration: 'none', gap: '0.3rem' }}
+                            title="Скачать файл на устройство"
+                          >
+                            <Download size={13} /> Скачать
+                          </a>
+                          <button 
+                            type="button"
+                            onClick={() => handleAdminFileDelete(selectedCandidate.id, file.id)}
+                            style={{ background: 'none', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '4px', cursor: 'pointer', padding: '0.3rem' }}
+                            title="Удалить файл"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '1.2rem', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+                    К данной анкете пока не прикреплены файлы. Нажмите «Добавить документ к анкете», чтобы загрузить сканы дипломов или паспорта.
+                  </div>
+                )}
+              </div>
 
               {/* Manager Notes */}
               <div className="no-print" style={{ background: 'var(--bg-surface-elevated)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
@@ -1223,6 +1341,59 @@ export const AdminDashboard = ({
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+        {/* DOCUMENT PREVIEW MODAL */}
+        {previewFile && (
+          <div className="modal-overlay" onClick={() => setPreviewFile(null)} style={{ zIndex: 1000 }}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '850px', width: '92%', padding: '1.8rem', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.8rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', overflow: 'hidden' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--color-accent-light)', color: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <FileText size={22} />
+                  </div>
+                  <div style={{ overflow: 'hidden' }}>
+                    <h4 style={{ fontSize: '1.15rem', color: '#FFFFFF', margin: 0, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{previewFile.name}</h4>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Размер: {previewFile.size || 'Документ'}</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexShrink: 0 }}>
+                  <a 
+                    href={previewFile.dataUrl} 
+                    download={previewFile.name} 
+                    className="btn btn-primary btn-sm"
+                    style={{ textDecoration: 'none', gap: '0.4rem' }}
+                  >
+                    <Download size={15} /> Скачать файл
+                  </a>
+                  <button onClick={() => setPreviewFile(null)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.4rem' }}>
+                    <X size={22} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Viewer Container */}
+              <div style={{ flex: 1, overflowY: 'auto', background: 'rgba(0,0,0,0.4)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '380px' }}>
+                {previewFile.dataUrl?.startsWith('data:image/') || previewFile.name?.match(/\.(jpg|jpeg|png|webp|gif|svg)$/i) ? (
+                  <img src={previewFile.dataUrl} alt={previewFile.name} style={{ maxWidth: '100%', maxHeight: '68vh', objectFit: 'contain', borderRadius: '6px', boxShadow: '0 8px 30px rgba(0,0,0,0.5)' }} />
+                ) : previewFile.dataUrl?.startsWith('data:application/pdf') || previewFile.name?.endsWith('.pdf') ? (
+                  <iframe src={previewFile.dataUrl} title={previewFile.name} style={{ width: '100%', height: '550px', border: 'none', borderRadius: '6px' }} />
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '2.5rem 1rem' }}>
+                    <div style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'rgba(0,139,255,0.1)', color: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.2rem' }}>
+                      <FileText size={36} />
+                    </div>
+                    <h5 style={{ color: '#FFFFFF', fontSize: '1.2rem', marginBottom: '0.6rem', fontWeight: 600 }}>Документ свободен для скачивания</h5>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem', maxWidth: '420px', margin: '0 auto 1.5rem' }}>
+                      Файлы формата Word (.doc, .docx), архивы (.zip) и текстовые приложения предпросматриваются сразу при открытии на ПК или телефоне.
+                    </p>
+                    <a href={previewFile.dataUrl} download={previewFile.name} className="btn btn-accent" style={{ padding: '0.7rem 1.4rem' }}>
+                      <Download size={18} /> Скачать {previewFile.name}
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

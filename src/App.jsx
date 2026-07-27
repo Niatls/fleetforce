@@ -192,6 +192,18 @@ function AppContent() {
     }).catch(() => {});
   };
 
+  const handleUpdateCandidateFiles = (id, files) => {
+    setCandidates((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, attachedFiles: files } : c))
+    );
+
+    fetch(`/api/candidates/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ attachedFiles: files })
+    }).catch(() => {});
+  };
+
   const handleAddVacancy = (newVac) => {
     setVacancies((prev) => [newVac, ...prev]);
 
@@ -284,6 +296,7 @@ function AppContent() {
         stats={stats}
         onUpdateCandidateStatus={handleUpdateCandidateStatus}
         onSaveCandidateNotes={handleSaveCandidateNotes}
+        onUpdateCandidateFiles={handleUpdateCandidateFiles}
         onAddVacancy={handleAddVacancy}
         onUpdateVacancy={handleUpdateVacancy}
         onDeleteVacancy={handleDeleteVacancy}

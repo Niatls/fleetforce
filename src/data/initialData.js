@@ -315,6 +315,29 @@ export const INITIAL_CANDIDATES = [
         dateFrom: "2024-03-01",
         dateTo: "2024-07-20"
       }
+    ],
+    attachedFiles: [
+      {
+        id: "f-101",
+        name: "CV_Master_Voronov_2026.pdf",
+        size: "1.2 MB",
+        type: "application/pdf",
+        dataUrl: "data:application/pdf;base64,JVBERi0xLjQKJSVFT0Y="
+      },
+      {
+        id: "f-102",
+        name: "STCW_Master_Unlimited_License.jpg",
+        size: "840 KB",
+        type: "image/jpeg",
+        dataUrl: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect width='100%25' height='100%25' fill='%230b1329'/%3E%3Crect x='20' y='20' width='760' height='560' fill='none' stroke='%230088ff' stroke-width='4' rx='10'/%3E%3Ctext x='50%25' y='35%25' font-family='sans-serif' font-size='28' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3EINTERNATIONAL STCW ENDORSEMENT%3C/text%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%2338bdf8' text-anchor='middle'%3EMASTER UNLIMITED (STCW II/2)%3C/text%3E%3Ctext x='50%25' y='65%25' font-family='sans-serif' font-size='18' fill='%2394a3b8' text-anchor='middle'%3EHolder: Voronov Aleksandr Sergeevich%3C/text%3E%3Ctext x='50%25' y='80%25' font-family='sans-serif' font-size='14' fill='%2310b981' text-anchor='middle'%3EStatus: VERIFIED & ACTIVE (Exp: 2030)%3C/text%3E%3C/svg%3E"
+      },
+      {
+        id: "f-103",
+        name: "Marlins_English_Cert_92pct.pdf",
+        size: "350 KB",
+        type: "application/pdf",
+        dataUrl: "data:application/pdf;base64,JVBERi0xLjQKJSVFT0Y="
+      }
     ]
   },
   {
@@ -345,6 +368,22 @@ export const INITIAL_CANDIDATES = [
         manningCompany: "Top Crew",
         dateFrom: "2025-05-01",
         dateTo: "2025-09-01"
+      }
+    ],
+    attachedFiles: [
+      {
+        id: "f-104",
+        name: "ETO_Kovalev_Maritime_CV.docx",
+        size: "620 KB",
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        dataUrl: "data:text/plain;charset=utf-8,FleetForce%20Maritime%20CV%20-%20Kovalev%20Dmitriy%20(ETO)"
+      },
+      {
+        id: "f-105",
+        name: "High_Voltage_Certificate_STCW.jpg",
+        size: "1.1 MB",
+        type: "image/jpeg",
+        dataUrl: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect width='100%25' height='100%25' fill='%2309101d'/%3E%3Crect x='20' y='20' width='760' height='560' fill='none' stroke='%23eab308' stroke-width='4' rx='10'/%3E%3Ctext x='50%25' y='35%25' font-family='sans-serif' font-size='28' font-weight='bold' fill='%23eab308' text-anchor='middle'%3EHIGH VOLTAGE SAFETY CERTIFICATE%3C/text%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23ffffff' text-anchor='middle'%3ESTCW III/6 HIGH VOLTAGE OPERATIONAL%3C/text%3E%3Ctext x='50%25' y='65%25' font-family='sans-serif' font-size='18' fill='%2394a3b8' text-anchor='middle'%3EHolder: Kovalev Dmitriy Igorevich%3C/text%3E%3C/svg%3E"
       }
     ]
   }
