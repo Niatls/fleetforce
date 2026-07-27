@@ -59,8 +59,12 @@ export const Footer = ({ onOpenAdmin }) => {
             <p style={{ fontSize: '0.82rem', lineHeight: 1.6, marginBottom: '1rem' }}>
               {t('footer.compliance')}
             </p>
-            <button 
-              onClick={onOpenAdmin}
+            <a 
+              href="#/admin"
+              onClick={(e) => {
+                e.preventDefault();
+                onOpenAdmin();
+              }}
               style={{
                 background: 'none',
                 border: '1px solid var(--border-color)',
@@ -71,11 +75,12 @@ export const Footer = ({ onOpenAdmin }) => {
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.4rem'
+                gap: '0.4rem',
+                textDecoration: 'none'
               }}
             >
               <Lock size={12} /> {t('admin.portalTitle')}
-            </button>
+            </a>
           </div>
 
         </div>

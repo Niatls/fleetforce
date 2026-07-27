@@ -25,7 +25,9 @@ function AppContent() {
   // Modals & Page View state
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardParams, setWizardParams] = useState({ rank: '', vesselType: '' });
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+    return localStorage.getItem('fleetforce_admin_auth') === 'true';
+  });
 
   // Standalone Page View: 'main' or 'admin'
   const [currentPage, setCurrentPage] = useState(() => {
@@ -248,6 +250,12 @@ function AppContent() {
     setHubBlocks((prev) => prev.filter((b) => b.id !== id));
   };
 
+  const handleLogoutAdmin = () => {
+    localStorage.removeItem('fleetforce_admin_auth');
+    setIsAdminLoggedIn(false);
+    navigateToMain();
+  };
+
   // Standalone Admin Page View
   if (currentPage === 'admin') {
     if (!isAdminLoggedIn) {
@@ -257,6 +265,7 @@ function AppContent() {
           onClose={navigateToMain}
           onBackToSite={navigateToMain}
           onLoginSuccess={() => {
+            localStorage.setItem('fleetforce_admin_auth', 'true');
             setIsAdminLoggedIn(true);
           }}
         />
@@ -266,7 +275,7 @@ function AppContent() {
     return (
       <AdminDashboard 
         isOpen={true}
-        onClose={navigateToMain}
+        onClose={handleLogoutAdmin}
         onBackToSite={navigateToMain}
         candidates={candidates}
         vacancies={vacancies}

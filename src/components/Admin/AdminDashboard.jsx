@@ -268,11 +268,19 @@ export const AdminDashboard = ({
   };
 
   return (
-    <div className="modal-overlay" style={{ overflowY: 'auto' }}>
-      <div className="modal-content" style={{ maxWidth: '1180px', padding: '2rem', minHeight: '85vh' }}>
-        
-        {/* Admin Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+    <div className="admin-page-layout" style={{ minHeight: '100vh', background: 'var(--bg-main)', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column' }}>
+      
+      {/* Top Sticky Header */}
+      <header style={{
+        background: 'var(--bg-surface-elevated)',
+        borderBottom: '1px solid var(--border-color)',
+        padding: '1rem 2rem',
+        position: 'sticky',
+        top: 0,
+        zIndex: 900,
+        backdropFilter: 'blur(10px)'
+      }}>
+        <div style={{ maxWidth: '1440px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
             <div style={{
               width: '42px',
@@ -285,12 +293,12 @@ export const AdminDashboard = ({
               <img src="/favicon.png" alt="FleetForce Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div>
-              <h2 style={{ fontSize: '1.6rem', color: '#FFFFFF' }}>{t('admin.portalTitle')}</h2>
+              <h2 style={{ fontSize: '1.5rem', color: 'var(--text-primary)', margin: 0, fontWeight: 700 }}>{t('admin.portalTitle')}</h2>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Управление анкетным фондом моряков и вакансиями флота</div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <button onClick={onBackToSite || onClose} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-accent)' }}>
               <ArrowLeft size={15} /> На главный сайт
             </button>
@@ -302,6 +310,10 @@ export const AdminDashboard = ({
             </button>
           </div>
         </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main style={{ flex: 1, maxWidth: '1440px', width: '100%', margin: '0 auto', padding: '2rem 1.5rem 4rem' }}>
 
         {/* Theme Switcher Control Bar */}
         <div style={{
@@ -1215,7 +1227,19 @@ export const AdminDashboard = ({
           </div>
         )}
 
-      </div>
+      </main>
+
+      {/* Admin Page Footer */}
+      <footer style={{
+        borderTop: '1px solid var(--border-color)',
+        padding: '1.2rem 2rem',
+        textAlign: 'center',
+        fontSize: '0.82rem',
+        color: 'var(--text-muted)',
+        background: 'var(--bg-surface)'
+      }}>
+        FleetForce Crewing Admin Panel • MLC 2006 & ISO 9001 Certified System
+      </footer>
     </div>
   );
 };

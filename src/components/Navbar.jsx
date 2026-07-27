@@ -171,14 +171,18 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
           </a>
 
           {/* Admin Panel Button */}
-          <button 
-            onClick={onOpenAdmin}
+          <a 
+            href="#/admin"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenAdmin();
+            }}
             className="btn btn-primary btn-sm"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.5rem 1rem' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.5rem 1rem', textDecoration: 'none', whiteSpace: 'nowrap' }}
           >
             <Lock size={15} />
             <span>{t('nav.adminLogin')}</span>
-          </button>
+          </a>
 
           {/* Mobile Menu Toggle */}
           <button 
@@ -220,6 +224,9 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
           <button onClick={() => handleNavClick('offices')} className="btn btn-secondary" style={{ justifyContent: 'flex-start' }}>
             <Users size={16} /> {t('nav.offices')}
           </button>
+          <a href="#/admin" onClick={(e) => { e.preventDefault(); onOpenAdmin(); setMobileMenuOpen(false); }} className="btn btn-primary" style={{ justifyContent: 'flex-start', textDecoration: 'none' }}>
+            <Lock size={16} /> {t('nav.adminLogin')}
+          </a>
         </div>
       )}
 
