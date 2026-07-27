@@ -314,6 +314,109 @@ export const AdminDashboard = ({
     a.href = url;
     a.download = `FleetForce_Seafarers_Export_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Export Candidate Application as Word Document (.doc)
+  const handleExportDoc = (cand) => {
+    if (!cand) return;
+    const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '');
+    const seaServiceRows = (cand.seaService || []).map(s => `
+      <tr>
+        <td style="padding:6px;border:1px solid #ccc;font-weight:bold;">${s.vesselName || '-'}</td>
+        <td style="padding:6px;border:1px solid #ccc;">${s.vesselType || '-'}</td>
+        <td style="padding:6px;border:1px solid #ccc;">${s.dwtGrt || '-'} / ${s.engineBhp || '-'}</td>
+        <td style="padding:6px;border:1px solid #ccc;">${s.rankHeld || '-'}</td>
+        <td style="padding:6px;border:1px solid #ccc;">${s.manningCompany || '-'}</td>
+        <td style="padding:6px;border:1px solid #ccc;">${s.dateFrom || '-'} — ${s.dateTo || '-'}</td>
+      </tr>
+    `).join('');
+
+    const htmlContent = `
+      <html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+      <head>
+        <meta charset='utf-8'>
+        <title>Seafarer Application - ${cand.fullName}</title>
+        <style>
+          body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; color: #222222; line-height: 1.4; padding: 20px; }
+          .header-table { width: 100%; border-bottom: 2px solid #003366; padding-bottom: 10px; margin-bottom: 20px; }
+          .agency-title { font-size: 18pt; font-weight: bold; color: #003366; margin: 0; }
+          .sub-title { font-size: 10pt; color: #666666; margin: 3px 0 0 0; }
+          h2 { color: #003366; font-size: 13pt; border-bottom: 1px solid #003366; padding-bottom: 4px; margin-top: 20px; text-transform: uppercase; }
+          table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 15px; font-size: 10pt; }
+          th { background-color: #003366; color: #ffffff; padding: 6px 8px; border: 1px solid #003366; text-align: left; }
+          td { padding: 6px 8px; border: 1px solid #cccccc; }
+          .field-label { font-weight: bold; color: #003366; width: 35%; background-color: #f4f7fa; }
+          .notes-box { background-color: #fff9e6; border: 1px solid #ffe599; padding: 10px; border-radius: 4px; font-size: 10pt; }
+        </style>
+      </head>
+      <body>
+        <table class="header-table" style="width:100%;border-bottom:2px solid #003366;margin-bottom:15px;">
+          <tr>
+            <td>
+              <div class="agency-title">FLEETFORCE CREWING ALLIANCE</div>
+              <div class="sub-title">International Seafarer Application Dossier | Ref: ${cand.id}</div>
+            </td>
+            <td style="text-align:right;font-size:9pt;color:#666;">
+              Generated: ${new Date().toLocaleDateString()}<br/>
+              Status: ${cand.status || 'Active'}
+            </td>
+          </tr>
+        </table>
+
+        <h2>1. Personal Details / Личные Данные</h2>
+        <table>
+          <tr><td class="field-label">Full Name / ФИО:</td><td><b>${cand.fullName || ''}</b></td></tr>
+          <tr><td class="field-label">Date of Birth / Дата рождения:</td><td>${cand.dob || ''}</td></tr>
+          <tr><td class="field-label">Citizenship / Гражданство:</td><td>${cand.citizenship || ''}</td></tr>
+          <tr><td class="field-label">Phone / WhatsApp:</td><td>${cand.phone || ''}</td></tr>
+          <tr><td class="field-label">Email Address:</td><td>${cand.email || ''}</td></tr>
+        </table>
+
+        <h2>2. Position & Qualifications / Квалификация</h2>
+        <table>
+          <tr><td class="field-label">Applied Rank / Должность:</td><td><b>${cand.appliedRank || ''}</b></td></tr>
+          <tr><td class="field-label">Alternative Rank:</td><td>${cand.alternativeRank || 'N/A'}</td></tr>
+          <tr><td class="field-label">Desired Salary / Оклад:</td><td>$${cand.minSalary || ''} / month</td></tr>
+          <tr><td class="field-label">Availability / Готовность:</td><td>${cand.readyDate || ''}</td></tr>
+          <tr><td class="field-label">Preferred Vessel Type:</td><td>${cand.preferredVessels || ''}</td></tr>
+          <tr><td class="field-label">Marlins Score / English:</td><td><b>${cand.marlinsScore || 'N/A'}</b> (${cand.englishLevel || 'N/A'})</td></tr>
+        </table>
+
+        <h2>3. Sea Experience Record Matrix / Опыт Работы в Море</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Vessel Name</th>
+              <th>Type</th>
+              <th>DWT / Engine</th>
+              <th>Rank Held</th>
+              <th>Manning / Owner</th>
+              <th>Sign On — Sign Off</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${seaServiceRows || '<tr><td colspan="6" style="text-align:center;">No sea service records listed</td></tr>'}
+          </tbody>
+        </table>
+
+        ${cand.notes ? `
+          <h2>4. Recruiter Notes / Заметки Менеджера</h2>
+          <div class="notes-box">${cand.notes}</div>
+        ` : ''}
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Application_${cleanName}_${cand.id}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -553,20 +656,29 @@ export const AdminDashboard = ({
                         </select>
                       </td>
                       <td style={{ padding: '1rem', textAlign: 'right' }}>
-                        <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', flexWrap: 'nowrap' }}>
                           <button 
                             onClick={() => setSelectedCandidate(cand)}
                             className="btn btn-secondary btn-sm"
+                            title="Просмотреть анкету моряка"
                           >
-                            <Eye size={14} /> {t('admin.viewDossier')}
+                            <Eye size={14} /> Анкета
+                          </button>
+                          <button 
+                            onClick={() => handleExportDoc(cand)}
+                            className="btn btn-secondary btn-sm"
+                            style={{ color: 'var(--color-accent)', borderColor: 'rgba(0,139,255,0.3)', gap: '0.2rem' }}
+                            title="Скачать анкету в формате Word (.doc)"
+                          >
+                            <FileText size={14} /> DOC
                           </button>
                           {cand.attachedFiles && cand.attachedFiles.length > 0 && (
                             <button 
                               onClick={() => setPreviewFile(cand.attachedFiles[0])}
                               className="btn btn-primary btn-sm"
-                              title="Быстрый просмотр первого документа"
+                              title="Быстрый просмотр прикрепленных документов"
                             >
-                              <FileText size={14} /> Файл
+                              <Paperclip size={14} /> Файлы ({cand.attachedFiles.length})
                             </button>
                           )}
                         </div>
@@ -810,12 +922,15 @@ export const AdminDashboard = ({
                   <FileCheck size={24} color="var(--color-accent)" />
                   <h3 style={{ fontSize: '1.5rem' }}>{t('admin.dossierTitle')} - {selectedCandidate.id}</h3>
                 </div>
-                <div style={{ display: 'flex', gap: '0.6rem' }}>
-                  <button onClick={() => window.print()} className="btn btn-secondary btn-sm">
-                    <Printer size={15} /> {t('admin.exportPdf')}
+                <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <button onClick={() => handleExportDoc(selectedCandidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-accent)', borderColor: 'rgba(0,139,255,0.4)', gap: '0.4rem' }}>
+                    <FileText size={15} /> Скачать DOC (.doc)
                   </button>
-                  <button onClick={() => setSelectedCandidate(null)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                    <X size={24} />
+                  <button onClick={() => window.print()} className="btn btn-primary btn-sm" style={{ gap: '0.4rem' }}>
+                    <Printer size={15} /> Печать / Скачать PDF (.pdf)
+                  </button>
+                  <button onClick={() => setSelectedCandidate(null)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.4rem' }}>
+                    <X size={22} />
                   </button>
                 </div>
               </div>
