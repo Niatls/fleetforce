@@ -472,3 +472,26 @@ export const INITIAL_STATS = [
   { id: 3, number: '65+', labelRu: 'Судовладельцев', labelEn: 'Partner Shipowners', color: 'gold' },
   { id: 4, number: '6', labelRu: 'Офисов в РФ и СНГ', labelEn: 'Branch Offices', color: 'white' }
 ];
+
+export const INITIAL_SHIPOWNER_REQUESTS = [
+  {
+    id: "REQ-2026-001",
+    companyName: "Stena Bulk Tanker Management",
+    contactName: "Captain Hans Nielsen (Crew Director)",
+    email: "h.nielsen@stenabulk.com",
+    phone: "+46 31 855 000",
+    details: "Требуется полное комплектование экипажа для 2 продуктовозов (Chemical/Product Tankers 47,000 DWT). Необходимы Master, Chief Officer, Chief Engineer и 2 ETO. Посадка в Роттердаме в августе 2026.",
+    status: "New",
+    createdAt: "2026-07-26T11:20:00Z"
+  },
+  {
+    id: "REQ-2026-002",
+    companyName: "Columbia Shipmanagement Ltd",
+    contactName: "Мария Соколова (Senior Manning Officer)",
+    email: "m.sokolova@csm-agency.com",
+    phone: "+357 25 843 100",
+    details: "Запрос расценки на подбор командного состава (Chief Engineer, 2nd Officer) для балкеров Capesize 180,000 DWT. Ставки окладов по соглашению ITF.",
+    status: "In Progress",
+    createdAt: "2026-07-25T16:45:00Z"
+  }
+];

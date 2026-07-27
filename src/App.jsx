@@ -15,7 +15,8 @@ import {
   INITIAL_CANDIDATES, 
   INITIAL_OFFICES, 
   INITIAL_HUB_BLOCKS,
-  INITIAL_STATS
+  INITIAL_STATS,
+  INITIAL_SHIPOWNER_REQUESTS
 } from './data/initialData';
 
 function AppContent() {
@@ -86,6 +87,11 @@ function AppContent() {
     return saved ? JSON.parse(saved) : INITIAL_STATS;
   });
 
+  const [shipownerRequests, setShipownerRequests] = useState(() => {
+    const saved = localStorage.getItem('fleetforce_shipowner_requests');
+    return saved ? JSON.parse(saved) : INITIAL_SHIPOWNER_REQUESTS;
+  });
+
   // Load saved theme on startup
   useEffect(() => {
     const savedTheme = localStorage.getItem('fleetforce_theme') || 'ocean-soft';
@@ -144,9 +150,41 @@ function AppContent() {
     localStorage.setItem('fleetforce_stats', JSON.stringify(stats));
   }, [stats]);
 
+  useEffect(() => {
+    localStorage.setItem('fleetforce_shipowner_requests', JSON.stringify(shipownerRequests));
+  }, [shipownerRequests]);
+
   // Handlers
   const handleUpdateStats = (newStats) => {
     setStats(newStats);
+  };
+
+  const handleAddShipownerRequest = (newReq) => {
+    setShipownerRequests((prev) => [newReq, ...prev]);
+
+    fetch('/api/shipowner-requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newReq)
+    }).catch(() => {});
+  };
+
+  const handleUpdateShipownerRequestStatus = (id, newStatus) => {
+    setShipownerRequests((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
+    );
+
+    fetch(`/api/shipowner-requests/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus })
+    }).catch(() => {});
+  };
+
+  const handleDeleteShipownerRequest = (id) => {
+    setShipownerRequests((prev) => prev.filter((r) => r.id !== id));
+
+    fetch(`/api/shipowner-requests/${id}`, { method: 'DELETE' }).catch(() => {});
   };
   const handleOpenWizard = (rank = '', vesselType = '') => {
     setWizardParams({ rank, vesselType });
@@ -294,6 +332,7 @@ function AppContent() {
         offices={offices}
         hubBlocks={hubBlocks}
         stats={stats}
+        shipownerRequests={shipownerRequests}
         onUpdateCandidateStatus={handleUpdateCandidateStatus}
         onSaveCandidateNotes={handleSaveCandidateNotes}
         onUpdateCandidateFiles={handleUpdateCandidateFiles}
@@ -307,6 +346,8 @@ function AppContent() {
         onUpdateHubBlock={handleUpdateHubBlock}
         onDeleteHubBlock={handleDeleteHubBlock}
         onUpdateStats={handleUpdateStats}
+        onUpdateShipownerRequestStatus={handleUpdateShipownerRequestStatus}
+        onDeleteShipownerRequest={handleDeleteShipownerRequest}
       />
     );
   }
@@ -343,7 +384,9 @@ function AppContent() {
       />
 
       {/* Shipowners Services */}
-      <ShipownerServices />
+      <ShipownerServices 
+        onRequestSubmit={handleAddShipownerRequest}
+      />
 
       {/* Offices & Contact Map */}
       <OfficesAndContacts 
