@@ -173,6 +173,7 @@ export const AdminDashboard = ({
   // Filter States for Candidates
   const [searchCandidate, setSearchCandidate] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [filterRank, setFilterRank] = useState('');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [previewFile, setPreviewFile] = useState(null);
 
