@@ -113,35 +113,43 @@ function AppContent() {
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
-  // Try fetching from Express Backend API if online
+  // Try fetching from Backend API (Vercel Serverless / Node Express) if online
   useEffect(() => {
     fetch('/api/vacancies')
       .then((res) => {
-        if (!res.ok) throw new Error('Static mode: no backend server');
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
         return res.json();
       })
       .then((data) => {
-        if (data.success && data.data?.length) {
+        if (data && data.success && data.data?.length) {
           setVacancies(data.data);
         }
       })
-      .catch(() => {
-        // Express backend offline, running in local standalone / static mode
-      });
+      .catch(() => {});
 
     fetch('/api/candidates')
       .then((res) => {
-        if (!res.ok) throw new Error('Static mode: no backend server');
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
         return res.json();
       })
       .then((data) => {
-        if (data.success && data.data?.length) {
+        if (data && data.success && data.data?.length) {
           setCandidates(data.data);
         }
       })
-      .catch(() => {
-        // Express backend offline, running in static mode
-      });
+      .catch(() => {});
+
+    fetch('/api/shipowner-requests')
+      .then((res) => {
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && data.data?.length) {
+          setShipownerRequests(data.data);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // Sync to local storage
