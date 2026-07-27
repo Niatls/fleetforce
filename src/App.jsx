@@ -122,7 +122,12 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          setVacancies(data.data);
+          setVacancies((prev) => {
+            const map = new Map();
+            data.data.forEach((v) => map.set(v.id, v));
+            prev.forEach((v) => map.set(v.id, v));
+            return Array.from(map.values());
+          });
         }
       })
       .catch(() => {});
@@ -134,7 +139,12 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          setCandidates(data.data);
+          setCandidates((prev) => {
+            const map = new Map();
+            data.data.forEach((c) => map.set(c.id, c));
+            prev.forEach((c) => map.set(c.id, c));
+            return Array.from(map.values());
+          });
         }
       })
       .catch(() => {});
@@ -146,7 +156,12 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          setShipownerRequests(data.data);
+          setShipownerRequests((prev) => {
+            const map = new Map();
+            data.data.forEach((r) => map.set(r.id, r));
+            prev.forEach((r) => map.set(r.id, r));
+            return Array.from(map.values());
+          });
         }
       })
       .catch(() => {});
