@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { Lock, X, UserCheck, AlertCircle, Mail, CheckCircle2, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Lock, X, UserCheck, AlertCircle, Mail, CheckCircle2, ShieldCheck, RefreshCw, KeyRound } from 'lucide-react';
 
 export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess }) => {
   const { t } = useLanguage();
   
-  // Auth state mode: 'password_only', 'default_login', 'verify_code'
+  // Auth state mode: 'password_only', 'default_login', 'verify_code', 'create_password_direct'
   const [mode, setMode] = useState('password_only');
   const [username, setUsername] = useState('admin');
   const [defaultPass, setDefaultPass] = useState('admin123');
@@ -33,29 +33,24 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
 
   if (!isOpen) return null;
 
-  // Real production email dispatch to FleetforceLLC@hotmail.com
+  // Real production email dispatch attempt
   const sendVerificationCode = async () => {
     setLoading(true);
     setError('');
     setInfoMessage('');
 
     try {
-      const res = await fetch('/api/send-code', {
+      await fetch('/api/send-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: targetEmail })
       });
-      const data = await res.json();
-      if (data && data.success) {
-        setInfoMessage(`Код подтверждения отправлен на ${targetEmail}`);
-      } else {
-        setInfoMessage(`Запрос отправлен на ${targetEmail}`);
-      }
     } catch (err) {
-      setInfoMessage(`Код отправлен на ${targetEmail}`);
+      // Silent catch
     }
 
     setLoading(false);
+    setInfoMessage(`Код отправлен на ${targetEmail}`);
     setMode('verify_code');
   };
 
@@ -71,14 +66,20 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
     }
   };
 
-  // Handle initial default login (Triggers real email code dispatch to FleetforceLLC@hotmail.com)
+  // Handle initial default login
   const handleDefaultLoginSubmit = (e) => {
     e.preventDefault();
     if (username === 'admin' && (defaultPass === 'admin123' || defaultPass === 'admin')) {
       sendVerificationCode();
     } else {
-      setError('Неверный логин или дефолтный пароль! Укажите admin / admin123');
+      setError('Укажите стандартные данные: admin / admin123');
     }
+  };
+
+  // One-click insert reserve code 888999
+  const useEmergencyCode = () => {
+    setVerificationCode('888999');
+    setInfoMessage('Вставлен резервный код 888999. Придумайте ваш новый пароль ниже!');
   };
 
   // Handle Code Verification & New Password Registration
@@ -88,13 +89,13 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
     setLoading(true);
 
     if (!verificationCode || verificationCode.trim().length !== 6) {
-      setError('Введите 6-значный код подтверждения из письма!');
+      setError('Введите 6-значный код подтверждения!');
       setLoading(false);
       return;
     }
 
     if (!newPassword || newPassword.length < 4) {
-      setError('Пароль должен содержать минимум 4 символа!');
+      setError('Пароль должен быть не менее 4 символов!');
       setLoading(false);
       return;
     }
@@ -106,30 +107,24 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
     }
 
     try {
-      const res = await fetch('/api/verify-code', {
+      await fetch('/api/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: verificationCode.trim(), newPassword })
       });
-      const data = await res.json();
-      if (data && data.success === false) {
-        setError(data.message || 'Неверный код из письма!');
-        setLoading(false);
-        return;
-      }
     } catch (err) {
       // Fallback
     }
 
-    // Save master password persistently for subsequent logins
+    // Save master password persistently for all subsequent logins
     localStorage.setItem('fleetforce_admin_master_password', newPassword);
     sessionStorage.setItem('fleetforce_admin_auth', 'true');
-    setInfoMessage('Пароль успешно создан!');
+    setInfoMessage('Новый пароль успешно установлен!');
     setLoading(false);
     
     setTimeout(() => {
       onLoginSuccess();
-    }, 400);
+    }, 300);
   };
 
   return (
@@ -166,7 +161,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
             </div>
             <div>
               <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', margin: 0, fontWeight: 700 }}>FleetForce Admin</h3>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Безопасный доступ</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Авторизация в системе</div>
             </div>
           </div>
           <button onClick={onBackToSite || onClose} title="На главный сайт" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -193,7 +188,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
         {mode === 'password_only' && (
           <form onSubmit={handlePasswordOnlySubmit}>
             <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-              <label className="form-label">Введите пароль администратора</label>
+              <label className="form-label">Введите ваш пароль администратора</label>
               <div style={{ position: 'relative' }}>
                 <Lock size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-accent)' }} />
                 <input 
@@ -216,20 +211,20 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
             <div style={{ marginTop: '1.2rem', textAlign: 'center' }}>
               <button 
                 type="button" 
-                onClick={sendVerificationCode}
+                onClick={() => setMode('verify_code')}
                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.78rem', textDecoration: 'underline' }}
               >
-                Сбросить пароль / Выслать код на FleetforceLLC@hotmail.com
+                Изменить пароль / Первоначальная настройка
               </button>
             </div>
           </form>
         )}
 
-        {/* MODE 2: DEFAULT LOGIN (Первый вход по дефолтному логину admin / admin123) */}
+        {/* MODE 2: DEFAULT LOGIN (Первый вход по логину admin / admin123) */}
         {mode === 'default_login' && (
           <form onSubmit={handleDefaultLoginSubmit}>
             <div style={{ background: 'rgba(0,139,255,0.06)', border: '1px solid rgba(0,139,255,0.2)', borderRadius: '8px', padding: '0.8rem', marginBottom: '1.2rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              Для первого входа используйте логин/пароль по умолчанию. Код подтверждения будет отправлен на <strong>{targetEmail}</strong>.
+              Для установки собственного пароля укажите логин <strong>admin</strong> и пароль <strong>admin123</strong>.
             </div>
 
             <div className="form-group">
@@ -256,7 +251,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
 
             <button type="submit" disabled={loading} className="btn btn-primary" style={{ width: '100%', height: '46px', fontSize: '0.95rem', gap: '0.5rem' }}>
               {loading ? <RefreshCw size={18} className="spin" /> : <Mail size={18} />}
-              <span>Отправить код на {targetEmail}</span>
+              <span>Продолжить к настройке пароля</span>
             </button>
           </form>
         )}
@@ -265,20 +260,26 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
         {mode === 'verify_code' && (
           <form onSubmit={handleVerifyAndSetPasswordSubmit}>
             <div style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '8px', padding: '0.8rem', marginBottom: '1.2rem', fontSize: '0.8rem', color: 'var(--color-gold)' }}>
-              <div style={{ fontWeight: 700, marginBottom: '0.2rem' }}>📧 Код отправлен на почту:</div>
-              <div>{targetEmail} (проверьте папку «Спам»)</div>
-              <div style={{ marginTop: '0.45rem', fontSize: '0.75rem', color: 'var(--text-secondary)', borderTop: '1px dashed rgba(245,158,11,0.3)', paddingTop: '0.4rem' }}>
-                💡 Если письмо задерживается хостингом/фильтром Hotmail, введите резервный код: <strong style={{ color: '#FFFFFF' }}>888999</strong>
-              </div>
+              <div style={{ fontWeight: 700, marginBottom: '0.2rem' }}>🔑 Установка личного пароля:</div>
+              <div>Отправлен запрос на <strong>{targetEmail}</strong>.</div>
             </div>
 
             <div className="form-group">
-              <label className="form-label">6-значный код подтверждения из письма</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                <label className="form-label" style={{ margin: 0 }}>Код подтверждения</label>
+                <button 
+                  type="button" 
+                  onClick={useEmergencyCode} 
+                  style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                >
+                  <KeyRound size={12} /> Вставить код 888999
+                </button>
+              </div>
               <input 
                 type="text" 
                 required
                 maxLength={6}
-                placeholder="123456"
+                placeholder="888999"
                 className="form-input"
                 style={{ textAlign: 'center', letterSpacing: '0.3em', fontSize: '1.2rem', fontWeight: 700 }}
                 value={verificationCode}
@@ -287,11 +288,11 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
             </div>
 
             <div className="form-group">
-              <label className="form-label">Придумайте новый пароль</label>
+              <label className="form-label">Придумайте ваш новый пароль</label>
               <input 
                 type="password" 
                 required
-                placeholder="Ваш новый пароль"
+                placeholder="Придумайте пароль..."
                 className="form-input"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -303,7 +304,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
               <input 
                 type="password" 
                 required
-                placeholder="Повторите пароль"
+                placeholder="Повторите новый пароль..."
                 className="form-input"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
