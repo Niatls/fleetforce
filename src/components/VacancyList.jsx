@@ -133,28 +133,33 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
         ) : (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-            gap: '1.5rem'
+            gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))',
+            gap: '1.25rem',
+            alignItems: 'stretch'
           }}>
             {filteredVacancies.map((vac) => (
               <div 
                 key={vac.id} 
                 className="glass-card"
                 style={{
-                  padding: '1.5rem',
+                  padding: '1.4rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   position: 'relative',
+                  height: '100%',
+                  borderRadius: '12px',
                   borderTop: vac.urgent ? '3px solid var(--color-danger)' : '1px solid var(--border-color)'
                 }}
               >
                 <div>
                   {/* Top Badges */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
-                    <span className="badge badge-blue">{vac.vesselType}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', marginBottom: '0.8rem' }}>
+                    <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
+                      {getVesselLabel(vac.vesselType, lang)}
+                    </span>
                     {vac.urgent && (
-                      <span className="badge badge-danger">
+                      <span className="badge badge-danger" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                         <Flame size={12} /> HOT / URGENT
                       </span>
                     )}

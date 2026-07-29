@@ -59,9 +59,9 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS }) =>
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '1.25rem', alignItems: 'stretch' }}>
           {blocksList.map((block) => (
-            <div key={block.id} className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div key={block.id} className="glass-card" style={{ padding: '1.8rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
               <div>
                 {getIcon(block.iconType, block.color)}
                 <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem' }}>{block.title}</h3>
