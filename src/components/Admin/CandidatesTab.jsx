@@ -1,7 +1,8 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { Search, Eye, FileText, Paperclip } from 'lucide-react';
+import { Search, Eye, FileText, Archive } from 'lucide-react';
 import { MARITIME_RANKS, getRankLabel } from '../../data/initialData';
+import { handleDownloadAllFiles } from './exportUtils';
 
 export const CandidatesTab = ({
   candidates,
@@ -14,7 +15,6 @@ export const CandidatesTab = ({
   onUpdateCandidateStatus,
   onSelectCandidate,
   onExportDoc,
-  onPreviewFile
 }) => {
   const { lang, t } = useLanguage();
 
@@ -147,15 +147,13 @@ export const CandidatesTab = ({
                     >
                       <FileText size={14} /> DOC
                     </button>
-                    {cand.attachedFiles && cand.attachedFiles.length > 0 && (
-                      <button 
-                        onClick={() => onPreviewFile(cand.attachedFiles[0])}
-                        className="btn btn-primary btn-sm"
-                        title="Быстрый просмотр прикрепленных документов"
-                      >
-                        <Paperclip size={14} /> Файлы ({cand.attachedFiles.length})
-                      </button>
-                    )}
+                    <button 
+                      onClick={() => handleDownloadAllFiles(cand)}
+                      className="btn btn-primary btn-sm"
+                      title="Скачать ZIP-архив с анкетой (.doc) и всеми прикреплёнными документами"
+                    >
+                      <Archive size={14} /> Скачать всё
+                    </button>
                   </div>
                 </td>
               </tr>

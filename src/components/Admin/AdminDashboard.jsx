@@ -155,6 +155,21 @@ export const AdminDashboard = ({
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedShipownerRequest, setSelectedShipownerRequest] = useState(null);
   const [previewFile, setPreviewFile] = useState(null);
+  const [previewFileAllFiles, setPreviewFileAllFiles] = useState([]);
+  const [previewFileIndex, setPreviewFileIndex] = useState(0);
+
+  const openFilePreview = (file, allFiles = []) => {
+    const idx = allFiles.indexOf(file);
+    setPreviewFile(file);
+    setPreviewFileAllFiles(allFiles);
+    setPreviewFileIndex(idx >= 0 ? idx : 0);
+  };
+
+  const navigatePreviewFile = (newIndex) => {
+    if (!previewFileAllFiles || newIndex < 0 || newIndex >= previewFileAllFiles.length) return;
+    setPreviewFile(previewFileAllFiles[newIndex]);
+    setPreviewFileIndex(newIndex);
+  };
 
   const handleAdminFileUpload = (candidateId, e) => {
     const files = Array.from(e.target.files);
@@ -378,7 +393,7 @@ export const AdminDashboard = ({
             onUpdateCandidateStatus={onUpdateCandidateStatus}
             onSelectCandidate={setSelectedCandidate}
             onExportDoc={handleExportDoc}
-            onPreviewFile={setPreviewFile}
+            onPreviewFile={(file) => openFilePreview(file, [])}
           />
         )}
 
@@ -435,7 +450,7 @@ export const AdminDashboard = ({
           onExportDoc={handleExportDoc}
           onAdminFileUpload={handleAdminFileUpload}
           onAdminFileDelete={handleAdminFileDelete}
-          onPreviewFile={setPreviewFile}
+          onPreviewFile={(file) => openFilePreview(file, selectedCandidate?.attachedFiles || [])}
           onSaveCandidateNotes={onSaveCandidateNotes}
         />
 
@@ -474,6 +489,9 @@ export const AdminDashboard = ({
 
         <DocumentPreviewModal 
           previewFile={previewFile}
+          allFiles={previewFileAllFiles}
+          currentIndex={previewFileIndex}
+          onNavigate={navigatePreviewFile}
           onClose={() => setPreviewFile(null)}
         />
 
