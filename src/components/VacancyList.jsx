@@ -153,9 +153,9 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
                 }}
               >
                 <div>
-                  {/* Top Badges */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', marginBottom: '0.8rem' }}>
-                    <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
+                  {/* Top Badges (Сначала идут плашки) */}
+                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '0.8rem' }}>
+                    <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3 }}>
                       {getVesselLabel(vac.vesselType, lang)}
                     </span>
                     {vac.urgent && (
@@ -165,8 +165,8 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
                     )}
                   </div>
 
-                  {/* Title & Rank */}
-                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.4rem', color: '#FFFFFF' }}>
+                  {/* Title & Rank (Потом идет текст) */}
+                  <h3 style={{ fontSize: '1.35rem', marginBottom: '0.4rem', color: '#FFFFFF', wordBreak: 'break-word' }}>
                     {vac.title}
                   </h3>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>

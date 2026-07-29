@@ -48,21 +48,37 @@ export const ShipownerServices = ({ onRequestSubmit }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '1.25rem', marginBottom: '4rem', alignItems: 'stretch' }}>
           
           <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
-            <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'var(--color-accent-light)', color: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
-              <Anchor size={28} />
+            <div>
+              {/* Row 1: Badges Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}>
+                  FULL MANNING
+                </span>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'var(--color-accent-light)', color: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Anchor size={22} />
+                </div>
+              </div>
+              {/* Row 2: Title */}
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>{t('shipowners.service1Title')}</h3>
+              <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                {t('shipowners.service1Desc')}
+              </p>
             </div>
-            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem' }}>{t('shipowners.service1Title')}</h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-              {t('shipowners.service1Desc')}
-            </p>
           </div>
 
           <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
             <div>
-              <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'var(--color-emerald-light)', color: 'var(--color-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
-                <Shield size={28} />
+              {/* Row 1: Badges Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                <span className="badge badge-emerald" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}>
+                  SINGLE OFFICERS
+                </span>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'var(--color-emerald-light)', color: 'var(--color-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Shield size={22} />
+                </div>
               </div>
-              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem' }}>{t('shipowners.service2Title')}</h3>
+              {/* Row 2: Title */}
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>{t('shipowners.service2Title')}</h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 {t('shipowners.service2Desc')}
               </p>
@@ -71,10 +87,17 @@ export const ShipownerServices = ({ onRequestSubmit }) => {
 
           <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
             <div>
-              <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'var(--color-gold-light)', color: 'var(--color-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
-                <FileText size={28} />
+              {/* Row 1: Badges Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                <span className="badge badge-gold" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}>
+                  COMPLIANCE & DOCUMENTS
+                </span>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'var(--color-gold-light)', color: 'var(--color-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <FileText size={22} />
+                </div>
               </div>
-              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem' }}>{t('shipowners.service3Title')}</h3>
+              {/* Row 2: Title */}
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>{t('shipowners.service3Title')}</h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 {t('shipowners.service3Desc')}
               </p>
