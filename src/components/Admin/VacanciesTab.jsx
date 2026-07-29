@@ -28,8 +28,19 @@ export const VacanciesTab = ({
         {vacancies.map((vac) => (
           <div key={vac.id} className="glass-card" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-surface-elevated)', height: '100%' }}>
             <div>
-              {/* Row 1: Vessel Badge & Action Controls Header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+              {/* Row 1: Reserved HOT / URGENT Badge Slot (Full Width, Top Line) */}
+              <div style={{ height: '26px', display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                {vac.urgent ? (
+                  <span className="badge badge-danger" style={{ width: '100%', justifyContent: 'center', borderRadius: '6px', fontSize: '0.75rem', padding: '0.3rem 0.5rem', textAlign: 'center' }}>
+                    🔥 HOT / URGENT
+                  </span>
+                ) : (
+                  <div style={{ height: '26px' }} />
+                )}
+              </div>
+
+              {/* Row 2: Vessel Badge & Action Controls Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
                 <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3 }}>
                   {getVesselLabel(vac.vesselType, lang)}
                 </span>
@@ -71,17 +82,6 @@ export const VacanciesTab = ({
                     <Trash2 size={14} />
                   </button>
                 </div>
-              </div>
-
-              {/* Row 2: Reserved HOT Badge Slot */}
-              <div style={{ height: '26px', display: 'flex', alignItems: 'center', marginBottom: '0.8rem' }}>
-                {vac.urgent ? (
-                  <span className="badge badge-danger" style={{ borderRadius: '6px', fontSize: '0.75rem', padding: '0.3rem 0.5rem' }}>
-                    🔥 HOT / URGENT
-                  </span>
-                ) : (
-                  <div style={{ height: '26px' }} />
-                )}
               </div>
 
               {/* Row 3: Vacancy Title */}

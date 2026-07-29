@@ -153,22 +153,22 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
                 }}
               >
                 <div>
-                  {/* Line 1: Vessel Type Badge */}
-                  <div style={{ marginBottom: '0.4rem' }}>
-                    <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3, display: 'inline-block' }}>
-                      {getVesselLabel(vac.vesselType, lang)}
-                    </span>
-                  </div>
-
-                  {/* Line 2: Reserved HOT / URGENT Badge Slot */}
-                  <div style={{ height: '28px', display: 'flex', alignItems: 'center', marginBottom: '0.8rem' }}>
+                  {/* Line 1: Reserved HOT / URGENT Badge Slot (Full Width, Top Line) */}
+                  <div style={{ height: '28px', display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                     {vac.urgent ? (
-                      <span className="badge badge-danger" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                        <Flame size={12} /> HOT / URGENT
+                      <span className="badge badge-danger" style={{ width: '100%', justifyContent: 'center', borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', textAlign: 'center' }}>
+                        <Flame size={13} /> HOT / URGENT
                       </span>
                     ) : (
                       <div style={{ height: '28px' }} />
                     )}
+                  </div>
+
+                  {/* Line 2: Vessel Type Badge */}
+                  <div style={{ marginBottom: '0.8rem' }}>
+                    <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3, display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                      {getVesselLabel(vac.vesselType, lang)}
+                    </span>
                   </div>
 
                   {/* Line 3: Title & Rank */}
