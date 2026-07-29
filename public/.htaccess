@@ -1,8 +1,23 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Direct API requests rewrite to PHP endpoints
+  RewriteRule ^api/vacancies(.*)$ api/vacancies.php [QSA,L]
+  RewriteRule ^api/candidates(.*)$ api/candidates.php [QSA,L]
+  RewriteRule ^api/shipowner-requests(.*)$ api/shipowner-requests.php [QSA,L]
+  RewriteRule ^api/upload(.*)$ api/upload.php [QSA,L]
+  RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+  # SPA Routing for React frontend
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . index.html [L]
 </IfModule>
+
+# Protect DB json files from direct browser access
+<FilesMatch "fleetforce_db\.json$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
