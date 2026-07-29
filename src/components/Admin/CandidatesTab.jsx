@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { Search, Eye, FileText, Archive } from 'lucide-react';
+import { Search, Eye, FileText, Archive, Paperclip } from 'lucide-react';
 import { MARITIME_RANKS, getRankLabel } from '../../data/initialData';
 import { handleDownloadAllFiles } from './exportUtils';
 
