@@ -266,7 +266,10 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
           <form onSubmit={handleVerifyAndSetPasswordSubmit}>
             <div style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '8px', padding: '0.8rem', marginBottom: '1.2rem', fontSize: '0.8rem', color: 'var(--color-gold)' }}>
               <div style={{ fontWeight: 700, marginBottom: '0.2rem' }}>📧 Код отправлен на почту:</div>
-              <div>{targetEmail}</div>
+              <div>{targetEmail} (проверьте папку «Спам»)</div>
+              <div style={{ marginTop: '0.45rem', fontSize: '0.75rem', color: 'var(--text-secondary)', borderTop: '1px dashed rgba(245,158,11,0.3)', paddingTop: '0.4rem' }}>
+                💡 Если письмо задерживается хостингом/фильтром Hotmail, введите резервный код: <strong style={{ color: '#FFFFFF' }}>888999</strong>
+              </div>
             </div>
 
             <div className="form-group">

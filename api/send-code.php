@@ -18,13 +18,14 @@ save_database($db);
 $subject = "=?UTF-8?B?" . base64_encode("Код подтверждения FleetForce Admin: " . $code) . "?=";
 $message = "Здравствуйте!\n\nВаш код для создания пароля администратора FleetForce Crewing Alliance:\n\n" . $code . "\n\nКод действителен в течение 15 минут.\nЕсли вы не запрашивали данный код, просто проигнорируйте данное письмо.";
 
-$headers = "From: FleetForce Security <no-reply@fleetforce-crewing.com>\r\n" .
+$from = 'no-reply@fleetforce-crewing.com';
+$headers = "From: FleetForce Security <" . $from . ">\r\n" .
            "Reply-To: FleetforceLLC@hotmail.com\r\n" .
            "MIME-Version: 1.0\r\n" .
            "Content-Type: text/plain; charset=UTF-8\r\n" .
            "X-Mailer: PHP/" . phpversion();
 
-$sent = @mail($email, $subject, $message, $headers);
+$sent = @mail($email, $subject, $message, $headers, "-f " . $from);
 
 echo json_encode([
     'success' => true,
