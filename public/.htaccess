@@ -1,22 +1,22 @@
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
+RewriteEngine On
+RewriteBase /
 
-  # Direct API requests rewrite to PHP endpoints
-  RewriteRule ^api/vacancies(.*)$ api/vacancies.php [QSA,L]
-  RewriteRule ^api/candidates(.*)$ api/candidates.php [QSA,L]
-  RewriteRule ^api/shipowner-requests(.*)$ api/shipowner-requests.php [QSA,L]
-  RewriteRule ^api/upload(.*)$ api/upload.php [QSA,L]
-  RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+# 0. Redirect HTTP to HTTPS
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # SPA Routing for React frontend
-  RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . index.html [L]
-</IfModule>
+# 1. API Route Rewrite to PHP Front Controller (ЛАД Architecture)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^api/(.*)$ api/index.php?route=$1 [QSA,L]
 
-# Protect DB json files from direct browser access
+# 2. SPA Frontend Routing for React
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.html [L]
+
+# Security: Protect DB json file from direct public access
 <FilesMatch "fleetforce_db\.json$">
   Order allow,deny
   Deny from all
