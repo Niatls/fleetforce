@@ -47,6 +47,45 @@ function AppContent() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  // Global protection: Prevent text selection and copying site-wide (except inside form inputs)
+  useEffect(() => {
+    const handleCopy = (e) => {
+      const target = e.target;
+      const isInput = target && (
+        target.tagName === 'INPUT' || 
+        target.tagName === 'TEXTAREA' || 
+        target.tagName === 'SELECT' || 
+        target.isContentEditable
+      );
+      if (!isInput) {
+        e.preventDefault();
+      }
+    };
+
+    const handleSelectStart = (e) => {
+      const target = e.target;
+      const isInput = target && (
+        target.tagName === 'INPUT' || 
+        target.tagName === 'TEXTAREA' || 
+        target.tagName === 'SELECT' || 
+        target.isContentEditable
+      );
+      if (!isInput) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('copy', handleCopy);
+    document.addEventListener('cut', handleCopy);
+    document.addEventListener('selectstart', handleSelectStart);
+
+    return () => {
+      document.removeEventListener('copy', handleCopy);
+      document.removeEventListener('cut', handleCopy);
+      document.removeEventListener('selectstart', handleSelectStart);
+    };
+  }, []);
+
   const navigateToAdmin = () => {
     window.location.hash = '#/admin';
     setCurrentPage('admin');
