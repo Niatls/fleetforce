@@ -28,12 +28,13 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        height: '84px'
+        height: '84px',
+        maxWidth: '1280px'
       }}>
         {/* Brand Logo */}
         <div 
           onClick={() => handleNavClick('hero')} 
-          style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer', flexShrink: 0 }}
         >
           <div style={{
             width: '46px',
@@ -63,8 +64,8 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
           </div>
         </div>
 
-        {/* Desktop Navigation Links */}
-        <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '2.8rem' }}>
+        {/* Desktop Navigation Links & Action Controls (Equal Spacing Alignment) */}
+        <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
           <button 
             onClick={() => handleNavClick('vacancies')}
             className={`nav-link ${activeSection === 'vacancies' ? 'active' : ''}`}
@@ -73,16 +74,17 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               border: 'none',
               color: activeSection === 'vacancies' ? 'var(--color-accent)' : 'var(--text-primary)',
               fontWeight: 600,
-              fontSize: '0.95rem',
+              fontSize: '0.92rem',
               cursor: 'pointer',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.5rem',
+              gap: '0.45rem',
+              whiteSpace: 'nowrap',
               transition: 'var(--transition-fast)'
             }}
           >
-            <Briefcase size={17} />
-            {t('nav.vacancies')}
+            <Briefcase size={16} />
+            <span>{t('nav.vacancies')}</span>
           </button>
 
           <button 
@@ -92,16 +94,17 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               border: 'none',
               color: 'var(--color-gold)',
               fontWeight: 600,
-              fontSize: '0.95rem',
+              fontSize: '0.92rem',
               cursor: 'pointer',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.5rem',
+              gap: '0.45rem',
+              whiteSpace: 'nowrap',
               transition: 'var(--transition-fast)'
             }}
           >
-            <FileText size={17} />
-            {t('nav.application')}
+            <FileText size={16} />
+            <span>{t('nav.application')}</span>
           </button>
 
           <button 
@@ -111,15 +114,16 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               border: 'none',
               color: 'var(--text-primary)',
               fontWeight: 600,
-              fontSize: '0.95rem',
+              fontSize: '0.92rem',
               cursor: 'pointer',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.5rem'
+              gap: '0.45rem',
+              whiteSpace: 'nowrap'
             }}
           >
-            <Building2 size={17} />
-            {t('nav.shipowners')}
+            <Building2 size={16} />
+            <span>{t('nav.shipowners')}</span>
           </button>
 
           <button 
@@ -129,42 +133,44 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               border: 'none',
               color: 'var(--text-primary)',
               fontWeight: 600,
-              fontSize: '0.95rem',
+              fontSize: '0.92rem',
               cursor: 'pointer',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.5rem'
+              gap: '0.45rem',
+              whiteSpace: 'nowrap'
             }}
           >
-            <Users size={17} />
-            {t('nav.offices')}
+            <Users size={16} />
+            <span>{t('nav.offices')}</span>
           </button>
-        </nav>
 
-        {/* Action Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
+          {/* Separator line for visual structure */}
+          <div style={{ width: '1px', height: '22px', background: 'var(--border-color)', margin: '0 0.2rem' }} />
+
           {/* Language Switcher */}
           <button 
             onClick={toggleLanguage}
             className="btn btn-secondary btn-sm"
             title="Switch Language (RU / EN)"
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
               gap: '0.45rem',
-              padding: '0.5rem 0.85rem',
-              borderRadius: 'var(--radius-md)'
+              padding: '0.45rem 0.8rem',
+              borderRadius: 'var(--radius-md)',
+              whiteSpace: 'nowrap'
             }}
           >
-            <Globe size={16} color="var(--color-accent)" />
-            <span style={{ fontWeight: 700, fontSize: '0.88rem' }}>{t('nav.langSwitch')}</span>
+            <Globe size={15} color="var(--color-accent)" />
+            <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>{t('nav.langSwitch')}</span>
           </button>
 
           {/* Hotline Button */}
           <a 
             href="tel:+78005553535" 
             className="btn btn-secondary btn-sm hotline-btn"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.5rem 0.9rem' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', padding: '0.45rem 0.85rem', whiteSpace: 'nowrap' }}
           >
             <Phone size={15} color="var(--color-emerald)" />
             <span style={{ fontSize: '0.85rem' }}>{t('nav.hotline')}</span>
@@ -178,28 +184,28 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               onOpenAdmin();
             }}
             className="btn btn-primary btn-sm"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.5rem 1rem', textDecoration: 'none', whiteSpace: 'nowrap' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', padding: '0.45rem 0.95rem', textDecoration: 'none', whiteSpace: 'nowrap' }}
           >
             <Lock size={15} />
             <span>{t('nav.adminLogin')}</span>
           </a>
-
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="mobile-toggle"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{
-              display: 'none',
-              background: 'none',
-              border: 'none',
-              color: '#FFFFFF',
-              cursor: 'pointer',
-              padding: '0.5rem'
-            }}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
+
+        {/* Mobile Menu Toggle */}
+        <button 
+          className="mobile-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={{
+            display: 'none',
+            background: 'none',
+            border: 'none',
+            color: '#FFFFFF',
+            cursor: 'pointer',
+            padding: '0.5rem'
+          }}
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
       {/* Mobile Drawer Navigation */}
@@ -231,8 +237,13 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
       )}
 
       <style>{`
+        @media (max-width: 1120px) {
+          .desktop-nav {
+            gap: 0.8rem !important;
+          }
+        }
         @media (max-width: 992px) {
-          .desktop-nav, .hotline-btn {
+          .desktop-nav {
             display: none !important;
           }
           .mobile-toggle {
