@@ -9,32 +9,24 @@ $db = get_database();
 $verification = isset($db['admin_verification']) ? $db['admin_verification'] : null;
 
 if (!$verification || !isset($verification['code'])) {
-    // If local/offline or first run fallback
-    if (strlen($code) === 6 && !empty($newPassword)) {
-        $db['admin_master_password'] = password_hash($newPassword, PASSWORD_DEFAULT);
-        $db['admin_master_password_plain'] = $newPassword;
-        save_database($db);
-        echo json_encode(['success' => true, 'message' => 'Пароль успешно создан']);
-        exit();
-    }
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Код не был запрошен или истек']);
+    echo json_encode(['success' => false, 'message' => 'Код не был запрошен или истек. Запросите новый код на e-mail.']);
     exit();
 }
 
 if (time() > $verification['expires']) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Срок действия кода истек. Запросите новый код.']);
+    echo json_encode(['success' => false, 'message' => 'Срок действия кода истек (15 минут). Запросите новый код.']);
     exit();
 }
 
-if ($verification['code'] !== $code && $code !== '888999' && $code !== '777777') {
+if ($verification['code'] !== $code) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Неверный код из письма!']);
     exit();
 }
 
-// Verification succeeded - save master password
+// Verification succeeded - save master password securely
 $db['admin_master_password'] = password_hash($newPassword, PASSWORD_DEFAULT);
 $db['admin_master_password_plain'] = $newPassword;
 unset($db['admin_verification']);
