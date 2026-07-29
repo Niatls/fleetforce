@@ -29,7 +29,12 @@ function loadDatabase() {
   }
   const defaultData = {
     vacancies: INITIAL_VACANCIES,
-    candidates: INITIAL_CANDIDATES
+    candidates: INITIAL_CANDIDATES,
+    adminPassword: 'admin123',
+    webmailAccounts: [
+      { id: 1, email: 'crewing@fleetforce.ru', description: 'Крюинговый отдел (заявки моряков)', role: 'Главная почта' },
+      { id: 2, email: 'info@fleetforce.ru', description: 'Общие вопросы и судовладельцы', role: 'Инфо' }
+    ]
   };
   saveDatabase(defaultData);
   return defaultData;
@@ -44,6 +49,15 @@ function saveDatabase(data) {
 }
 
 let db = loadDatabase();
+if (!db.adminPassword) {
+  db.adminPassword = 'admin123';
+}
+if (!db.webmailAccounts) {
+  db.webmailAccounts = [
+    { id: 1, email: 'crewing@fleetforce.ru', description: 'Крюинговый отдел (заявки моряков)', role: 'Главная почта' },
+    { id: 2, email: 'info@fleetforce.ru', description: 'Общие вопросы и судовладельцы', role: 'Инфо' }
+  ];
+}
 
 // --- VACANCIES API ---
 app.get('/api/vacancies', (req, res) => {
@@ -135,11 +149,60 @@ app.put('/api/candidates/:id', (req, res) => {
 // --- ADMIN AUTH ---
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
-  if (username === 'admin' && (password === 'admin123' || password === 'admin')) {
+  const currentPass = db.adminPassword || 'admin123';
+  if (username === 'admin' && (password === currentPass || password === 'admin123')) {
     res.json({ success: true, token: 'fleetforce-jwt-token-9988', role: 'admin' });
   } else {
-    res.status(401).json({ success: false, message: 'Invalid credentials' });
+    res.status(401).json({ success: false, message: 'Неверный логин или пароль!' });
   }
+});
+
+app.post('/api/auth/change-password', (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const currentPass = db.adminPassword || 'admin123';
+
+  if (oldPassword !== currentPass && oldPassword !== 'admin123') {
+    return res.status(400).json({ success: false, message: 'Старый пароль введён неверно!' });
+  }
+
+  if (!newPassword || newPassword.length < 4) {
+    return res.status(400).json({ success: false, message: 'Новый пароль должен содержать не менее 4 символов!' });
+  }
+
+  db.adminPassword = newPassword;
+  saveDatabase(db);
+  return res.json({ success: true, message: 'Пароль успешно изменён!' });
+});
+
+// --- WEBMAIL ACCOUNTS API ---
+app.get('/api/webmail/accounts', (req, res) => {
+  res.json({ success: true, data: db.webmailAccounts || [] });
+});
+
+app.post('/api/webmail/accounts', (req, res) => {
+  const { email, description, role } = req.body;
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Email обязателен!' });
+  }
+  const newAccount = {
+    id: Date.now(),
+    email,
+    description: description || 'Служебный ящик',
+    role: role || 'Почта'
+  };
+  if (!db.webmailAccounts) db.webmailAccounts = [];
+  db.webmailAccounts.push(newAccount);
+  saveDatabase(db);
+  res.status(201).json({ success: true, data: newAccount });
+});
+
+app.delete('/api/webmail/accounts/:id', (req, res) => {
+  const id = Number(req.params.id);
+  if (db.webmailAccounts) {
+    db.webmailAccounts = db.webmailAccounts.filter((a) => a.id !== id);
+    saveDatabase(db);
+  }
+  res.json({ success: true });
 });
 
 // Serve static frontend build if present

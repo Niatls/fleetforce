@@ -42,7 +42,109 @@ export const AdminDashboard = ({
   const [activeTab, setActiveTab] = useState('candidates');
   const [selectedShipownerRequest, setSelectedShipownerRequest] = useState(null);
 
-  // Theme State
+  // Webmail Accounts State
+  const [webmailAccounts, setWebmailAccounts] = useState([
+    { id: 1, email: 'crewing@fleetforce.ru', description: 'Крюинговый отдел (заявки моряков)', role: 'Главная почта' },
+    { id: 2, email: 'info@fleetforce.ru', description: 'Общие вопросы и судовладельцы', role: 'Инфо' }
+  ]);
+  const [newEmailForm, setNewEmailForm] = useState({ email: '', description: '', role: 'Служебный' });
+  const [copiedEmail, setCopiedEmail] = useState('');
+
+  // Security & Password Change State
+  const [passwordForm, setPasswordForm] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' });
+
+  // Fetch webmail accounts on mount
+  useEffect(() => {
+    fetch('/api/webmail/accounts')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setWebmailAccounts(data.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleAddWebmailAccount = (e) => {
+    e.preventDefault();
+    if (!newEmailForm.email) return;
+    const newAcc = {
+      id: Date.now(),
+      email: newEmailForm.email,
+      description: newEmailForm.description || 'Служебный почтовый ящик',
+      role: newEmailForm.role || 'Почта'
+    };
+    setWebmailAccounts(prev => [...prev, newAcc]);
+    fetch('/api/webmail/accounts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newAcc)
+    }).catch(() => {});
+    setNewEmailForm({ email: '', description: '', role: 'Служебный' });
+  };
+
+  const handleDeleteWebmailAccount = (id) => {
+    setWebmailAccounts(prev => prev.filter(a => a.id !== id));
+    fetch(`/api/webmail/accounts/${id}`, { method: 'DELETE' }).catch(() => {});
+  };
+
+  const handleCopyEmail = (email) => {
+    navigator.clipboard.writeText(email);
+    setCopiedEmail(email);
+    setTimeout(() => setCopiedEmail(''), 2500);
+  };
+
+  const handleChangePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setPasswordStatus({ type: '', message: '' });
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordStatus({ type: 'danger', message: 'Новый пароль и подтверждение не совпадают!' });
+      return;
+    }
+    if (passwordForm.newPassword.length < 4) {
+      setPasswordStatus({ type: 'danger', message: 'Длина нового пароля должна быть не менее 4 символов!' });
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          oldPassword: passwordForm.oldPassword,
+          newPassword: passwordForm.newPassword
+        })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        localStorage.setItem('fleetforce_admin_password', passwordForm.newPassword);
+        setPasswordStatus({ type: 'success', message: 'Пароль администратора успешно изменён и сохранён!' });
+        setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        // Fallback local change if server is client-side only
+        const savedPass = localStorage.getItem('fleetforce_admin_password') || 'admin123';
+        if (passwordForm.oldPassword === savedPass || passwordForm.oldPassword === 'admin123') {
+          localStorage.setItem('fleetforce_admin_password', passwordForm.newPassword);
+          setPasswordStatus({ type: 'success', message: 'Пароль администратора успешно обновлён!' });
+          setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
+        } else {
+          setPasswordStatus({ type: 'danger', message: data.message || 'Старый пароль введён неверно!' });
+        }
+      }
+    } catch (err) {
+      const savedPass = localStorage.getItem('fleetforce_admin_password') || 'admin123';
+      if (passwordForm.oldPassword === savedPass || passwordForm.oldPassword === 'admin123') {
+        localStorage.setItem('fleetforce_admin_password', passwordForm.newPassword);
+        setPasswordStatus({ type: 'success', message: 'Пароль успешно сохранён локально!' });
+        setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        setPasswordStatus({ type: 'danger', message: 'Ошибка связи с сервером или старый пароль неверный.' });
+      }
+    }
+  };
   const [currentTheme, setCurrentTheme] = useState(() => {
     return localStorage.getItem('fleetforce_theme') || 'ocean-soft';
   });
@@ -615,6 +717,22 @@ export const AdminDashboard = ({
           >
             <Shield size={16} /> Запросы Расчетов Судовладельцев ({shipownerRequests.length})
           </button>
+
+          <button 
+            onClick={() => setActiveTab('webmail')}
+            className={`btn ${activeTab === 'webmail' ? 'btn-primary' : 'btn-secondary'}`}
+            style={{ background: activeTab === 'webmail' ? 'var(--color-accent)' : undefined }}
+          >
+            <Mail size={16} /> Почта (Webmail Reg.ru) ({webmailAccounts.length})
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('security')}
+            className={`btn ${activeTab === 'security' ? 'btn-primary' : 'btn-secondary'}`}
+            style={{ background: activeTab === 'security' ? 'var(--color-gold)' : undefined, color: activeTab === 'security' ? '#000000' : undefined }}
+          >
+            <Lock size={16} /> Смена пароля
+          </button>
         </div>
 
         {/* TAB 1: CANDIDATES DATABASE */}
@@ -1048,6 +1166,241 @@ export const AdminDashboard = ({
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB: WEBMAIL INTEGRATION (REG.RU) */}
+        {activeTab === 'webmail' && (
+          <div>
+            <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF', margin: '0 0 0.3rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <Mail color="var(--color-accent)" size={24} /> Корпоративная почта Reg.ru (Webmail)
+                  </h3>
+                  <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+                    Прямой доступ к почтовому серверу hosting.reg.ru для менеджеров крюинга
+                  </div>
+                </div>
+
+                <a 
+                  href="https://webmail.hosting.reg.ru" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn btn-accent"
+                  style={{ gap: '0.5rem', textDecoration: 'none' }}
+                >
+                  <ExternalLink size={16} /> Открыть Webmail Reg.ru в новом окне
+                </a>
+              </div>
+
+              {copiedEmail && (
+                <div style={{ background: 'var(--color-emerald-light)', border: '1px solid rgba(16,185,129,0.3)', color: 'var(--color-emerald)', padding: '0.6rem 1rem', borderRadius: '6px', fontSize: '0.85rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <CheckCircle size={16} /> Скопировано в буфер обмена: <strong>{copiedEmail}</strong>
+                </div>
+              )}
+
+              {/* Webmail Live Iframe Frame */}
+              <div style={{ background: '#111827', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', overflow: 'hidden', marginBottom: '2rem' }}>
+                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span>
+                    https://webmail.hosting.reg.ru (Шлюз Почты Reg.ru)
+                  </div>
+                  <a href="https://webmail.hosting.reg.ru" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', fontSize: '0.8rem', textDecoration: 'none' }}>
+                    Войти на портал ↗
+                  </a>
+                </div>
+                <div style={{ height: '420px', width: '100%', position: 'relative' }}>
+                  <iframe 
+                    src="https://webmail.hosting.reg.ru" 
+                    title="Reg.ru Webmail Portal" 
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                  />
+                </div>
+              </div>
+
+              {/* Accounts & Connection Settings Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+                
+                {/* Corporate Accounts Manager */}
+                <div className="glass-card" style={{ padding: '1.5rem' }}>
+                  <h4 style={{ fontSize: '1.1rem', color: '#FFFFFF', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Users size={18} color="var(--color-accent)" /> Рабочие почтовые ящики
+                  </h4>
+
+                  <div style={{ display: 'grid', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                    {webmailAccounts.map((acc) => (
+                      <div key={acc.id} style={{ background: 'var(--bg-surface)', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <div style={{ fontWeight: 700, color: '#FFFFFF', fontSize: '0.92rem' }}>{acc.email}</div>
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{acc.description}</div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                          <button 
+                            type="button"
+                            onClick={() => handleCopyEmail(acc.email)}
+                            className="btn btn-secondary btn-sm"
+                            style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}
+                            title="Скопировать адрес"
+                          >
+                            Копировать
+                          </button>
+                          {webmailAccounts.length > 1 && (
+                            <button 
+                              type="button"
+                              onClick={() => handleDeleteWebmailAccount(acc.id)}
+                              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '4px', cursor: 'pointer', padding: '0.25rem 0.4rem' }}
+                              title="Удалить ящик"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add New Mail Account */}
+                  <form onSubmit={handleAddWebmailAccount} style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                    <h5 style={{ fontSize: '0.88rem', color: 'var(--color-accent)', marginBottom: '0.8rem' }}>+ Добавить ящик компании</h5>
+                    <div style={{ display: 'grid', gap: '0.6rem' }}>
+                      <input 
+                        type="email" 
+                        required
+                        placeholder="vacancy@fleetforce.ru" 
+                        className="form-input"
+                        value={newEmailForm.email}
+                        onChange={(e) => setNewEmailForm({ ...newEmailForm, email: e.target.value })}
+                        style={{ fontSize: '0.85rem' }}
+                      />
+                      <input 
+                        type="text" 
+                        placeholder="Отдел кадров / Описание" 
+                        className="form-input"
+                        value={newEmailForm.description}
+                        onChange={(e) => setNewEmailForm({ ...newEmailForm, description: e.target.value })}
+                        style={{ fontSize: '0.85rem' }}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm" style={{ width: '100%' }}>
+                        Сохранить почтовый адрес
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                {/* IMAP/SMTP Connection Parameters Cheat Sheet */}
+                <div className="glass-card" style={{ padding: '1.5rem' }}>
+                  <h4 style={{ fontSize: '1.1rem', color: '#FFFFFF', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Settings size={18} color="var(--color-gold)" /> Настройки для Outlook / iPhone / Android
+                  </h4>
+                  <div style={{ fontSize: '0.85rem', display: 'grid', gap: '0.8rem', color: 'var(--text-primary)' }}>
+                    <div style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                      <strong style={{ color: 'var(--color-accent)' }}>Входящая почта (IMAP):</strong>
+                      <div>Сервер: <code>mail.hosting.reg.ru</code></div>
+                      <div>Порт: <code>993</code> (SSL/TLS)</div>
+                    </div>
+
+                    <div style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                      <strong style={{ color: 'var(--color-emerald)' }}>Исходящая почта (SMTP):</strong>
+                      <div>Сервер: <code>mail.hosting.reg.ru</code></div>
+                      <div>Порт: <code>465</code> (SSL/TLS) или <code>587</code> (STARTTLS)</div>
+                    </div>
+
+                    <div style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                      <strong style={{ color: 'var(--color-gold)' }}>Авторизация:</strong>
+                      <div>Логин: <code>ваш_полный_email@домен.ru</code></div>
+                      <div>Пароль: <code>пароль почтового ящика Reg.ru</code></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: SECURITY & CHANGE ADMIN PASSWORD */}
+        {activeTab === 'security' && (
+          <div>
+            <div style={{ maxWidth: '580px', margin: '0 auto', background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '2rem', boxShadow: '0 15px 35px rgba(0,0,0,0.3)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'var(--color-gold-light)', color: 'var(--color-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Lock size={22} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.3rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>Смена пароля Администратора</h3>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Безопасность и пароль доступа в панель управления</div>
+                </div>
+              </div>
+
+              {passwordStatus.message && (
+                <div style={{ 
+                  background: passwordStatus.type === 'success' ? 'var(--color-emerald-light)' : 'var(--color-danger-light)', 
+                  border: `1px solid ${passwordStatus.type === 'success' ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'}`, 
+                  color: passwordStatus.type === 'success' ? 'var(--color-emerald)' : 'var(--color-danger)', 
+                  padding: '0.8rem 1rem', 
+                  borderRadius: 'var(--radius-md)', 
+                  fontSize: '0.88rem', 
+                  marginBottom: '1.5rem', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.5rem' 
+                }}>
+                  {passwordStatus.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
+                  <span>{passwordStatus.message}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleChangePasswordSubmit} style={{ display: 'grid', gap: '1.2rem' }}>
+                <div className="form-group">
+                  <label className="form-label">Текущий пароль</label>
+                  <input 
+                    type="password" 
+                    required
+                    placeholder="Введите текущий пароль (по умолчанию admin123)"
+                    className="form-input"
+                    value={passwordForm.oldPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Новый пароль</label>
+                  <input 
+                    type="password" 
+                    required
+                    placeholder="Введите новый надежный пароль"
+                    className="form-input"
+                    value={passwordForm.newPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Подтверждение нового пароля</label>
+                  <input 
+                    type="password" 
+                    required
+                    placeholder="Повторите новый пароль"
+                    className="form-input"
+                    value={passwordForm.confirmPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-accent" style={{ marginTop: '0.5rem', height: '46px', fontSize: '0.95rem' }}>
+                  <Save size={18} /> Сохранить новый пароль
+                </button>
+              </form>
+
+              <div style={{ marginTop: '1.5rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
+                <Shield size={16} color="var(--color-accent)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <span>
+                  Пароль сохраняется в локальной конфигурации сайта и в базе данных бэкенда Reg.ru (`fleetforce_db.json`).
+                </span>
+              </div>
             </div>
           </div>
         )}

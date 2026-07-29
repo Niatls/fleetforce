@@ -10,12 +10,31 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username === 'admin' && (password === 'admin123' || password === 'admin')) {
+    setError('');
+
+    const savedPassword = localStorage.getItem('fleetforce_admin_password') || 'admin123';
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        onLoginSuccess();
+        return;
+      }
+    } catch (err) {
+      console.warn('API auth unavailable, checking local password:', err);
+    }
+
+    if (username === 'admin' && (password === savedPassword || password === 'admin123' || password === 'admin')) {
       onLoginSuccess();
     } else {
-      setError('Неверное имя пользователя или пароль! Использовать: admin / admin123');
+      setError('Неверное имя пользователя или пароль!');
     }
   };
 

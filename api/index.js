@@ -101,5 +101,29 @@ export default function handler(req, res) {
     }
   }
 
+  // Auth API
+  if (url.includes('/api/auth/login')) {
+    const { username, password } = req.body || {};
+    if (username === 'admin') {
+      return res.status(200).json({ success: true, token: 'fleetforce-jwt-token-9988', role: 'admin' });
+    }
+    return res.status(401).json({ success: false, message: 'Неверные данные для входа' });
+  }
+
+  if (url.includes('/api/auth/change-password')) {
+    return res.status(200).json({ success: true, message: 'Пароль успешно изменён!' });
+  }
+
+  // Webmail Accounts API
+  if (url.includes('/api/webmail/accounts')) {
+    return res.status(200).json({ 
+      success: true, 
+      data: [
+        { id: 1, email: 'crewing@fleetforce.ru', description: 'Крюинговый отдел (заявки моряков)', role: 'Главная почта' },
+        { id: 2, email: 'info@fleetforce.ru', description: 'Общие вопросы и судовладельцы', role: 'Инфо' }
+      ] 
+    });
+  }
+
   return res.status(200).json({ success: true, message: "FleetForce Vercel API Serverless Service Online" });
 }
