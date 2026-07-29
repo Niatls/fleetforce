@@ -848,59 +848,83 @@ export const AdminDashboard = ({
         {/* TAB 3: OFFICES MANAGER */}
         {activeTab === 'offices' && (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Управление Сетью Филиалов и Контактов</h3>
-              <button onClick={handleOpenAddOffice} className="btn btn-accent">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>Управление Сетью Филиалов и Контактов</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '0.2rem 0 0' }}>Настройка карточек офисов, контактов и их видимости на сайте</p>
+              </div>
+              <button onClick={handleOpenAddOffice} className="btn btn-accent" style={{ gap: '0.5rem' }}>
                 <Plus size={18} /> Добавить Филиал
               </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '1.25rem' }}>
               {offices.map((off) => (
-                <div key={off.id} className="glass-card" style={{ padding: '1.5rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-                    <span className="badge badge-blue">{off.flag}</span>
-                    <div style={{ display: 'flex', gap: '0.4rem' }}>
-                      <button 
-                        type="button"
-                        onClick={() => onToggleOfficeActive && onToggleOfficeActive(off.id)}
-                        title={off.active === false ? "Показать филиал на сайте" : "Скрыть филиал с сайта"}
-                        style={{ 
-                          background: off.active === false ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)', 
-                          border: `1px solid ${off.active === false ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, 
-                          color: off.active === false ? 'var(--color-danger)' : 'var(--color-emerald)', 
-                          borderRadius: '6px', 
-                          cursor: 'pointer', 
-                          padding: '0.3rem 0.5rem', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '0.2rem' 
-                        }}
-                      >
-                        {off.active === false ? <EyeOff size={14} /> : <Eye size={14} />}
-                        <span style={{ fontSize: '0.75rem' }}>{off.active === false ? 'Скрыт' : 'Виден'}</span>
-                      </button>
-                      <button 
-                        onClick={() => handleOpenEditOffice(off)}
-                        style={{ background: 'rgba(0,139,255,0.1)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
-                      >
-                        <Edit size={14} /> <span style={{ fontSize: '0.75rem' }}>Изм.</span>
-                      </button>
-                      <button 
-                        onClick={() => onDeleteOffice && onDeleteOffice(off.id)}
-                        style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem' }}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                <div key={off.id} className="glass-card" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-surface-elevated)' }}>
+                  <div>
+                    {/* Top Row Header */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                      <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.75rem', padding: '0.35rem 0.65rem', textTransform: 'none', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {off.flag}
+                      </span>
+                      
+                      <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0 }}>
+                        <button 
+                          type="button"
+                          onClick={() => onToggleOfficeActive && onToggleOfficeActive(off.id)}
+                          title={off.active === false ? "Показать филиал на сайте" : "Скрыть филиал с сайта"}
+                          style={{ 
+                            background: off.active === false ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)', 
+                            border: `1px solid ${off.active === false ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, 
+                            color: off.active === false ? 'var(--color-danger)' : 'var(--color-emerald)', 
+                            borderRadius: '6px', 
+                            cursor: 'pointer', 
+                            padding: '0.35rem 0.55rem', 
+                            display: 'inline-flex', 
+                            alignItems: 'center', 
+                            gap: '0.25rem',
+                            fontSize: '0.78rem',
+                            fontWeight: 600
+                          }}
+                        >
+                          {off.active === false ? <EyeOff size={14} /> : <Eye size={14} />}
+                          <span>{off.active === false ? 'Скрыт' : 'Виден'}</span>
+                        </button>
+                        <button 
+                          onClick={() => handleOpenEditOffice(off)}
+                          title="Редактировать филиал"
+                          style={{ background: 'rgba(0,139,255,0.12)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem 0.55rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.78rem' }}
+                        >
+                          <Edit size={14} /> <span>Изм.</span>
+                        </button>
+                        <button 
+                          onClick={() => onDeleteOffice && onDeleteOffice(off.id)}
+                          title="Удалить филиал"
+                          style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem 0.45rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
 
-                  <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', marginBottom: '0.6rem' }}>{off.city}</h4>
-                  
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.4rem' }}>
-                    <div>📍 {off.address}</div>
-                    {off.phone && <div>📞 <strong>{off.phone}</strong></div>}
-                    <div>✉️ {off.email}</div>
+                    <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', marginBottom: '0.8rem', fontWeight: 700 }}>{off.city}</h4>
+                    
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.5rem', lineHeight: 1.45 }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                        <span style={{ color: 'var(--color-accent)', flexShrink: 0 }}>📍</span>
+                        <span>{off.address}</span>
+                      </div>
+                      {off.phone && (
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                          <span style={{ color: 'var(--color-emerald)', flexShrink: 0 }}>📞</span>
+                          <strong style={{ color: '#FFFFFF' }}>{off.phone}</strong>
+                        </div>
+                      )}
+                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        <span style={{ color: 'var(--text-muted)', flexShrink: 0 }}>✉️</span>
+                        <span style={{ wordBreak: 'break-all' }}>{off.email}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -911,20 +935,25 @@ export const AdminDashboard = ({
         {/* TAB 4: HUB BLOCKS MANAGER */}
         {activeTab === 'hub' && (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Управление Блоками Морякам и Документами</h3>
-              <button onClick={handleOpenAddHub} className="btn btn-accent">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>Управление Блоками Морякам и Документами</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '0.2rem 0 0' }}>Настройка сервисных блоков, скачиваемых бланков и тестов</p>
+              </div>
+              <button onClick={handleOpenAddHub} className="btn btn-accent" style={{ gap: '0.5rem' }}>
                 <Plus size={18} /> Добавить Инфо-Блок
               </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '1.25rem' }}>
               {hubBlocks.map((block) => (
-                <div key={block.id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div key={block.id} className="glass-card" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-surface-elevated)' }}>
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.8rem' }}>
-                      <span className="badge badge-gold">{block.actionType ? block.actionType.toUpperCase() : 'BLOCK'}</span>
-                      <div style={{ display: 'flex', gap: '0.4rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                      <span className="badge badge-gold" style={{ borderRadius: '6px', fontSize: '0.75rem', padding: '0.35rem 0.65rem', textTransform: 'none' }}>
+                        {block.actionType ? block.actionType.toUpperCase() : 'BLOCK'}
+                      </span>
+                      <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0 }}>
                         <button 
                           type="button"
                           onClick={() => onToggleHubBlockActive && onToggleHubBlockActive(block.id)}
@@ -935,32 +964,36 @@ export const AdminDashboard = ({
                             color: block.active === false ? 'var(--color-danger)' : 'var(--color-emerald)', 
                             borderRadius: '6px', 
                             cursor: 'pointer', 
-                            padding: '0.3rem 0.5rem', 
-                            display: 'flex', 
+                            padding: '0.35rem 0.55rem', 
+                            display: 'inline-flex', 
                             alignItems: 'center', 
-                            gap: '0.2rem' 
+                            gap: '0.25rem',
+                            fontSize: '0.78rem',
+                            fontWeight: 600 
                           }}
                         >
                           {block.active === false ? <EyeOff size={14} /> : <Eye size={14} />}
-                          <span style={{ fontSize: '0.75rem' }}>{block.active === false ? 'Скрыт' : 'Виден'}</span>
+                          <span>{block.active === false ? 'Скрыт' : 'Виден'}</span>
                         </button>
                         <button 
                           onClick={() => handleOpenEditHub(block)}
-                          style={{ background: 'rgba(0,139,255,0.1)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                          title="Редактировать инфо-блок"
+                          style={{ background: 'rgba(0,139,255,0.12)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem 0.55rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.78rem' }}
                         >
-                          <Edit size={14} /> <span style={{ fontSize: '0.75rem' }}>Изм.</span>
+                          <Edit size={14} /> <span>Изм.</span>
                         </button>
                         <button 
                           onClick={() => onDeleteHubBlock && onDeleteHubBlock(block.id)}
-                          style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.3rem' }}
+                          title="Удалить инфо-блок"
+                          style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem 0.45rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                         >
                           <Trash2 size={14} />
                         </button>
                       </div>
                     </div>
 
-                    <h4 style={{ fontSize: '1.2rem', color: '#FFFFFF', marginBottom: '0.5rem' }}>{block.title}</h4>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{block.description}</p>
+                    <h4 style={{ fontSize: '1.2rem', color: '#FFFFFF', marginBottom: '0.5rem', fontWeight: 700 }}>{block.title}</h4>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: 1.45 }}>{block.description}</p>
                   </div>
 
                   <div style={{ fontSize: '0.8rem', color: 'var(--color-accent)', borderTop: '1px solid var(--border-color)', paddingTop: '0.6rem' }}>
