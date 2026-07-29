@@ -178,7 +178,7 @@ export const translations = {
       saveNotesBtn: "Сохранить заметки",
 
       // Vacancy Manager
-      addVacancyBtn: "+ Создать Вакансию",
+      addVacancyBtn: "Создать Вакансию",
       vacTitle: "Название вакансии",
       vacRank: "Должность",
       vacVesselType: "Тип судна",
