@@ -862,11 +862,16 @@ export const AdminDashboard = ({
               {offices.map((off) => (
                 <div key={off.id} className="glass-card" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-surface-elevated)' }}>
                   <div>
-                    {/* Top Row Header */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                      <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.75rem', padding: '0.35rem 0.65rem', textTransform: 'none', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {/* Row 1: Full-width Badge */}
+                    <div style={{ marginBottom: '0.6rem' }}>
+                      <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
                         {off.flag}
                       </span>
+                    </div>
+
+                    {/* Row 2: Title & Action Controls */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>
+                      <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>{off.city}</h4>
                       
                       <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0 }}>
                         <button 
@@ -906,8 +911,6 @@ export const AdminDashboard = ({
                         </button>
                       </div>
                     </div>
-
-                    <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', marginBottom: '0.8rem', fontWeight: 700 }}>{off.city}</h4>
                     
                     <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.5rem', lineHeight: 1.45 }}>
                       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
@@ -949,10 +952,16 @@ export const AdminDashboard = ({
               {hubBlocks.map((block) => (
                 <div key={block.id} className="glass-card" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-surface-elevated)' }}>
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                      <span className="badge badge-gold" style={{ borderRadius: '6px', fontSize: '0.75rem', padding: '0.35rem 0.65rem', textTransform: 'none' }}>
+                    {/* Row 1: Full-width Action Type Badge */}
+                    <div style={{ marginBottom: '0.6rem' }}>
+                      <span className="badge badge-gold" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', display: 'inline-block', maxWidth: '100%' }}>
                         {block.actionType ? block.actionType.toUpperCase() : 'BLOCK'}
                       </span>
+                    </div>
+
+                    {/* Row 2: Title & Action Controls */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.8rem' }}>
+                      <h4 style={{ fontSize: '1.2rem', color: '#FFFFFF', margin: 0, fontWeight: 700, flex: 1 }}>{block.title}</h4>
                       <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0 }}>
                         <button 
                           type="button"
@@ -992,7 +1001,6 @@ export const AdminDashboard = ({
                       </div>
                     </div>
 
-                    <h4 style={{ fontSize: '1.2rem', color: '#FFFFFF', marginBottom: '0.5rem', fontWeight: 700 }}>{block.title}</h4>
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: 1.45 }}>{block.description}</p>
                   </div>
 
@@ -1101,11 +1109,16 @@ export const AdminDashboard = ({
               {vacancies.map((vac) => (
                 <div key={vac.id} className="glass-card" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-surface-elevated)' }}>
                   <div>
-                    {/* Header Row: Badge & Controls */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>
-                      <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.75rem', padding: '0.35rem 0.65rem', textTransform: 'none', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {/* Row 1: Full-width Vessel Badge */}
+                    <div style={{ marginBottom: '0.6rem' }}>
+                      <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
                         {getVesselLabel(vac.vesselType, lang)}
                       </span>
+                    </div>
+
+                    {/* Row 2: Title & Action Controls */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.8rem' }}>
+                      <h4 style={{ fontSize: '1.25rem', color: '#FFFFFF', margin: 0, fontWeight: 700, flex: 1 }}>{vac.title}</h4>
 
                       <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0 }}>
                         <button 
