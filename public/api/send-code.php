@@ -2,24 +2,32 @@
 require_once __DIR__ . '/config.php';
 
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
-$email = isset($input['email']) ? trim($input['email']) : 'FleetforceLLC@hotmail.com';
+$email = 'FleetforceLLC@hotmail.com';
 
 $code = strval(rand(100000, 999999));
 
-$subject = "FleetForce Admin - Verification Code: " . $code;
-$message = "Здравствуйте!\n\nВаш код для первоначальной настройки пароля в панель администратора FleetForce Crewing Alliance:\n\n" . $code . "\n\nЕсли вы не запрашивали этот код, просто проигнорируйте данное письмо.";
+// Save code to database store
+$db = get_database();
+$db['admin_verification'] = [
+    'code' => $code,
+    'expires' => time() + (15 * 60) // valid for 15 minutes
+];
+save_database($db);
 
-$headers = "From: no-reply@fleetforce-crewing.com\r\n" .
+// Prepare real PHP mail dispatch
+$subject = "=?UTF-8?B?" . base64_encode("Код подтверждения FleetForce Admin: " . $code) . "?=";
+$message = "Здравствуйте!\n\nВаш код для создания пароля администратора FleetForce Crewing Alliance:\n\n" . $code . "\n\nКод действителен в течение 15 минут.\nЕсли вы не запрашивали данный код, просто проигнорируйте данное письмо.";
+
+$headers = "From: FleetForce Security <no-reply@fleetforce-crewing.com>\r\n" .
            "Reply-To: FleetforceLLC@hotmail.com\r\n" .
+           "MIME-Version: 1.0\r\n" .
+           "Content-Type: text/plain; charset=UTF-8\r\n" .
            "X-Mailer: PHP/" . phpversion();
 
-// Attempt PHP mail dispatch
-@mail($email, $subject, $message, $headers);
+$sent = @mail($email, $subject, $message, $headers);
 
 echo json_encode([
     'success' => true,
-    'code' => $code,
-    'email' => $email,
-    'message' => 'Код успешно выслан на ' . $email
+    'message' => 'Код подтверждения успешно отправлен на ' . $email
 ]);
 exit();

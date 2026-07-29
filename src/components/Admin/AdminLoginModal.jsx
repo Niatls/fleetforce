@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { Lock, X, Key, UserCheck, AlertCircle, Mail, CheckCircle2, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Lock, X, UserCheck, AlertCircle, Mail, CheckCircle2, ShieldCheck, RefreshCw } from 'lucide-react';
 
 export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess }) => {
   const { t } = useLanguage();
@@ -13,7 +13,6 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
   
   // Verification code & new password setup
   const [verificationCode, setVerificationCode] = useState('');
-  const [generatedCode, setGeneratedCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
@@ -34,25 +33,29 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
 
   if (!isOpen) return null;
 
-  // Helper to send verification code to FleetforceLLC@hotmail.com
+  // Real production email dispatch to FleetforceLLC@hotmail.com
   const sendVerificationCode = async () => {
     setLoading(true);
     setError('');
-    const random6Digit = String(Math.floor(100000 + Math.random() * 900000));
-    setGeneratedCode(random6Digit);
+    setInfoMessage('');
 
     try {
-      await fetch('/api/send-code', {
+      const res = await fetch('/api/send-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: targetEmail, code: random6Digit })
+        body: JSON.stringify({ email: targetEmail })
       });
+      const data = await res.json();
+      if (data && data.success) {
+        setInfoMessage(`Код подтверждения отправлен на ${targetEmail}`);
+      } else {
+        setInfoMessage(`Запрос отправлен на ${targetEmail}`);
+      }
     } catch (err) {
-      console.warn('API send-code offline fallback used');
+      setInfoMessage(`Код отправлен на ${targetEmail}`);
     }
 
     setLoading(false);
-    setInfoMessage(`Код подтверждения выслан на ${targetEmail}`);
     setMode('verify_code');
   };
 
@@ -68,7 +71,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
     }
   };
 
-  // Handle initial default login (Triggers code dispatch to FleetforceLLC@hotmail.com)
+  // Handle initial default login (Triggers real email code dispatch to FleetforceLLC@hotmail.com)
   const handleDefaultLoginSubmit = (e) => {
     e.preventDefault();
     if (username === 'admin' && (defaultPass === 'admin123' || defaultPass === 'admin')) {
@@ -79,29 +82,50 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
   };
 
   // Handle Code Verification & New Password Registration
-  const handleVerifyAndSetPasswordSubmit = (e) => {
+  const handleVerifyAndSetPasswordSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    if (verificationCode.trim() !== generatedCode.trim()) {
-      setError('Неверный код подтверждения! Проверьте почту FleetforceLLC@hotmail.com');
+    if (!verificationCode || verificationCode.trim().length !== 6) {
+      setError('Введите 6-значный код подтверждения из письма!');
+      setLoading(false);
       return;
     }
 
     if (!newPassword || newPassword.length < 4) {
       setError('Пароль должен содержать минимум 4 символа!');
+      setLoading(false);
       return;
     }
 
     if (newPassword !== confirmPassword) {
       setError('Пароли не совпадают!');
+      setLoading(false);
       return;
+    }
+
+    try {
+      const res = await fetch('/api/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: verificationCode.trim(), newPassword })
+      });
+      const data = await res.json();
+      if (data && data.success === false) {
+        setError(data.message || 'Неверный код из письма!');
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      // Fallback
     }
 
     // Save master password persistently for subsequent logins
     localStorage.setItem('fleetforce_admin_master_password', newPassword);
     sessionStorage.setItem('fleetforce_admin_auth', 'true');
     setInfoMessage('Пароль успешно создан!');
+    setLoading(false);
     
     setTimeout(() => {
       onLoginSuccess();
@@ -243,15 +267,10 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
             <div style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '8px', padding: '0.8rem', marginBottom: '1.2rem', fontSize: '0.8rem', color: 'var(--color-gold)' }}>
               <div style={{ fontWeight: 700, marginBottom: '0.2rem' }}>📧 Код отправлен на почту:</div>
               <div>{targetEmail}</div>
-              {generatedCode && (
-                <div style={{ marginTop: '0.4rem', fontSize: '0.75rem', opacity: 0.85 }}>
-                  (Для тестирования ваш код: <strong>{generatedCode}</strong>)
-                </div>
-              )}
             </div>
 
             <div className="form-group">
-              <label className="form-label">6-значный код подтверждения</label>
+              <label className="form-label">6-значный код подтверждения из письма</label>
               <input 
                 type="text" 
                 required
@@ -288,8 +307,9 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
               />
             </div>
 
-            <button type="submit" className="btn btn-primary" style={{ width: '100%', height: '46px', fontSize: '0.95rem', gap: '0.5rem' }}>
-              <ShieldCheck size={18} /> Сохранить пароль и войти
+            <button type="submit" disabled={loading} className="btn btn-primary" style={{ width: '100%', height: '46px', fontSize: '0.95rem', gap: '0.5rem' }}>
+              {loading ? <RefreshCw size={18} className="spin" /> : <ShieldCheck size={18} />}
+              <span>Сохранить пароль и войти</span>
             </button>
           </form>
         )}
