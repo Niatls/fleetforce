@@ -27,7 +27,7 @@ function AppContent() {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardParams, setWizardParams] = useState({ rank: '', vesselType: '' });
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    return localStorage.getItem('fleetforce_admin_auth') === 'true';
+    return sessionStorage.getItem('fleetforce_admin_auth') === 'true';
   });
 
   // Standalone Page View: 'main' or 'admin'
