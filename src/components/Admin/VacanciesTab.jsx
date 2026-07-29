@@ -28,18 +28,20 @@ export const VacanciesTab = ({
         {vacancies.map((vac) => (
           <div key={vac.id} className="glass-card" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-surface-elevated)', height: '100%' }}>
             <div>
-              {/* Row 1: Full-width Vessel Badge */}
-              <div style={{ marginBottom: '0.6rem' }}>
-                <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
-                  {getVesselLabel(vac.vesselType, lang)}
-                </span>
-              </div>
+              {/* Row 1: Badges & Action Controls Header (Сначала идут плашки) */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3 }}>
+                    {getVesselLabel(vac.vesselType, lang)}
+                  </span>
+                  {vac.urgent && (
+                    <span className="badge badge-danger" style={{ borderRadius: '6px', fontSize: '0.75rem', padding: '0.3rem 0.5rem' }}>
+                      HOT
+                    </span>
+                  )}
+                </div>
 
-              {/* Row 2: Title & Action Controls */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.8rem' }}>
-                <h4 style={{ fontSize: '1.25rem', color: '#FFFFFF', margin: 0, fontWeight: 700, flex: 1 }}>{vac.title}</h4>
-
-                <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0 }}>
+                <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0, alignItems: 'center' }}>
                   <button 
                     type="button"
                     onClick={() => onToggleVacancyActive && onToggleVacancyActive(vac.id)}
@@ -77,6 +79,11 @@ export const VacanciesTab = ({
                   </button>
                 </div>
               </div>
+
+              {/* Row 2: Vacancy Title (Потом идет текст) */}
+              <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', margin: '0 0 0.6rem 0', fontWeight: 700, wordBreak: 'break-word' }}>
+                {vac.title}
+              </h4>
 
               <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-emerald)', marginBottom: '0.8rem' }}>
                 {vac.salary} / мес

@@ -24,18 +24,13 @@ export const OfficesTab = ({
         {offices.map((off) => (
           <div key={off.id} className="glass-card" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-surface-elevated)', height: '100%' }}>
             <div>
-              {/* Row 1: Full-width Badge */}
-              <div style={{ marginBottom: '0.6rem' }}>
-                <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
+              {/* Row 1: All Badges & Action Controls (Сначала идут плашки) */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
+                <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3 }}>
                   {off.flag}
                 </span>
-              </div>
-
-              {/* Row 2: Title & Action Controls */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem' }}>
-                <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>{off.city}</h4>
                 
-                <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0 }}>
+                <div style={{ display: 'flex', gap: '0.35rem', flexShrink: 0, alignItems: 'center' }}>
                   <button 
                     type="button"
                     onClick={() => onToggleOfficeActive && onToggleOfficeActive(off.id)}
@@ -73,6 +68,11 @@ export const OfficesTab = ({
                   </button>
                 </div>
               </div>
+
+              {/* Row 2: Title / City (Потом идет текст) */}
+              <h4 style={{ fontSize: '1.35rem', color: '#FFFFFF', margin: '0 0 0.8rem 0', fontWeight: 700, wordBreak: 'break-word' }}>
+                {off.city}
+              </h4>
               
               <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.5rem', lineHeight: 1.45 }}>
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
