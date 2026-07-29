@@ -41,7 +41,7 @@ export const VacanciesTab = ({
 
               {/* Row 2: Vessel Badge & Action Controls Header */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
-                <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3 }}>
+                <span className="badge badge-blue" style={{ flex: 1, textAlign: 'center', justifyContent: 'center', borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3, display: 'inline-flex', alignItems: 'center', wordBreak: 'break-word', whiteSpace: 'normal' }}>
                   {getVesselLabel(vac.vesselType, lang)}
                 </span>
 

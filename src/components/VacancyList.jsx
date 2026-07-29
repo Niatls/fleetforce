@@ -164,9 +164,9 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
                     )}
                   </div>
 
-                  {/* Line 2: Vessel Type Badge */}
+                  {/* Line 2: Vessel Type Badge (Full Width) */}
                   <div style={{ marginBottom: '0.8rem' }}>
-                    <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3, display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                    <span className="badge badge-blue" style={{ width: '100%', justifyContent: 'center', borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3, display: 'inline-flex', alignItems: 'center', textAlign: 'center', wordBreak: 'break-word', whiteSpace: 'normal' }}>
                       {getVesselLabel(vac.vesselType, lang)}
                     </span>
                   </div>
