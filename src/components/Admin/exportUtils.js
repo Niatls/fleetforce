@@ -1,6 +1,5 @@
 // Utility functions for exporting candidate dossiers to CSV, Word (.doc) and ZIP archives
-import JSZip from 'jszip';
-import { jsPDF } from 'jspdf';
+// JSZip and jsPDF are loaded via CDN in index.html and accessed as window globals
 
 export const handleExportCSV = (candidates = []) => {
   let csv = 'ID,Full Name,Rank,Status,Email,Phone,Marlins,Ready Date\n';
@@ -180,9 +179,11 @@ const dataUrlToUint8Array = (dataUrl) => {
   return array;
 };
 
-// Generate PDF blob from candidate data using jsPDF
+// Generate PDF blob from candidate data using jsPDF (accesses window.jspdf)
 const generatePdfBlob = (cand) => {
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const jsPDFClass = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFClass) { console.warn('jsPDF not loaded'); return null; }
+  const doc = new jsPDFClass({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.getWidth();
   const margin = 16;
   const colW = pageW - margin * 2;
@@ -333,6 +334,10 @@ export const handleDownloadAllFiles = async (cand) => {
   const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '').trim();
   const folderName = `FleetForce_${cleanName}_${cand.id}`;
 
+  // Load ZIP from CDN global (window.JSZip)
+  const JSZip = window.JSZip;
+  if (!JSZip) { alert('JSZip library not loaded. Check internet connection.'); return; }
+
   const zip = new JSZip();
   const folder = zip.folder(folderName);
 
@@ -343,7 +348,9 @@ export const handleDownloadAllFiles = async (cand) => {
 
   // 2. Add PDF questionnaire
   const pdfArrayBuffer = generatePdfBlob(cand);
-  folder.file(`Анкета_${cleanName}_${cand.id}.pdf`, pdfArrayBuffer);
+  if (pdfArrayBuffer) {
+    folder.file(`Анкета_${cleanName}_${cand.id}.pdf`, pdfArrayBuffer);
+  }
 
   // 3. Add attached files (from base64 dataUrls)
   const files = cand.attachedFiles || [];
