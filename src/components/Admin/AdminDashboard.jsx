@@ -1180,8 +1180,8 @@ export const AdminDashboard = ({
 
         {/* CANDIDATE DOSSIER MODAL */}
         {selectedCandidate && (
-          <div className="modal-overlay" onClick={() => setSelectedCandidate(null)}>
-            <div className="modal-content printable-cv" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '850px', padding: '2.5rem' }}>
+          <div className="modal-overlay">
+            <div className="modal-content printable-cv" style={{ maxWidth: '850px', padding: '2.5rem' }}>
               
               {/* Screen Modal Actions */}
               <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
@@ -1352,8 +1352,8 @@ export const AdminDashboard = ({
 
         {/* SHIPOWNER REQUEST DETAILS MODAL */}
         {selectedShipownerRequest && (
-          <div className="modal-overlay" onClick={() => setSelectedShipownerRequest(null)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '680px', padding: '2rem' }}>
+          <div className="modal-overlay">
+            <div className="modal-content" style={{ maxWidth: '680px', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.8rem' }}>
                 <div>
                   <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Заявка Судовладельца {selectedShipownerRequest.id}</h3>
@@ -1397,8 +1397,8 @@ export const AdminDashboard = ({
 
         {/* CREATE / EDIT VACANCY MODAL */}
         {showVacancyModal && (
-          <div className="modal-overlay" onClick={() => setShowVacancyModal(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '620px', padding: '2rem' }}>
+          <div className="modal-overlay">
+            <div className="modal-content" style={{ maxWidth: '620px', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
                 <h3 style={{ fontSize: '1.5rem', color: '#FFFFFF' }}>
                   {editingVacancyId ? 'Редактировать Вакансию' : t('admin.addVacancyBtn')}
@@ -1534,8 +1534,8 @@ export const AdminDashboard = ({
 
         {/* CREATE / EDIT OFFICE MODAL */}
         {showOfficeModal && (
-          <div className="modal-overlay" onClick={() => setShowOfficeModal(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', padding: '2rem' }}>
+          <div className="modal-overlay">
+            <div className="modal-content" style={{ maxWidth: '600px', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
                 <h3 style={{ fontSize: '1.5rem', color: '#FFFFFF' }}>
                   {editingOfficeId ? 'Редактировать Филиал' : 'Добавить Новый Филиал'}
@@ -1623,8 +1623,8 @@ export const AdminDashboard = ({
 
         {/* CREATE / EDIT HUB BLOCK MODAL */}
         {showHubModal && (
-          <div className="modal-overlay" onClick={() => setShowHubModal(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '620px', padding: '2rem' }}>
+          <div className="modal-overlay">
+            <div className="modal-content" style={{ maxWidth: '620px', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
                 <h3 style={{ fontSize: '1.5rem', color: '#FFFFFF' }}>
                   {editingHubId ? 'Редактировать Инфо-Блок' : 'Добавить Новый Инфо-Блок'}
@@ -1773,7 +1773,7 @@ export const AdminDashboard = ({
         )}
         {/* DOCUMENT PREVIEW MODAL */}
         {previewFile && (
-          <div className="modal-overlay" onClick={() => setPreviewFile(null)} style={{ zIndex: 1000 }}>
+          <div className="modal-overlay" style={{ zIndex: 1000 }}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '850px', width: '92%', padding: '1.8rem', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.8rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', overflow: 'hidden' }}>
