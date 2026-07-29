@@ -66,6 +66,9 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
 
         {/* Desktop Navigation Links & Action Controls (Equal Spacing Alignment) */}
         <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          {/* Vertical Separator between Logo and Navigation */}
+          <div style={{ width: '1px', height: '24px', background: 'var(--border-color)', margin: '0 0.2rem' }} />
+
           <button 
             onClick={() => handleNavClick('vacancies')}
             className={`nav-link ${activeSection === 'vacancies' ? 'active' : ''}`}
