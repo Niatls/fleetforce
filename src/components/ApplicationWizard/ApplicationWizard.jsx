@@ -159,6 +159,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       marlinsScore: `${formData.marlinsScore}%`,
       englishLevel: formData.englishLevel,
       seaService: formData.seaService,
+      attachedFiles: formData.attachedFiles || [],
       submittedAt: new Date().toISOString()
     };
 

@@ -38,8 +38,7 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS }) =>
       color: colorStr === 'gold' ? 'var(--color-gold)' : colorStr === 'emerald' ? 'var(--color-emerald)' : colorStr === 'danger' ? 'var(--color-danger)' : 'var(--color-accent)',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: '1.2rem'
+      justifyContent: 'center'
     };
 
     if (type === 'Download') return <div style={style}><Download size={26} /></div>;
@@ -59,12 +58,20 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS }) =>
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '1.25rem', alignItems: 'stretch' }}>
           {blocksList.map((block) => (
-            <div key={block.id} className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div key={block.id} className="glass-card" style={{ padding: '1.8rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
               <div>
-                {getIcon(block.iconType, block.color)}
-                <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem' }}>{block.title}</h3>
+                {/* Row 1: Badges Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <span className={`badge badge-${block.color || 'blue'}`} style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}>
+                    {block.actionType ? block.actionType.toUpperCase() : 'INFO'}
+                  </span>
+                  {getIcon(block.iconType, block.color)}
+                </div>
+
+                {/* Row 2: Title */}
+                <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem', color: '#FFFFFF' }}>{block.title}</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
                   {block.description}
                 </p>

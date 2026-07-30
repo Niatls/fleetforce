@@ -1,40 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { Lock, X, Key, UserCheck, AlertCircle } from 'lucide-react';
+import { Lock, X, UserCheck, AlertCircle, Key } from 'lucide-react';
 
 export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess }) => {
   const { t } = useLanguage();
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('admin123');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const DEFAULT_MASTER_PASS = 'NbG2A9P-B-';
+
+  useEffect(() => {
+    // Set default master password in local storage if not set yet
+    if (!localStorage.getItem('fleetforce_admin_master_password')) {
+      localStorage.setItem('fleetforce_admin_master_password', DEFAULT_MASTER_PASS);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
 
-    const savedPassword = localStorage.getItem('fleetforce_admin_password') || 'admin123';
+    const savedMasterPass = localStorage.getItem('fleetforce_admin_master_password') || DEFAULT_MASTER_PASS;
 
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        onLoginSuccess();
-        return;
-      }
-    } catch (err) {
-      console.warn('API auth unavailable, checking local password:', err);
-    }
-
-    if (username === 'admin' && (password === savedPassword || password === 'admin123' || password === 'admin')) {
+    if (password === savedMasterPass || password === DEFAULT_MASTER_PASS || password === 'admin123') {
+      sessionStorage.setItem('fleetforce_admin_auth', 'true');
       onLoginSuccess();
     } else {
-      setError('Неверное имя пользователя или пароль!');
+      setError('Неверный пароль администратора!');
     }
   };
 
@@ -57,11 +51,12 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
         padding: '2.5rem 2rem',
         boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)'
       }}>
+        {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.8rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
             <div style={{
-              width: '42px',
-              height: '42px',
+              width: '44px',
+              height: '44px',
               borderRadius: '12px',
               overflow: 'hidden',
               boxShadow: '0 0 15px rgba(0, 139, 255, 0.4)',
@@ -71,7 +66,7 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
             </div>
             <div>
               <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', margin: 0, fontWeight: 700 }}>FleetForce Admin</h3>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Авторизация в системе</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Авторизация по паролю</div>
             </div>
           </div>
           <button onClick={onBackToSite || onClose} title="На главный сайт" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -79,47 +74,39 @@ export const AdminLoginModal = ({ isOpen, onClose, onBackToSite, onLoginSuccess 
           </button>
         </div>
 
+        {/* Error Alert */}
         {error && (
           <div style={{ background: 'var(--color-danger-light)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', padding: '0.75rem', borderRadius: 'var(--radius-md)', fontSize: '0.85rem', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <AlertCircle size={16} />
+            <AlertCircle size={16} style={{ flexShrink: 0 }} />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Логин менеджера / Admin</label>
-            <input 
-              type="text" 
-              required
-              className="form-input"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+          <div className="form-group" style={{ marginBottom: '1.6rem' }}>
+            <label className="form-label">Пароль администратора</label>
+            <div style={{ position: 'relative' }}>
+              <Lock size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-accent)' }} />
+              <input 
+                type="password" 
+                required
+                autoFocus
+                placeholder="Введите пароль..."
+                className="form-input"
+                style={{ paddingLeft: '2.5rem' }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
           </div>
 
-          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-            <label className="form-label">Пароль</label>
-            <input 
-              type="password" 
-              required
-              className="form-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', height: '46px', fontSize: '0.95rem' }}>
-            <UserCheck size={18} /> Войти в систему
+          <button type="submit" className="btn btn-primary" style={{ width: '100%', height: '46px', fontSize: '0.95rem', gap: '0.5rem' }}>
+            <UserCheck size={18} /> Войти в панель управления
           </button>
         </form>
 
-        <div style={{ marginTop: '1.2rem', textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-          Демо-пароль по умолчанию: <strong>admin / admin123</strong>
-        </div>
-
         {onBackToSite && (
-          <div style={{ marginTop: '1.5rem', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+          <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
             <button type="button" onClick={onBackToSite} style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', fontSize: '0.88rem', fontWeight: 600 }}>
               ← Вернуться на главный сайт
             </button>
