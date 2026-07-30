@@ -179,8 +179,41 @@ const dataUrlToUint8Array = (dataUrl) => {
   return array;
 };
 
+// Cache for loaded cyrillic font base64 data
+let _cyrillicFontCache = null;
+
+// Load PT Serif (Times New Roman-style, full Cyrillic support) and register in jsPDF
+const loadCyrillicFont = async (doc) => {
+  // PT Serif Regular TTF from jsDelivr CDN (open source, Google Fonts)
+  const TTF_URL = 'https://cdn.jsdelivr.net/npm/@fontsource/pt-serif@5.0.8/files/pt-serif-latin-ext-400-normal.woff2';
+  const TTF_URL_CYRILLIC = 'https://fonts.gstatic.com/s/ptserif/v18/EJRVQgYoZZY2vCFuvAFT9gaQVy7VocNB6Iph.woff2';
+
+  try {
+    if (!_cyrillicFontCache) {
+      // Fetch the TTF version that includes Cyrillic glyphs
+      const TTF_DIRECT = 'https://fonts.gstatic.com/s/ptserif/v18/EJRQQgYoZZY2vCFuvAFWzr-_dSb_.woff2';
+      const resp = await fetch(TTF_DIRECT);
+      if (!resp.ok) throw new Error('Font fetch failed: ' + resp.status);
+      const buf = await resp.arrayBuffer();
+      // Convert ArrayBuffer to base64
+      const bytes = new Uint8Array(buf);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      _cyrillicFontCache = btoa(binary);
+    }
+    doc.addFileToVFS('PTSerif-Regular.woff2', _cyrillicFontCache);
+    doc.addFont('PTSerif-Regular.woff2', 'PTSerif', 'normal');
+    doc.addFileToVFS('PTSerif-Bold.woff2', _cyrillicFontCache);
+    doc.addFont('PTSerif-Bold.woff2', 'PTSerif', 'bold');
+    return true;
+  } catch (e) {
+    console.warn('Could not load PT Serif font, falling back to helvetica:', e);
+    return false;
+  }
+};
+
 // Generate PDF blob from candidate data using jsPDF (accesses window.jspdf)
-const generatePdfBlob = (cand) => {
+const generatePdfBlob = async (cand) => {
   const jsPDFClass = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
   if (!jsPDFClass) { console.warn('jsPDF not loaded'); return null; }
   const doc = new jsPDFClass({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -188,6 +221,10 @@ const generatePdfBlob = (cand) => {
   const margin = 16;
   const colW = pageW - margin * 2;
   let y = 18;
+
+  // Try to load Cyrillic-capable font (PT Serif — Times New Roman style)
+  const cyrillicLoaded = await loadCyrillicFont(doc);
+  const mainFont = cyrillicLoaded ? 'PTSerif' : 'helvetica';
 
   const addText = (text, x, curY, opts = {}) => {
     doc.text(String(text ?? ''), x, curY, opts);
@@ -202,13 +239,13 @@ const generatePdfBlob = (cand) => {
 
   // Header
   doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont(mainFont, 'bold');
   doc.setTextColor(0, 51, 102);
   addText('FLEETFORCE CREWING ALLIANCE', margin, y);
   y += 7;
 
   doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
+  doc.setFont(mainFont, 'normal');
   doc.setTextColor(100, 100, 100);
   addText(`SEAFARER APPLICATION DOSSIER  |  REF: ${cand.id}  |  Date: ${new Date().toLocaleDateString()}`, margin, y);
   y += 5;
@@ -218,11 +255,11 @@ const generatePdfBlob = (cand) => {
   doc.line(margin, y, pageW - margin, y);
   y += 7;
 
-  // Section helper (Latin only - Helvetica font does not support Cyrillic)
+  // Section helper
   const section = (title) => {
     checkPage(12);
     doc.setFontSize(11);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont(mainFont, 'bold');
     doc.setTextColor(0, 51, 102);
     addText(title, margin, y);
     y += 2;
@@ -231,57 +268,41 @@ const generatePdfBlob = (cand) => {
     y += 5;
   };
 
-  // Transliterate Cyrillic to Latin so jsPDF renders it correctly
-  const tl = (str) => {
-    if (!str) return '-';
-    const map = {
-      '\u0430':'a','\u0431':'b','\u0432':'v','\u0433':'g','\u0434':'d','\u0435':'e','\u0451':'yo','\u0436':'zh',
-      '\u0437':'z','\u0438':'i','\u0439':'y','\u043a':'k','\u043b':'l','\u043c':'m','\u043d':'n','\u043e':'o',
-      '\u043f':'p','\u0440':'r','\u0441':'s','\u0442':'t','\u0443':'u','\u0444':'f','\u0445':'kh','\u0446':'ts',
-      '\u0447':'ch','\u0448':'sh','\u0449':'sch','\u044a':'','\u044b':'y','\u044c':'','\u044d':'e','\u044e':'yu','\u044f':'ya',
-      '\u0410':'A','\u0411':'B','\u0412':'V','\u0413':'G','\u0414':'D','\u0415':'E','\u0401':'Yo','\u0416':'Zh',
-      '\u0417':'Z','\u0418':'I','\u0419':'Y','\u041a':'K','\u041b':'L','\u041c':'M','\u041d':'N','\u041e':'O',
-      '\u041f':'P','\u0420':'R','\u0421':'S','\u0422':'T','\u0423':'U','\u0424':'F','\u0425':'Kh','\u0426':'Ts',
-      '\u0427':'Ch','\u0428':'Sh','\u0429':'Sch','\u042a':'','\u042b':'Y','\u042c':'','\u042d':'E','\u042e':'Yu','\u042f':'Ya'
-    };
-    return String(str).split('').map(c => map[c] !== undefined ? map[c] : c).join('');
-  };
-
   const field = (label, value) => {
     checkPage(7);
     doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont(mainFont, 'bold');
     doc.setTextColor(60, 60, 60);
     addText(label + ':', margin, y);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont(mainFont, 'normal');
     doc.setTextColor(30, 30, 30);
-    const safeVal = tl(value);
+    const safeVal = String(value ?? '-');
     const lines = doc.splitTextToSize(safeVal, colW - 55);
     addText(lines, margin + 55, y);
     y += Math.max(6, lines.length * 5);
   };
 
   // 1. Personal
-  section('1. PERSONAL DETAILS');
+  section('1. ЛИЧНЫЕ ДАННЫЕ / PERSONAL DETAILS');
   field('Full Name', cand.fullName);
-  field('Date of Birth', cand.dob);
-  field('Phone', cand.phone);
+  field('Дата рождения', cand.dob);
+  field('Телефон', cand.phone);
   field('Email', cand.email);
-  field('Citizenship', cand.citizenship);
-  field('Passport / Seaman Book', cand.passportNo || 'Included in Attached Docs');
+  field('Гражданство', cand.citizenship);
+  field('Паспорт / Мор. книжка', cand.passportNo || 'Включено в прикреплённые документы');
   y += 2;
 
   // 2. Application
-  section('2. APPLICATION DETAILS');
+  section('2. ДАННЫЕ ВАКАНСИИ / APPLICATION DETAILS');
   field('Applied Rank', cand.appliedRank);
-  field('Availability Date', cand.readyDate);
-  field('Min Desired Salary', `$${cand.minSalary || 0} / month`);
+  field('Дата готовности', cand.readyDate);
+  field('Мин. зарплата', `$${cand.minSalary || 0} / месяц`);
   field('Marlins Score', `${cand.marlinsScore || 'N/A'} (${cand.englishLevel || 'Good'})`);
   y += 2;
 
   // 3. Sea Service
-  section('3. SEA EXPERIENCE RECORD MATRIX');
-  const seaHeaders = ['Vessel', 'Type', 'DWT/Engine', 'Rank', 'Manning Co.', 'Period'];
+  section('3. ОПЫТ РАБОТЫ В МОРЕ / SEA EXPERIENCE');
+  const seaHeaders = ['Судно', 'Тип', 'DWT/Engine', 'Должность', 'Manning Co.', 'Период'];
   const seaColW = [32, 24, 24, 22, 30, 32];
   const tableX = margin;
 
@@ -290,7 +311,7 @@ const generatePdfBlob = (cand) => {
   doc.setFillColor(220, 230, 242);
   doc.rect(tableX, y - 4, colW, 7, 'F');
   doc.setFontSize(8);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont(mainFont, 'bold');
   doc.setTextColor(0, 51, 102);
   let hx = tableX + 1;
   seaHeaders.forEach((h, i) => { addText(h, hx, y); hx += seaColW[i]; });
@@ -298,10 +319,10 @@ const generatePdfBlob = (cand) => {
 
   const seaService = cand.seaService || [];
   if (seaService.length === 0) {
-    doc.setFont('helvetica', 'italic');
+    doc.setFont(mainFont, 'normal');
     doc.setTextColor(120, 120, 120);
     doc.setFontSize(8);
-    addText('No sea experience recorded', margin, y);
+    addText('Опыт работы в море не указан', margin, y);
     y += 6;
   } else {
     seaService.forEach((s, idx) => {
@@ -310,11 +331,18 @@ const generatePdfBlob = (cand) => {
         doc.setFillColor(245, 247, 250);
         doc.rect(tableX, y - 4, colW, 7, 'F');
       }
-      doc.setFont('helvetica', 'normal');
+      doc.setFont(mainFont, 'normal');
       doc.setTextColor(30, 30, 30);
       doc.setFontSize(8);
       const period = `${s.dateFrom || '-'} - ${s.dateTo || '-'}`;
-      const row = [tl(s.vesselName), tl(s.vesselType), `${s.dwtGrt || '-'}/${s.engineBhp || '-'}`, tl(s.rankHeld), tl(s.manningCompany), period];
+      const row = [
+        String(s.vesselName || '-'),
+        String(s.vesselType || '-'),
+        `${s.dwtGrt || '-'}/${s.engineBhp || '-'}`,
+        String(s.rankHeld || '-'),
+        String(s.manningCompany || '-'),
+        period
+      ];
       let rx = tableX + 1;
       row.forEach((val, i) => { addText(String(val ?? '-').substring(0, 20), rx, y); rx += seaColW[i]; });
       y += 6;
@@ -324,11 +352,11 @@ const generatePdfBlob = (cand) => {
 
   // 4. Notes
   if (cand.notes) {
-    section('4. RECRUITER & MANAGER NOTES');
+    section('4. ЗАМЕТКИ РЕКРУТЕРА / RECRUITER NOTES');
     doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont(mainFont, 'normal');
     doc.setTextColor(60, 60, 60);
-    const noteLines = doc.splitTextToSize(tl(cand.notes), colW);
+    const noteLines = doc.splitTextToSize(String(cand.notes), colW);
     checkPage(noteLines.length * 5 + 4);
     addText(noteLines, margin, y);
     y += noteLines.length * 5 + 4;
@@ -338,7 +366,7 @@ const generatePdfBlob = (cand) => {
   checkPage(10);
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
-  doc.setFont('helvetica', 'italic');
+  doc.setFont(mainFont, 'normal');
   doc.line(margin, y, pageW - margin, y);
   y += 5;
   addText('Generated by FleetForce Crewing Platform  |  ISO 9001 & MLC 2006 Certified System', margin, y, { maxWidth: colW });
@@ -364,8 +392,8 @@ export const handleDownloadAllFiles = async (cand) => {
   const docArrayBuffer = await docBlob.arrayBuffer();
   folder.file(`Анкета_${cleanName}_${cand.id}.doc`, docArrayBuffer);
 
-  // 2. Add PDF questionnaire
-  const pdfArrayBuffer = generatePdfBlob(cand);
+  // 2. Add PDF questionnaire (async — font loading)
+  const pdfArrayBuffer = await generatePdfBlob(cand);
   if (pdfArrayBuffer) {
     folder.file(`Анкета_${cleanName}_${cand.id}.pdf`, pdfArrayBuffer);
   }
