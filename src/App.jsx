@@ -152,8 +152,18 @@ function AppContent() {
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
-  // Try fetching from Backend API (Vercel Serverless / Node Express) if online
+  // Try fetching from Backend API — localStorage always wins (API store resets on server restart)
   useEffect(() => {
+    // Helper: merge API data into local state, but LOCAL records always take priority
+    // Only truly new IDs from API (not in localStorage) get added.
+    const mergeApiIntoLocal = (apiItems, setFn, keyField = 'id') => {
+      setFn((prev) => {
+        const localIds = new Set(prev.map((item) => String(item[keyField])));
+        const newFromApi = apiItems.filter((item) => !localIds.has(String(item[keyField])));
+        return newFromApi.length > 0 ? [...prev, ...newFromApi] : prev;
+      });
+    };
+
     fetch('/api/vacancies')
       .then((res) => {
         if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
@@ -161,12 +171,7 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          setVacancies((prev) => {
-            const map = new Map();
-            data.data.forEach((v) => map.set(v.id, v));
-            prev.forEach((v) => map.set(v.id, v));
-            return Array.from(map.values());
-          });
+          mergeApiIntoLocal(data.data, setVacancies);
         }
       })
       .catch(() => {});
@@ -178,12 +183,7 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          setCandidates((prev) => {
-            const map = new Map();
-            data.data.forEach((c) => map.set(c.id, c));
-            prev.forEach((c) => map.set(c.id, c));
-            return Array.from(map.values());
-          });
+          mergeApiIntoLocal(data.data, setCandidates);
         }
       })
       .catch(() => {});
@@ -195,12 +195,7 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          setShipownerRequests((prev) => {
-            const map = new Map();
-            data.data.forEach((r) => map.set(r.id, r));
-            prev.forEach((r) => map.set(r.id, r));
-            return Array.from(map.values());
-          });
+          mergeApiIntoLocal(data.data, setShipownerRequests);
         }
       })
       .catch(() => {});
