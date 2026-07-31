@@ -276,15 +276,26 @@ export const AdminDashboard = ({
 
         {/* Global Action Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          {onOpenSiteEditor && (
-            <button 
-              onClick={onOpenSiteEditor} 
-              className="btn btn-accent btn-md" 
-              style={{ gap: '0.5rem', fontWeight: 700, boxShadow: '0 0 15px rgba(0,139,255,0.4)' }}
-            >
-              <Edit3 size={17} /> 🎨 Визуальный редактор сайта
-            </button>
-          )}
+          <button 
+            onClick={() => {
+              if (onOpenSiteEditor) {
+                onOpenSiteEditor();
+              } else {
+                alert('Редактор открывается...');
+              }
+            }} 
+            className="btn btn-accent btn-md" 
+            style={{ 
+              gap: '0.5rem', 
+              fontWeight: 700, 
+              background: 'linear-gradient(135deg, #008BFF 0%, #0056B3 100%)',
+              color: '#FFFFFF',
+              boxShadow: '0 0 15px rgba(0,139,255,0.4)',
+              border: '1px solid rgba(255,255,255,0.2)'
+            }}
+          >
+            <Edit3 size={17} /> 🎨 Визуальный редактор сайта
+          </button>
 
           {/* Theme Selector */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.2)', padding: '0.3rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
@@ -313,6 +324,45 @@ export const AdminDashboard = ({
 
       {/* Main Container */}
       <main style={{ flex: 1, padding: '2rem', maxWidth: '1440px', width: '100%', margin: '0 auto' }}>
+
+        {/* Visual Editor Quick Launcher Banner */}
+        <div 
+          onClick={() => onOpenSiteEditor && onOpenSiteEditor()}
+          className="glass-card" 
+          style={{ 
+            padding: '1.2rem 1.6rem', 
+            marginBottom: '1.8rem', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            background: 'linear-gradient(135deg, rgba(0,139,255,0.2) 0%, rgba(245,158,11,0.15) 100%)', 
+            border: '1px solid var(--color-accent)', 
+            borderRadius: 'var(--radius-md)',
+            cursor: 'pointer',
+            boxShadow: '0 8px 25px rgba(0,139,255,0.25)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+              <Edit3 size={24} />
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>
+                🎨 Визуальный редактор главной страницы (Live Draft Editor)
+              </h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0 0' }}>
+                Редактируйте тексты, карточки и блоки прямо на копии сайта с безопасным сохранением и кнопкой «Опубликовать».
+              </p>
+            </div>
+          </div>
+          <button 
+            className="btn btn-accent btn-md"
+            style={{ fontWeight: 700, gap: '0.5rem', flexShrink: 0 }}
+          >
+            <span>Открыть редактор сайта</span>
+            <Layout size={16} />
+          </button>
+        </div>
 
         {/* Section Visibility Toggles Header Bar */}
         <div className="glass-card" style={{ padding: '1rem 1.4rem', marginBottom: '1.8rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)' }}>
