@@ -5,11 +5,13 @@ import {
   AlertCircle, Sparkles, Layout, Settings, Edit3, Layers, Anchor
 } from 'lucide-react';
 
+import { Navbar } from '../Navbar';
 import { Hero } from '../Hero';
 import { VacancyList } from '../VacancyList';
 import { SeafarerHub } from '../SeafarerHub';
 import { ShipownerServices } from '../ShipownerServices';
 import { OfficesAndContacts } from '../OfficesAndContacts';
+import { Footer } from '../Footer';
 
 import { EditOverlay } from './EditOverlay';
 import { InlineText } from './InlineText';
@@ -306,10 +308,16 @@ export const SiteEditor = ({
           <span>Вы находитесь в режиме редактирования черновика. Нажимайте на текст для изменения, используйте кнопки ✏️ и 🗑️ на карточках. Готовые правки опубликуйте кнопкой сверху.</span>
         </div>
       )}
-
-      {/* Main Page Render with Draft State */}
       <div className={previewMode ? 'preview-active' : 'editor-active'}>
         
+        {/* TOP NAVBAR (Full Page Copy) */}
+        <Navbar 
+          onOpenWizard={() => {}} 
+          onOpenAdmin={() => {}} 
+          activeSection="hero" 
+          setActiveSection={() => {}} 
+        />
+
         {/* 1. HERO SECTION */}
         {draftSectionVisibility.hero !== false && (
           <section style={{ position: 'relative' }}>
@@ -508,6 +516,9 @@ export const SiteEditor = ({
             />
           </section>
         )}
+
+        {/* FOOTER (Full Page Copy) */}
+        <Footer onOpenAdmin={() => {}} />
 
       </div>
 
