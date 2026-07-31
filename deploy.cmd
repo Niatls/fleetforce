@@ -18,23 +18,11 @@ if errorlevel 1 (
 echo Build OK.
 echo.
 
-:: --- 2. Update ZIP archive ---
-echo [2/4] Updating fleetforce.zip...
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-    "Add-Type -Assembly 'System.IO.Compression.FileSystem'; ^
-     Add-Type -Assembly 'System.IO.Compression'; ^
-     $zip = [System.IO.Compression.ZipFile]::Open('%~dp0fleetforce.zip', 'Update'); ^
-     $updates = @{ 'assets\index.js' = '%~dp0dist\assets\index.js'; 'index.html' = '%~dp0dist\index.html' }; ^
-     foreach ($e in $updates.Keys) { ^
-         $old = $zip.Entries | Where-Object { $_.FullName -eq $e }; ^
-         if ($old) { $old.Delete() }; ^
-         [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $updates[$e], $e, 'Optimal') | Out-Null; ^
-         Write-Host 'Updated: ' $e ^
-     }; ^
-     $zip.Dispose(); ^
-     Write-Host 'ZIP updated.'"
+:: --- 2. Rebuild ZIP archive from scratch ---
+echo [2/4] Rebuilding fleetforce.zip...
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0rebuild_zip.ps1"
 if errorlevel 1 (
-    echo ZIP UPDATE FAILED. Aborting.
+    echo ZIP REBUILD FAILED. Aborting.
     pause
     exit /b 1
 )
