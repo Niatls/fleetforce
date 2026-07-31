@@ -26,7 +26,9 @@ export const SiteEditor = ({
   liveHubBlocks = [],
   liveStats = [],
   liveSectionVisibility = {},
-  liveShipownerRequests = []
+  liveShipownerRequests = [],
+  liveHeroTitle = '',
+  liveHeroSubtitle = ''
 }) => {
   const { lang, t } = useLanguage();
 
@@ -38,12 +40,8 @@ export const SiteEditor = ({
   const [draftSectionVisibility, setDraftSectionVisibility] = useState({});
 
   // Hero custom text state (persisted in draft/local)
-  const [draftHeroTitle, setDraftHeroTitle] = useState(() => {
-    return localStorage.getItem('fleetforce_draft_hero_title') || 'КРЮИНГОВЫЙ АЛЬЯНС И ПРЯМОЙ ТРУДОУСТРОИТЕЛЬ МОРЯКОВ';
-  });
-  const [draftHeroSubtitle, setDraftHeroSubtitle] = useState(() => {
-    return localStorage.getItem('fleetforce_draft_hero_subtitle') || 'Официальное трудоустройство на танкерный, контейнерный, балкерный и офшорный флот ведущих судовладельцев мира.';
-  });
+  const [draftHeroTitle, setDraftHeroTitle] = useState(liveHeroTitle || 'Трудоустройство моряков на мировой торговый флот');
+  const [draftHeroSubtitle, setDraftHeroSubtitle] = useState(liveHeroSubtitle || 'Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.');
 
   const [previewMode, setPreviewMode] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -66,9 +64,11 @@ export const SiteEditor = ({
       setDraftHubBlocks(JSON.parse(JSON.stringify(liveHubBlocks)));
       setDraftStats(JSON.parse(JSON.stringify(liveStats)));
       setDraftSectionVisibility(JSON.parse(JSON.stringify(liveSectionVisibility)));
+      setDraftHeroTitle(liveHeroTitle || 'Трудоустройство моряков на мировой торговый флот');
+      setDraftHeroSubtitle(liveHeroSubtitle || 'Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.');
       setHasChanges(false);
     }
-  }, [isOpen, liveVacancies, liveOffices, liveHubBlocks, liveStats, liveSectionVisibility]);
+  }, [isOpen, liveVacancies, liveOffices, liveHubBlocks, liveStats, liveSectionVisibility, liveHeroTitle, liveHeroSubtitle]);
 
   // Track if changes exist compared to live
   const markChanged = () => setHasChanges(true);
@@ -83,21 +83,22 @@ export const SiteEditor = ({
       setDraftHubBlocks(JSON.parse(JSON.stringify(liveHubBlocks)));
       setDraftStats(JSON.parse(JSON.stringify(liveStats)));
       setDraftSectionVisibility(JSON.parse(JSON.stringify(liveSectionVisibility)));
+      setDraftHeroTitle(liveHeroTitle || 'Трудоустройство моряков на мировой торговый флот');
+      setDraftHeroSubtitle(liveHeroSubtitle || 'Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.');
       setHasChanges(false);
     }
   };
 
   // Publish Draft -> Live
   const handlePublishAll = () => {
-    localStorage.setItem('fleetforce_draft_hero_title', draftHeroTitle);
-    localStorage.setItem('fleetforce_draft_hero_subtitle', draftHeroSubtitle);
-
     onPublish({
       vacancies: draftVacancies,
       offices: draftOffices,
       hubBlocks: draftHubBlocks,
       stats: draftStats,
-      sectionVisibility: draftSectionVisibility
+      sectionVisibility: draftSectionVisibility,
+      heroTitle: draftHeroTitle,
+      heroSubtitle: draftHeroSubtitle
     });
 
     setHasChanges(false);

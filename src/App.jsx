@@ -145,9 +145,25 @@ function AppContent() {
     };
   });
 
+  const [heroTitle, setHeroTitle] = useState(() => {
+    return localStorage.getItem('fleetforce_hero_title') || '';
+  });
+
+  const [heroSubtitle, setHeroSubtitle] = useState(() => {
+    return localStorage.getItem('fleetforce_hero_subtitle') || '';
+  });
+
   useEffect(() => {
     localStorage.setItem('fleetforce_section_visibility', JSON.stringify(sectionVisibility));
   }, [sectionVisibility]);
+
+  useEffect(() => {
+    if (heroTitle) localStorage.setItem('fleetforce_hero_title', heroTitle);
+  }, [heroTitle]);
+
+  useEffect(() => {
+    if (heroSubtitle) localStorage.setItem('fleetforce_hero_subtitle', heroSubtitle);
+  }, [heroSubtitle]);
 
   // Load saved theme on startup
   useEffect(() => {
@@ -413,6 +429,8 @@ function AppContent() {
     if (publishedData.hubBlocks) setHubBlocks(publishedData.hubBlocks);
     if (publishedData.stats) setStats(publishedData.stats);
     if (publishedData.sectionVisibility) setSectionVisibility(publishedData.sectionVisibility);
+    if (publishedData.heroTitle !== undefined) setHeroTitle(publishedData.heroTitle);
+    if (publishedData.heroSubtitle !== undefined) setHeroSubtitle(publishedData.heroSubtitle);
   };
 
   // Standalone Admin Page View
@@ -443,6 +461,8 @@ function AppContent() {
           liveStats={stats}
           liveSectionVisibility={sectionVisibility}
           liveShipownerRequests={shipownerRequests}
+          liveHeroTitle={heroTitle}
+          liveHeroSubtitle={heroSubtitle}
         />
       );
     }
@@ -501,6 +521,8 @@ function AppContent() {
           onSearch={(filters) => setSearchFilter(filters)}
           onOpenWizard={() => handleOpenWizard('')}
           stats={stats}
+          customTitle={heroTitle || undefined}
+          customSubtitle={heroSubtitle || undefined}
         />
       )}
 
