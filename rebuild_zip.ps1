@@ -3,12 +3,13 @@ Add-Type -Assembly 'System.IO.Compression.FileSystem'
 $zipPath  = 'c:\Users\User\Documents\fleetforce\fleetforce.zip'
 $baseDir  = 'c:\Users\User\Documents\fleetforce'
 $distDir  = 'c:\Users\User\Documents\fleetforce\dist'
+$prefix   = 'fleetforce/'   # Корневая папка внутри архива
 
-# Файлы которые берём из dist (перезаписываем в архиве)
+# Файлы из dist (свежий билд)
 $distFiles = @('index.html', 'assets\index.js')
 
-# Полный список файлов архива (те что НЕ из dist — берём с их исходного места)
-$staticFiles = @{
+# Статические файлы: ключ = путь внутри ZIP (без prefix), значение = путь на диске
+$staticFiles = [ordered]@{
     '.htaccess'                    = "$baseDir\.htaccess"
     'Crew_Application_Form.pdf'    = "$baseDir\Crew_Application_Form.pdf"
     'favicon.png'                  = "$baseDir\public\favicon.png"
@@ -33,28 +34,31 @@ if (Test-Path $zipPath) {
 # Создаём новый пустой ZIP
 $zip = [System.IO.Compression.ZipFile]::Open($zipPath, 'Create')
 
-# Добавляем статические файлы
+# Добавляем статические файлы с префиксом
 foreach ($entry in $staticFiles.Keys) {
     $src = $staticFiles[$entry]
+    $entryName = ($prefix + $entry).Replace('\', '/')
     if (Test-Path $src) {
-        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $src, $entry, 'Optimal') | Out-Null
-        Write-Host "Added: $entry"
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $src, $entryName, 'Optimal') | Out-Null
+        Write-Host "Added: $entryName"
     } else {
-        Write-Host "SKIP (not found): $entry"
+        Write-Host "SKIP (not found): $entryName"
     }
 }
 
-# Добавляем свежие файлы из dist
+# Добавляем свежие файлы из dist с префиксом
 foreach ($rel in $distFiles) {
     $src = "$distDir\$rel"
+    $entryName = ($prefix + $rel).Replace('\', '/')
     if (Test-Path $src) {
-        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $src, $rel, 'Optimal') | Out-Null
-        Write-Host "Added from dist: $rel"
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $src, $entryName, 'Optimal') | Out-Null
+        Write-Host "Added from dist: $entryName"
     } else {
-        Write-Host "SKIP (dist not found): $rel"
+        Write-Host "SKIP (dist not found): $entryName"
     }
 }
 
 $zip.Dispose()
 Write-Host ""
 Write-Host "fleetforce.zip rebuilt successfully!"
+Write-Host "Archive structure: fleetforce/ -> all files"
