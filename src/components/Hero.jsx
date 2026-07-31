@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Search, ShieldCheck, FileText, ChevronRight, Anchor, Award, Users, Ship } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel, INITIAL_STATS } from '../data/initialData';
 
-export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS }) => {
+export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customTitle, customSubtitle, renderStatItem }) => {
   const { lang, t } = useLanguage();
   const [selectedRank, setSelectedRank] = useState('');
   const [selectedVessel, setSelectedVessel] = useState('');
@@ -12,7 +12,7 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS }) => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    onSearch({ rank: selectedRank, vesselType: selectedVessel });
+    if (onSearch) onSearch({ rank: selectedRank, vesselType: selectedVessel });
     const vacanciesSection = document.getElementById('vacancies');
     if (vacanciesSection) {
       vacanciesSection.scrollIntoView({ behavior: 'smooth' });
@@ -77,14 +77,18 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS }) => {
             marginBottom: '1.2rem',
             letterSpacing: '-0.03em'
           }}>
-            {t('hero.titleLine1')}{' '}
-            <span style={{
-              background: 'linear-gradient(135deg, #00D2FF 0%, #008BFF 50%, #0056B3 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
-              {t('hero.titleHighlight')}
-            </span>
+            {customTitle ? customTitle : (
+              <>
+                {t('hero.titleLine1')}{' '}
+                <span style={{
+                  background: 'linear-gradient(135deg, #00D2FF 0%, #008BFF 50%, #0056B3 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
+                  {t('hero.titleHighlight')}
+                </span>
+              </>
+            )}
           </h1>
 
           <p style={{
@@ -93,47 +97,47 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS }) => {
             marginBottom: '2.5rem',
             lineHeight: 1.6
           }}>
-            {t('hero.subtitle')}
+            {customSubtitle ? customSubtitle : t('hero.subtitle')}
           </p>
 
           {/* Vacancy Quick Search Widget */}
           <form onSubmit={handleSearchSubmit} className="glass-card" style={{
-            padding: '1rem',
             display: 'grid',
             gridTemplateColumns: '1fr 1fr auto',
             gap: '0.8rem',
-            marginBottom: '2rem',
-            alignItems: 'center'
+            padding: '0.8rem',
+            background: 'rgba(21, 39, 66, 0.75)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+            marginBottom: '2.5rem'
           }}>
-            <div>
-              <select 
-                value={selectedRank}
-                onChange={(e) => setSelectedRank(e.target.value)}
-                className="form-select"
-                style={{ border: 'none', background: 'rgba(255,255,255,0.04)', fontWeight: 500 }}
-              >
-                <option value="">{t('hero.searchRankPlaceholder')}</option>
-                {MARITIME_RANKS.map((r) => (
-                  <option key={r} value={r}>{getRankLabel(r, lang)}</option>
-                ))}
-              </select>
-            </div>
+            <select 
+              className="form-select"
+              value={selectedRank}
+              onChange={(e) => setSelectedRank(e.target.value)}
+              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <option value="">{t('hero.selectRank')}</option>
+              {MARITIME_RANKS.map((r) => (
+                <option key={r} value={r}>{getRankLabel(r, lang)}</option>
+              ))}
+            </select>
 
-            <div>
-              <select 
-                value={selectedVessel}
-                onChange={(e) => setSelectedVessel(e.target.value)}
-                className="form-select"
-                style={{ border: 'none', background: 'rgba(255,255,255,0.04)', fontWeight: 500 }}
-              >
-                <option value="">{t('hero.searchVesselPlaceholder')}</option>
-                {VESSEL_TYPES.map((v) => (
-                  <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
-                ))}
-              </select>
-            </div>
+            <select 
+              className="form-select"
+              value={selectedVessel}
+              onChange={(e) => setSelectedVessel(e.target.value)}
+              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <option value="">{t('hero.selectVessel')}</option>
+              {VESSEL_TYPES.map((v) => (
+                <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
+              ))}
+            </select>
 
-            <button type="submit" className="btn btn-primary" style={{ height: '44px', whiteSpace: 'nowrap' }}>
+            <button type="submit" className="btn btn-primary" style={{ height: '100%', whiteSpace: 'nowrap' }}>
               <Search size={18} />
               <span>{t('hero.searchBtn')}</span>
             </button>
@@ -164,16 +168,22 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS }) => {
             paddingTop: '2.5rem',
             borderTop: '1px solid rgba(255, 255, 255, 0.08)'
           }}>
-            {statsList.map((st) => (
-              <div key={st.id} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: getStatColor(st.color), fontFamily: 'var(--font-display)' }}>
-                  {st.number}
+            {statsList.map((st, idx) => {
+              if (renderStatItem) {
+                const rendered = renderStatItem(st, idx);
+                if (rendered) return rendered;
+              }
+              return (
+                <div key={st.id || idx} style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '2.2rem', fontWeight: 800, color: getStatColor(st.color), fontFamily: 'var(--font-display)' }}>
+                    {st.number}
+                  </div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    {lang === 'ru' ? st.labelRu : (st.labelEn || st.labelRu)}
+                  </div>
                 </div>
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                  {lang === 'ru' ? st.labelRu : (st.labelEn || st.labelRu)}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         </div>

@@ -10,6 +10,7 @@ import { Footer } from './components/Footer';
 import { ApplicationWizard } from './components/ApplicationWizard/ApplicationWizard';
 import { AdminLoginModal } from './components/Admin/AdminLoginModal';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
+import { SiteEditor } from './components/Admin/SiteEditor';
 import { 
   INITIAL_VACANCIES, 
   INITIAL_CANDIDATES, 
@@ -34,6 +35,8 @@ function AppContent() {
   const [currentPage, setCurrentPage] = useState(() => {
     return window.location.hash === '#/admin' ? 'admin' : 'main';
   });
+
+  const [isSiteEditorOpen, setIsSiteEditorOpen] = useState(false);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -403,6 +406,15 @@ function AppContent() {
     navigateToMain();
   };
 
+  // Handle publishing all changes from Visual Draft Editor
+  const handlePublishEditorChanges = (publishedData) => {
+    if (publishedData.vacancies) setVacancies(publishedData.vacancies);
+    if (publishedData.offices) setOffices(publishedData.offices);
+    if (publishedData.hubBlocks) setHubBlocks(publishedData.hubBlocks);
+    if (publishedData.stats) setStats(publishedData.stats);
+    if (publishedData.sectionVisibility) setSectionVisibility(publishedData.sectionVisibility);
+  };
+
   // Standalone Admin Page View
   if (currentPage === 'admin') {
     if (!isAdminLoggedIn) {
@@ -419,11 +431,28 @@ function AppContent() {
       );
     }
 
+    if (isSiteEditorOpen) {
+      return (
+        <SiteEditor
+          isOpen={true}
+          onClose={() => setIsSiteEditorOpen(false)}
+          onPublish={handlePublishEditorChanges}
+          liveVacancies={vacancies}
+          liveOffices={offices}
+          liveHubBlocks={hubBlocks}
+          liveStats={stats}
+          liveSectionVisibility={sectionVisibility}
+          liveShipownerRequests={shipownerRequests}
+        />
+      );
+    }
+
     return (
       <AdminDashboard 
         isOpen={true}
         onClose={handleLogoutAdmin}
         onBackToSite={navigateToMain}
+        onOpenSiteEditor={() => setIsSiteEditorOpen(true)}
         candidates={candidates}
         vacancies={vacancies}
         offices={offices}
@@ -453,6 +482,7 @@ function AppContent() {
       />
     );
   }
+
 
   // Public Main Website
   return (

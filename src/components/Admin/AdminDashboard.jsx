@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { 
   Users, Briefcase, FileText, Settings, LogOut, Eye, EyeOff, 
-  Download, Anchor, Palette, MapPin, TrendingUp, ArrowLeft, Mail
+  Download, Anchor, Palette, MapPin, TrendingUp, ArrowLeft, Mail, Edit3, Layout
 } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES } from '../../data/initialData';
 
@@ -25,6 +25,7 @@ export const AdminDashboard = ({
   isOpen, 
   onClose,
   onBackToSite,
+  onOpenSiteEditor,
   candidates = [], 
   vacancies = [],
   offices = [],
@@ -275,6 +276,16 @@ export const AdminDashboard = ({
 
         {/* Global Action Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          {onOpenSiteEditor && (
+            <button 
+              onClick={onOpenSiteEditor} 
+              className="btn btn-accent btn-md" 
+              style={{ gap: '0.5rem', fontWeight: 700, boxShadow: '0 0 15px rgba(0,139,255,0.4)' }}
+            >
+              <Edit3 size={17} /> 🎨 Визуальный редактор сайта
+            </button>
+          )}
+
           {/* Theme Selector */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.2)', padding: '0.3rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
             <Palette size={14} color="var(--color-accent)" />

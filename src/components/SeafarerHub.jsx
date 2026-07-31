@@ -4,9 +4,10 @@ import { Download, FileCheck, Award, TrendingUp, HelpCircle, FileText } from 'lu
 
 import { INITIAL_HUB_BLOCKS } from '../data/initialData';
 
-export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS }) => {
+export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, renderBlockItem }) => {
   const { t } = useLanguage();
-  const blocksList = (hubBlocks && hubBlocks.length > 0 ? hubBlocks : INITIAL_HUB_BLOCKS).filter(b => b.active !== false && !b.hidden);
+  const rawList = hubBlocks && hubBlocks.length > 0 ? hubBlocks : INITIAL_HUB_BLOCKS;
+  const blocksList = renderBlockItem ? rawList : rawList.filter(b => b.active !== false && !b.hidden);
 
   const handleDownloadBlock = (block) => {
     if (block && block.fileData) {
@@ -59,39 +60,46 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS }) =>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '1.25rem', alignItems: 'stretch' }}>
-          {blocksList.map((block) => (
-            <div key={block.id} className="glass-card" style={{ padding: '1.8rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
-              <div>
-                {/* Row 1: Badges Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <span className={`badge badge-${block.color || 'blue'}`} style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}>
-                    {block.actionType ? block.actionType.toUpperCase() : 'INFO'}
-                  </span>
-                  {getIcon(block.iconType, block.color)}
+          {blocksList.map((block) => {
+            const blockNode = (
+              <div key={block.id} className="glass-card" style={{ padding: '1.8rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
+                <div>
+                  {/* Row 1: Badges Header */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <span className={`badge badge-${block.color || 'blue'}`} style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}>
+                      {block.actionType ? block.actionType.toUpperCase() : 'INFO'}
+                    </span>
+                    {getIcon(block.iconType, block.color)}
+                  </div>
+
+                  {/* Row 2: Title */}
+                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem', color: '#FFFFFF' }}>{block.title}</h3>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                    {block.description}
+                  </p>
                 </div>
 
-                {/* Row 2: Title */}
-                <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem', color: '#FFFFFF' }}>{block.title}</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                  {block.description}
-                </p>
+                {block.actionType === 'wizard' ? (
+                  <button onClick={onOpenWizard} className="btn btn-primary" style={{ width: '100%' }}>
+                    {block.buttonText || 'Заполнить онлайн'}
+                  </button>
+                ) : block.actionType === 'link' ? (
+                  <a href={block.linkUrl || 'tel:+78005553535'} className="btn btn-secondary" style={{ width: '100%' }}>
+                    {block.buttonText || 'Подробнее'}
+                  </a>
+                ) : (
+                  <button onClick={() => handleDownloadBlock(block)} className="btn btn-secondary" style={{ width: '100%' }}>
+                    <Download size={16} /> {block.buttonText || t('seafarersHub.downloadBgiForm')}
+                  </button>
+                )}
               </div>
+            );
 
-              {block.actionType === 'wizard' ? (
-                <button onClick={onOpenWizard} className="btn btn-primary" style={{ width: '100%' }}>
-                  {block.buttonText || 'Заполнить онлайн'}
-                </button>
-              ) : block.actionType === 'link' ? (
-                <a href={block.linkUrl || 'tel:+78005553535'} className="btn btn-secondary" style={{ width: '100%' }}>
-                  {block.buttonText || 'Подробнее'}
-                </a>
-              ) : (
-                <button onClick={() => handleDownloadBlock(block)} className="btn btn-secondary" style={{ width: '100%' }}>
-                  <Download size={16} /> {block.buttonText || t('seafarersHub.downloadBgiForm')}
-                </button>
-              )}
-            </div>
-          ))}
+            if (renderBlockItem) {
+              return renderBlockItem(block, blockNode);
+            }
+            return blockNode;
+          })}
         </div>
       </div>
     </section>

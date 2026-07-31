@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Search, Flame, DollarSign, Calendar, MapPin, Anchor, ArrowRight, X, CheckCircle, Info } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../data/initialData';
 
-export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
+export const VacancyList = ({ vacancies = [], searchFilter, onApplyVacancy, renderVacancyCard }) => {
   const { lang, t } = useLanguage();
 
   const [selectedRank, setSelectedRank] = useState(searchFilter?.rank || '');
@@ -20,21 +20,21 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
 
   const filteredVacancies = useMemo(() => {
     return vacancies.filter((vac) => {
-      if (!vac.active) return false;
+      if (!renderVacancyCard && vac.active === false) return false;
       if (selectedRank && vac.rank !== selectedRank) return false;
       if (selectedVessel && vac.vesselType !== selectedVessel) return false;
       if (urgentOnly && !vac.urgent) return false;
       if (query) {
         const q = query.toLowerCase();
-        const matchTitle = vac.title.toLowerCase().includes(q);
-        const matchRank = vac.rank.toLowerCase().includes(q);
-        const matchVessel = vac.vesselType.toLowerCase().includes(q);
-        const matchPort = vac.joiningPort?.toLowerCase().includes(q);
+        const matchTitle = (vac.title || '').toLowerCase().includes(q);
+        const matchRank = (vac.rank || '').toLowerCase().includes(q);
+        const matchVessel = (vac.vesselType || '').toLowerCase().includes(q);
+        const matchPort = (vac.joiningPort || '').toLowerCase().includes(q);
         if (!matchTitle && !matchRank && !matchVessel && !matchPort) return false;
       }
       return true;
     });
-  }, [vacancies, selectedRank, selectedVessel, urgentOnly, query]);
+  }, [vacancies, selectedRank, selectedVessel, urgentOnly, query, renderVacancyCard]);
 
   return (
     <section id="vacancies" style={{ padding: '5rem 0', background: 'var(--bg-deep)' }}>
@@ -137,100 +137,109 @@ export const VacancyList = ({ vacancies, searchFilter, onApplyVacancy }) => {
             gap: '1.25rem',
             alignItems: 'stretch'
           }}>
-            {filteredVacancies.map((vac) => (
-              <div 
-                key={vac.id} 
-                className="glass-card"
-                style={{
-                  padding: '1.4rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  position: 'relative',
-                  height: '100%',
-                  borderRadius: '12px',
-                  borderTop: vac.urgent ? '3px solid var(--color-danger)' : '1px solid var(--border-color)'
-                }}
-              >
-                <div>
-                  {/* Line 1: Reserved HOT / URGENT Badge Slot (Full Width, Top Line) */}
-                  <div style={{ height: '28px', display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    {vac.urgent ? (
-                      <span className="badge badge-danger" style={{ width: '100%', justifyContent: 'center', borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', textAlign: 'center' }}>
-                        <Flame size={13} /> HOT / URGENT
-                      </span>
-                    ) : (
-                      <div style={{ height: '28px' }} />
-                    )}
-                  </div>
-
-                  {/* Line 2: Vessel Type Badge (Full Width) */}
-                  <div style={{ marginBottom: '0.8rem' }}>
-                    <span className="badge badge-blue" style={{ width: '100%', justifyContent: 'center', borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3, display: 'inline-flex', alignItems: 'center', textAlign: 'center', wordBreak: 'break-word', whiteSpace: 'normal' }}>
-                      {getVesselLabel(vac.vesselType, lang)}
-                    </span>
-                  </div>
-
-                  {/* Line 3: Title & Rank */}
-                  <h3 style={{ fontSize: '1.35rem', marginBottom: '0.4rem', color: '#FFFFFF', wordBreak: 'break-word' }}>
-                    {vac.title}
-                  </h3>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <Anchor size={14} /> {vac.dwt}
-                  </div>
-
-                  {/* Salary Block */}
-                  <div style={{
-                    background: 'rgba(0, 139, 255, 0.08)',
-                    border: '1px dashed rgba(0, 139, 255, 0.25)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '0.8rem 1rem',
-                    marginBottom: '1.2rem',
+            {filteredVacancies.map((vac) => {
+              const cardNode = (
+                <div 
+                  key={vac.id} 
+                  className="glass-card"
+                  style={{
+                    padding: '1.4rem',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                  }}>
-                    <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{t('vacancies.salary')}</span>
-                    <span style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-emerald)', fontFamily: 'var(--font-display)' }}>
-                      {vac.salary}
-                    </span>
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    position: 'relative',
+                    height: '100%',
+                    borderRadius: '12px',
+                    borderTop: vac.urgent ? '3px solid var(--color-danger)' : '1px solid var(--border-color)'
+                  }}
+                >
+                  <div>
+                    {/* Line 1: Reserved HOT / URGENT Badge Slot (Full Width, Top Line) */}
+                    <div style={{ height: '28px', display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      {vac.urgent ? (
+                        <span className="badge badge-danger" style={{ width: '100%', justifyContent: 'center', borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', textAlign: 'center' }}>
+                          <Flame size={13} /> HOT / URGENT
+                        </span>
+                      ) : (
+                        <div style={{ height: '28px' }} />
+                      )}
+                    </div>
+
+                    {/* Line 2: Vessel Type Badge (Full Width) */}
+                    <div style={{ marginBottom: '0.8rem' }}>
+                      <span className="badge badge-blue" style={{ width: '100%', justifyContent: 'center', borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', textTransform: 'none', lineHeight: 1.3, display: 'inline-flex', alignItems: 'center', textAlign: 'center', wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                        {getVesselLabel(vac.vesselType, lang)}
+                      </span>
+                    </div>
+
+                    {/* Line 3: Title & Rank */}
+                    <h3 style={{ fontSize: '1.35rem', marginBottom: '0.4rem', color: '#FFFFFF', wordBreak: 'break-word' }}>
+                      {vac.title}
+                    </h3>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Anchor size={14} /> {vac.dwt}
+                    </div>
+
+                    {/* Salary Block */}
+                    <div style={{
+                      background: 'rgba(0, 139, 255, 0.08)',
+                      border: '1px dashed rgba(0, 139, 255, 0.25)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '0.8rem 1rem',
+                      marginBottom: '1.2rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{t('vacancies.salary')}</span>
+                      <span style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-emerald)', fontFamily: 'var(--font-display)' }}>
+                        {vac.salary}
+                      </span>
+                    </div>
+
+                    {/* Specification Table */}
+                    <div style={{ fontSize: '0.88rem', display: 'grid', gap: '0.5rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <Calendar size={15} color="var(--color-accent)" />
+                        <span><strong>{t('vacancies.contract')}:</strong> {vac.contract}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <MapPin size={15} color="var(--color-accent)" />
+                        <span><strong>{t('vacancies.port')}:</strong> {vac.joiningPort}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <Calendar size={15} color="var(--color-gold)" />
+                        <span><strong>{t('vacancies.joiningDate')}:</strong> {vac.joiningDate}</span>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Specification Table */}
-                  <div style={{ fontSize: '0.88rem', display: 'grid', gap: '0.5rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span><Calendar size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} />{t('vacancies.contract')}:</span>
-                      <strong style={{ color: 'var(--text-primary)' }}>{vac.contract}</strong>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span><MapPin size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} />{t('vacancies.joiningPort')}:</span>
-                      <strong style={{ color: 'var(--text-primary)' }}>{vac.joiningPort}</strong>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span>{t('vacancies.joiningDate')}:</span>
-                      <strong style={{ color: 'var(--color-gold)' }}>{vac.joiningDate}</strong>
-                    </div>
+                  {/* Actions */}
+                  <div style={{ display: 'flex', gap: '0.6rem' }}>
+                    <button 
+                      onClick={() => setSelectedVacancy(vac)} 
+                      className="btn btn-secondary" 
+                      style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem' }}
+                    >
+                      <Info size={15} /> {t('vacancies.detailsBtn')}
+                    </button>
+                    <button 
+                      onClick={() => onApplyVacancy(vac)} 
+                      className="btn btn-primary"
+                      style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem' }}
+                    >
+                      <span>{t('vacancies.applyBtn')}</span>
+                      <ArrowRight size={15} />
+                    </button>
                   </div>
                 </div>
+              );
 
-                {/* Actions */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
-                  <button 
-                    onClick={() => setSelectedVacancy(vac)}
-                    className="btn btn-secondary btn-sm"
-                  >
-                    {t('vacancies.detailsBtn')}
-                  </button>
-                  
-                  <button 
-                    onClick={() => onApplyVacancy(vac)}
-                    className="btn btn-primary btn-sm"
-                  >
-                    {t('vacancies.applyBtn')} <ArrowRight size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              if (renderVacancyCard) {
+                return renderVacancyCard(vac, cardNode);
+              }
+              return cardNode;
+            })}
           </div>
         )}
 

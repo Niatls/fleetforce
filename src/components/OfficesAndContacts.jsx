@@ -4,9 +4,10 @@ import { MapPin, Phone, Mail, Clock, Building } from 'lucide-react';
 
 import { INITIAL_OFFICES } from '../data/initialData';
 
-export const OfficesAndContacts = ({ offices = INITIAL_OFFICES }) => {
+export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard }) => {
   const { t } = useLanguage();
-  const officesList = (offices && offices.length > 0 ? offices : INITIAL_OFFICES).filter(o => o.active !== false && !o.hidden);
+  const rawList = offices && offices.length > 0 ? offices : INITIAL_OFFICES;
+  const officesList = renderOfficeCard ? rawList : rawList.filter(o => o.active !== false && !o.hidden);
 
   return (
     <section id="offices" style={{ padding: '5rem 0', background: 'var(--bg-surface)' }}>
@@ -21,41 +22,48 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES }) => {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '1.25rem', alignItems: 'stretch' }}>
-          {officesList.map((off, idx) => (
-            <div key={idx} className="glass-card" style={{ padding: '1.6rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', gap: '0.6rem' }}>
-                  <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
-                    {off.flag}
-                  </span>
-                  <Clock size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-                </div>
-
-                <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#FFFFFF' }}>
-                  {off.city}
-                </h3>
-
-                <div style={{ display: 'grid', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
-                    <MapPin size={16} color="var(--color-accent)" style={{ marginTop: '3px', flexShrink: 0 }} />
-                    <span>{off.address}</span>
+          {officesList.map((off, idx) => {
+            const officeNode = (
+              <div key={off.id || idx} className="glass-card" style={{ padding: '1.6rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', borderRadius: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', gap: '0.6rem' }}>
+                    <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
+                      {off.flag}
+                    </span>
+                    <Clock size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                   </div>
 
-                  {off.phone && (
-                    <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                      <Phone size={16} color="var(--color-emerald)" />
-                      <a href={`tel:${off.phone}`} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{off.phone}</a>
-                    </div>
-                  )}
+                  <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#FFFFFF' }}>
+                    {off.city}
+                  </h3>
 
-                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                    <Mail size={16} color="var(--color-gold)" />
-                    <a href={`mailto:${off.email}`}>{off.email}</a>
+                  <div style={{ display: 'grid', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                    <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
+                      <MapPin size={16} color="var(--color-accent)" style={{ marginTop: '3px', flexShrink: 0 }} />
+                      <span>{off.address}</span>
+                    </div>
+
+                    {off.phone && (
+                      <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                        <Phone size={16} color="var(--color-emerald)" />
+                        <a href={`tel:${off.phone}`} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{off.phone}</a>
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                      <Mail size={16} color="var(--color-gold)" />
+                      <a href={`mailto:${off.email}`}>{off.email}</a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+
+            if (renderOfficeCard) {
+              return renderOfficeCard(off, officeNode);
+            }
+            return officeNode;
+          })}
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '2.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
