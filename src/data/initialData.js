@@ -170,6 +170,112 @@ export const getEnglishLevelLabel = (level, lang = 'ru') => {
   return level;
 };
 
+export const MARITAL_STATUS = [
+  'Single',
+  'Married',
+  'Divorced',
+  'Widowed',
+];
+
+export const KIN_RELATIONS = [
+  'Wife',
+  'Husband',
+  'Mother',
+  'Father',
+  'Son',
+  'Daughter',
+  'Brother',
+  'Sister',
+  'Other',
+];
+
+export const OVERALL_SIZES_EUR = [
+  'XS / 44',
+  'S / 46',
+  'M / 48',
+  'L / 50',
+  'XL / 52',
+  'XXL / 54',
+  'XXXL / 56',
+  'XXXXL / 58',
+];
+
+export const SHOE_SIZES = [
+  '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48',
+];
+
+export const ENGINE_TYPES = [
+  'MAN B&W',
+  'MAN B&W ME-C',
+  'MAN B&W ME-GI (Dual Fuel)',
+  'Wärtsilä',
+  'Wärtsilä Dual Fuel',
+  'Wärtsilä RT-flex',
+  'Sulzer RTA',
+  'MaK / Caterpillar',
+  'Rolls-Royce Bergen',
+  'WinGD (X-DF)',
+  'Diesel-Electric',
+  'Steam Turbine',
+  'Other',
+];
+
+export const FLAG_STATES = [
+  '- SELECT -',
+  'Panama',
+  'Marshall Islands',
+  'Liberia',
+  'Bahamas',
+  'Malta',
+  'Cyprus',
+  'Cayman Islands',
+  'Antigua & Barbuda',
+  'Isle of Man',
+  'Gibraltar',
+  'Bermuda',
+  'Russia',
+  'Ukraine',
+  'Georgia',
+  'Azerbaijan',
+  'Greece',
+  'Norway',
+  'Singapore',
+  'Hong Kong',
+  'Japan',
+  'China',
+  'USA',
+  'UK',
+  'Netherlands',
+  'Germany',
+  'Italy',
+  'Denmark',
+  'Other',
+];
+
+export const CERTIFICATE_TYPES = [
+  'Master Unlimited (STCW II/2)',
+  'Chief Mate Unlimited (STCW II/2)',
+  'Officer in Charge of Navigational Watch (STCW II/1)',
+  'Chief Engineer Unlimited (STCW III/2)',
+  '2nd Engineer Unlimited (STCW III/2)',
+  'Officer in Charge of Engineering Watch (STCW III/1)',
+  'Electro-Technical Officer (STCW III/6)',
+  'Basic Safety Training (STCW VI/1)',
+  'Advanced Firefighting (STCW VI/3)',
+  'Medical First Aid (STCW VI/4)',
+  'GMDSS GOC / ROC',
+  'ARPA / RADAR',
+  'ECDIS Type-Specific',
+  'Tanker Familiarization (STCW V/1-1)',
+  'Advanced Oil Tanker (STCW V/1-1)',
+  'Advanced Chemical Tanker (STCW V/1-1)',
+  'Advanced Liquefied Gas Tanker (STCW V/1-2)',
+  'High Voltage Safety',
+  'Survival Craft & Rescue Boats (STCW VI/2)',
+  'Fast Rescue Boat (STCW VI/2)',
+  'Other',
+];
+
 export const INITIAL_VACANCIES = [
   {
     id: 1,
