@@ -13,21 +13,33 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
     if (block && block.fileData) {
       const a = document.createElement('a');
       a.href = block.fileData;
-      a.download = block.filename || 'Seafarer_Document.docx';
+      a.download = block.filename || 'Crew_Application_Form.pdf';
       a.click();
       return;
     }
 
-    const filename = block?.filename || 'Seafarer_CV_Form.docx';
-    const content = `FLEETFORCE CREWING AGENCY - SEAFARER APPLICATION FORM TEMPLATE\n=======================================================\n\nFull Name: ___________________________________________\nApplied Rank: ________________________________________\nDate of Birth: ________________________________________\nPassport No: _________________________________________\nSeaman's Book No: ____________________________________\nPhone / Email: _______________________________________\n\nSEA EXPERIENCE MATRIX:\n1. Vessel: ____________ Type: ________ DWT: ________ Rank: ________\n2. Vessel: ____________ Type: ________ DWT: ________ Rank: ________\n\nSignature: __________________________ Date: ___________`;
-    
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
+    if (block?.filename?.match(/\.(doc|docx)$/i)) {
+      // Download blank DOC version of Crew_Application_Form
+      import('./Admin/exportUtils').then(({ handleExportDoc }) => {
+        handleExportDoc({
+          id: 'BLANK-FORM',
+          fullName: '',
+          appliedRank: '',
+          readyDate: '',
+          seaService: [],
+          certificates: [],
+          recordBooks: [],
+          employers: []
+        });
+      });
+      return;
+    }
+
+    // Default: Download official Crew_Application_Form.pdf
     const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
+    a.href = './Crew_Application_Form.pdf';
+    a.download = block?.filename || 'Crew_Application_Form.pdf';
     a.click();
-    URL.revokeObjectURL(url);
   };
 
   const getIcon = (type, colorStr) => {

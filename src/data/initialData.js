@@ -533,21 +533,21 @@ export const INITIAL_OFFICES = [
 export const INITIAL_HUB_BLOCKS = [
   {
     id: 1,
-    title: 'BGI Standard Application',
-    description: 'Классический бланк морской анкеты группы компаний BGI в формате DOCX для офлайн заполнения.',
-    buttonText: 'Скачать бланки анкеты BGI (.DOCX)',
+    title: 'Standard Crew Application Form (PDF)',
+    description: 'Официальный 5-страничный бланк морской анкеты FleetForce Crewing Alliance в формате PDF.',
+    buttonText: 'Скачать бланки анкеты (.PDF)',
     actionType: 'download',
-    filename: 'BGI_Application_Form_2026.docx',
+    filename: 'Crew_Application_Form.pdf',
     iconType: 'FileText',
     color: 'blue'
   },
   {
     id: 2,
-    title: 'Legacy Marine CV Form',
-    description: 'Анкета Legacy Marine с расширенной матрицей опыта работы на танкерном флоте.',
-    buttonText: 'Скачать анкету Legacy Marine (.PDF)',
+    title: 'Crew Application Form (DOC)',
+    description: 'Редактируемый Word (.DOC) бланк морской анкеты с полной матрицей плавательского ценза.',
+    buttonText: 'Скачать анкету (.DOC)',
     actionType: 'download',
-    filename: 'Legacy_Marine_Seaman_CV.pdf',
+    filename: 'Crew_Application_Form.doc',
     iconType: 'Download',
     color: 'gold'
   },
