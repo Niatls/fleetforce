@@ -77,13 +77,13 @@ const SectionTitle = ({ children }) => (
 );
 
 const STEP_LABELS = [
-  'Личные данные',
-  'Вакансия',
-  'Документы',
-  'Дипломы',
-  'Опыт в море',
-  'Работодатели',
-  'Файлы',
+  'Personal Details',
+  'Position',
+  'Documents',
+  'Certificates',
+  'Sea Service',
+  'Employers',
+  'Files & Consent',
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -238,26 +238,26 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       // ════════════════════════════════════════════════════════════════
       case 1: return (
         <div style={grid()}>
-          <SectionTitle>Applied for / Должность и готовность</SectionTitle>
+          <SectionTitle>Applied For & Readiness</SectionTitle>
           <FG label="Applied for (Rank) *">
             <Sel value={fd.appliedRank} onChange={v => set('appliedRank', v)}>
-              {MARITIME_RANKS.map(r => <option key={r} value={r}>{getRankLabel(r, lang)}</option>)}
+              {MARITIME_RANKS.map(r => <option key={r} value={r}>{r}</option>)}
             </Sel>
           </FG>
           <FG label="Date of Readiness *">
             <Inp type="date" value={fd.readyDate} onChange={v => set('readyDate', v)} required />
           </FG>
 
-          <SectionTitle>Личные данные / Personal Details</SectionTitle>
-          <FG label="Full Name (ФИО) *" col="1 / -1">
-            <Inp placeholder="Фамилия Имя Отчество / Surname Name Patronymic"
+          <SectionTitle>Personal Details</SectionTitle>
+          <FG label="Full Name *" col="1 / -1">
+            <Inp placeholder="Surname Name Patronymic"
               value={fd.fullName} onChange={v => set('fullName', v)} required />
           </FG>
-          <FG label="Mother's Name (Имя матери)">
-            <Inp placeholder="Имя матери" value={fd.motherName} onChange={v => set('motherName', v)} />
+          <FG label="Mother's Name">
+            <Inp placeholder="Mother's Name" value={fd.motherName} onChange={v => set('motherName', v)} />
           </FG>
           <FG label="Nationality">
-            <Inp placeholder="Russia / Ukraine / …" value={fd.nationality} onChange={v => set('nationality', v)} />
+            <Inp placeholder="Country of nationality" value={fd.nationality} onChange={v => set('nationality', v)} />
           </FG>
           <FG label="Marital Status">
             <Sel value={fd.maritalStatus} onChange={v => set('maritalStatus', v)} options={MARITAL_STATUS} />
@@ -266,34 +266,34 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
             <Inp type="number" min="0" max="20" value={fd.childrenUnder18} onChange={v => set('childrenUnder18', v)} />
           </FG>
 
-          <SectionTitle>Контакты / Contacts</SectionTitle>
+          <SectionTitle>Contacts</SectionTitle>
           <FG label="Contact Phone *">
-            <Inp type="tel" placeholder="+7 (900) 000-00-00" value={fd.phone} onChange={v => set('phone', v)} required />
+            <Inp type="tel" placeholder="+1 (555) 000-00-00" value={fd.phone} onChange={v => set('phone', v)} required />
           </FG>
           <FG label="Email *">
             <Inp type="email" placeholder="seaman@example.com" value={fd.email} onChange={v => set('email', v)} required />
           </FG>
           <FG label="Skype / Telegram">
-            <Inp placeholder="@username или live:skype" value={fd.skypeTelegram} onChange={v => set('skypeTelegram', v)} />
+            <Inp placeholder="@username or live:skype" value={fd.skypeTelegram} onChange={v => set('skypeTelegram', v)} />
           </FG>
           <FG label="Home Address" col="1 / -1">
-            <Inp placeholder="Страна, город, улица, дом" value={fd.address} onChange={v => set('address', v)} />
+            <Inp placeholder="Country, City, Street, Zip" value={fd.address} onChange={v => set('address', v)} />
           </FG>
 
-          <SectionTitle>Ближайший родственник / Next of Kin</SectionTitle>
-          <FG label="Name">
-            <Inp placeholder="ФИО родственника" value={fd.kinName} onChange={v => set('kinName', v)} />
+          <SectionTitle>Next of Kin</SectionTitle>
+          <FG label="Next of Kin Name">
+            <Inp placeholder="Full Name of Next of Kin" value={fd.kinName} onChange={v => set('kinName', v)} />
           </FG>
           <FG label="Relation">
             <Sel value={fd.kinRelation} onChange={v => set('kinRelation', v)} options={KIN_RELATIONS} />
           </FG>
-          <FG label="Phone No">
-            <Inp type="tel" placeholder="+7 (900) 000-00-00" value={fd.kinPhone} onChange={v => set('kinPhone', v)} />
+          <FG label="Next of Kin Phone">
+            <Inp type="tel" placeholder="+1 (555) 000-00-00" value={fd.kinPhone} onChange={v => set('kinPhone', v)} />
           </FG>
 
-          <SectionTitle>Снаряжение / Equipment Sizes</SectionTitle>
+          <SectionTitle>Equipment & Travel</SectionTitle>
           <FG label="Nearest Airport">
-            <Inp placeholder="Москва SVO / СПб LED" value={fd.nearestAirport} onChange={v => set('nearestAirport', v)} />
+            <Inp placeholder="e.g. London LHR / Istanbul IST" value={fd.nearestAirport} onChange={v => set('nearestAirport', v)} />
           </FG>
           <FG label="Size of Overall (EUR)">
             <Sel value={fd.overallSize} onChange={v => set('overallSize', v)} options={OVERALL_SIZES_EUR} />
@@ -307,15 +307,15 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       // ════════════════════════════════════════════════════════════════
       case 2: return (
         <div style={grid()}>
-          <SectionTitle>Должность и условия / Position & Terms</SectionTitle>
+          <SectionTitle>Position & Terms</SectionTitle>
           <FG label="Applied Rank *">
             <Sel value={fd.appliedRank} onChange={v => set('appliedRank', v)}>
-              {MARITIME_RANKS.map(r => <option key={r} value={r}>{getRankLabel(r, lang)}</option>)}
+              {MARITIME_RANKS.map(r => <option key={r} value={r}>{r}</option>)}
             </Sel>
           </FG>
           <FG label="Alternative Rank">
             <Sel value={fd.alternativeRank} onChange={v => set('alternativeRank', v)}>
-              {MARITIME_RANKS.map(r => <option key={r} value={r}>{getRankLabel(r, lang)}</option>)}
+              {MARITIME_RANKS.map(r => <option key={r} value={r}>{r}</option>)}
             </Sel>
           </FG>
           <FG label="Min Desired Salary (USD/month)">
@@ -326,15 +326,15 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
           </FG>
           <FG label="Preferred Vessel Type">
             <Sel value={fd.preferredVessels} onChange={v => set('preferredVessels', v)}>
-              {VESSEL_TYPES.map(v => <option key={v} value={v}>{getVesselLabel(v, lang)}</option>)}
+              {VESSEL_TYPES.map(v => <option key={v} value={v}>{v}</option>)}
             </Sel>
           </FG>
 
-          <SectionTitle>Английский язык / English</SectionTitle>
+          <SectionTitle>English Proficiency</SectionTitle>
           <FG label="English Level">
             <Sel value={fd.englishLevel} onChange={v => set('englishLevel', v)}>
               {Object.keys(ENGLISH_LEVELS_TRANSLATIONS).map(l => (
-                <option key={l} value={l}>{getEnglishLevelLabel(l, lang)}</option>
+                <option key={l} value={l}>{l}</option>
               ))}
             </Sel>
           </FG>
@@ -347,19 +347,19 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       // ════════════════════════════════════════════════════════════════
       case 3: return (
         <div style={grid()}>
-          <SectionTitle>Паспорт / National Passport</SectionTitle>
-          <FG label="Passport No"><Inp placeholder="75 N 1234567" value={fd.passportNo} onChange={v => set('passportNo', v)} /></FG>
+          <SectionTitle>National Travel Passport</SectionTitle>
+          <FG label="Passport No"><Inp placeholder="Passport No" value={fd.passportNo} onChange={v => set('passportNo', v)} /></FG>
           <FG label="Issued Date"><Inp type="date" value={fd.passportIssued} onChange={v => set('passportIssued', v)} /></FG>
           <FG label="Valid Until"><Inp type="date" value={fd.passportExpiry} onChange={v => set('passportExpiry', v)} /></FG>
-          <FG label="Place of Issue"><Inp placeholder="Город выдачи" value={fd.passportPlace} onChange={v => set('passportPlace', v)} /></FG>
+          <FG label="Place of Issue"><Inp placeholder="City / Authority" value={fd.passportPlace} onChange={v => set('passportPlace', v)} /></FG>
 
-          <SectionTitle>Морская книжка / Seaman's Book</SectionTitle>
-          <FG label="Seaman's Book No"><Inp placeholder="УЛМ / Book ID" value={fd.seamanBookNo} onChange={v => set('seamanBookNo', v)} /></FG>
+          <SectionTitle>Seaman's Book (SID)</SectionTitle>
+          <FG label="Seaman's Book No"><Inp placeholder="Book No / ID" value={fd.seamanBookNo} onChange={v => set('seamanBookNo', v)} /></FG>
           <FG label="Issued Date"><Inp type="date" value={fd.seamanBookIssued} onChange={v => set('seamanBookIssued', v)} /></FG>
           <FG label="Valid Until"><Inp type="date" value={fd.seamanBookExpiry} onChange={v => set('seamanBookExpiry', v)} /></FG>
-          <FG label="Place of Issue"><Inp placeholder="Город выдачи" value={fd.seamanBookPlace} onChange={v => set('seamanBookPlace', v)} /></FG>
+          <FG label="Place of Issue"><Inp placeholder="City / Authority" value={fd.seamanBookPlace} onChange={v => set('seamanBookPlace', v)} /></FG>
 
-          <SectionTitle>Иностранные ID / Record Books</SectionTitle>
+          <SectionTitle>Foreign Seaman's ID / Record Books</SectionTitle>
           <div style={{ gridColumn: '1 / -1' }}>
             {fd.recordBooks.map((rb, i) => (
               <div key={rb.id} style={{ ...cardStyle, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '0.7rem', alignItems: 'end' }}>
@@ -381,7 +381,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
               </div>
             ))}
             <button type="button" className="btn btn-secondary btn-sm" onClick={() => addRow('recordBooks', emptyRecordBook)}>
-              <Plus size={14} /> Добавить Record Book
+              <Plus size={14} /> Add Record Book
             </button>
           </div>
         </div>
@@ -392,16 +392,16 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h4 style={{ color: 'var(--color-accent)', fontSize: '0.95rem' }}>
-              CERTIFICATE OF COMPETENCY / ДИПЛОМЫ И ЭНДОРСМЕНТЫ
+              CERTIFICATE OF COMPETENCY & TRAINING
             </h4>
             <button type="button" className="btn btn-secondary btn-sm" onClick={() => addRow('certificates', emptyCertificate)}>
-              <Plus size={14} /> Добавить диплом
+              <Plus size={14} /> Add Certificate
             </button>
           </div>
           {fd.certificates.map((cert, i) => (
             <div key={cert.id} style={cardStyle}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-                <strong style={{ fontSize: '0.85rem', color: 'var(--color-gold)' }}>Диплом #{i + 1}</strong>
+                <strong style={{ fontSize: '0.85rem', color: 'var(--color-gold)' }}>Certificate #{i + 1}</strong>
                 {fd.certificates.length > 1 && (
                   <button type="button" onClick={() => removeRow('certificates', i)}
                     style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer' }}>
@@ -413,12 +413,12 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                 <FG label="Certificate of Competency" col="1 / -1">
                   <Sel value={cert.certName} onChange={v => setArr('certificates', i, 'certName', v)} options={CERTIFICATE_TYPES} />
                 </FG>
-                <FG label="No"><Inp value={cert.certNo} onChange={v => setArr('certificates', i, 'certNo', v)} placeholder="Номер диплома" /></FG>
+                <FG label="No"><Inp value={cert.certNo} onChange={v => setArr('certificates', i, 'certNo', v)} placeholder="Certificate No" /></FG>
                 <FG label="Issued Date"><Inp type="date" value={cert.certIssued} onChange={v => setArr('certificates', i, 'certIssued', v)} /></FG>
                 <FG label="Valid Until"><Inp type="date" value={cert.certValid} onChange={v => setArr('certificates', i, 'certValid', v)} /></FG>
                 <FG label="Rank / Capacity">
                   <Sel value={cert.rankCapacity} onChange={v => setArr('certificates', i, 'rankCapacity', v)}>
-                    {MARITIME_RANKS.map(r => <option key={r} value={r}>{getRankLabel(r, lang)}</option>)}
+                    {MARITIME_RANKS.map(r => <option key={r} value={r}>{r}</option>)}
                   </Sel>
                 </FG>
 
@@ -438,16 +438,16 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       case 5: return (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h4 style={{ color: 'var(--color-accent)', fontSize: '0.95rem' }}>PREVIOUS SEA SERVICE / ОПЫТ РАБОТЫ В МОРЕ</h4>
+            <h4 style={{ color: 'var(--color-accent)', fontSize: '0.95rem' }}>PREVIOUS SEA SERVICE MATRIX</h4>
             <button type="button" className="btn btn-secondary btn-sm"
               onClick={() => addRow('seaService', () => emptySeaService(fd.appliedRank))}>
-              <Plus size={14} /> Добавить судно
+              <Plus size={14} /> Add Vessel
             </button>
           </div>
           {fd.seaService.map((s, i) => (
             <div key={s.id} style={cardStyle}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-                <strong style={{ fontSize: '0.85rem', color: 'var(--color-gold)' }}>Судно #{i + 1}</strong>
+                <strong style={{ fontSize: '0.85rem', color: 'var(--color-gold)' }}>Vessel #{i + 1}</strong>
                 {fd.seaService.length > 1 && (
                   <button type="button" onClick={() => removeRow('seaService', i)}
                     style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer' }}>
@@ -456,19 +456,19 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                 )}
               </div>
               <div style={grid('repeat(auto-fit, minmax(190px, 1fr))')}>
-                <FG label="From (дата начала)"><Inp type="date" value={s.dateFrom} onChange={v => setArr('seaService', i, 'dateFrom', v)} /></FG>
-                <FG label="To (дата окончания)"><Inp type="date" value={s.dateTo} onChange={v => setArr('seaService', i, 'dateTo', v)} /></FG>
-                <FG label="Position (должность)">
+                <FG label="From (Sign On)"><Inp type="date" value={s.dateFrom} onChange={v => setArr('seaService', i, 'dateFrom', v)} /></FG>
+                <FG label="To (Sign Off)"><Inp type="date" value={s.dateTo} onChange={v => setArr('seaService', i, 'dateTo', v)} /></FG>
+                <FG label="Position Held">
                   <Sel value={s.rankHeld} onChange={v => setArr('seaService', i, 'rankHeld', v)}>
-                    {MARITIME_RANKS.map(r => <option key={r} value={r}>{getRankLabel(r, lang)}</option>)}
+                    {MARITIME_RANKS.map(r => <option key={r} value={r}>{r}</option>)}
                   </Sel>
                 </FG>
                 <FG label="Salary (USD/month)"><Inp type="number" placeholder="e.g. 7000" value={s.salary} onChange={v => setArr('seaService', i, 'salary', v)} /></FG>
-                <FG label="Name of Vessel"><Inp placeholder="Название судна" value={s.vesselName} onChange={v => setArr('seaService', i, 'vesselName', v)} /></FG>
-                <FG label="Shipowner"><Inp placeholder="Судовладелец" value={s.shipowner} onChange={v => setArr('seaService', i, 'shipowner', v)} /></FG>
+                <FG label="Name of Vessel"><Inp placeholder="Vessel Name" value={s.vesselName} onChange={v => setArr('seaService', i, 'vesselName', v)} /></FG>
+                <FG label="Shipowner"><Inp placeholder="Shipowner Name" value={s.shipowner} onChange={v => setArr('seaService', i, 'shipowner', v)} /></FG>
                 <FG label="Type of Vessel">
                   <Sel value={s.vesselType} onChange={v => setArr('seaService', i, 'vesselType', v)}>
-                    {VESSEL_TYPES.map(v => <option key={v} value={v}>{getVesselLabel(v, lang)}</option>)}
+                    {VESSEL_TYPES.map(v => <option key={v} value={v}>{v}</option>)}
                   </Sel>
                 </FG>
                 <FG label="Type of Engine">
@@ -480,7 +480,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                 <FG label="Flag">
                   <Sel value={s.flag} onChange={v => setArr('seaService', i, 'flag', v)} options={FLAG_STATES} />
                 </FG>
-                <FG label="Crewing Agent"><Inp placeholder="Manning Company" value={s.manningCompany} onChange={v => setArr('seaService', i, 'manningCompany', v)} /></FG>
+                <FG label="Crewing Agent"><Inp placeholder="Manning Company Name" value={s.manningCompany} onChange={v => setArr('seaService', i, 'manningCompany', v)} /></FG>
               </div>
             </div>
           ))}
@@ -491,9 +491,9 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       case 6: return (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h4 style={{ color: 'var(--color-accent)', fontSize: '0.95rem' }}>PREVIOUS EMPLOYERS / ПРЕДЫДУЩИЕ РАБОТОДАТЕЛИ</h4>
+            <h4 style={{ color: 'var(--color-accent)', fontSize: '0.95rem' }}>BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</h4>
             <button type="button" className="btn btn-secondary btn-sm" onClick={() => addRow('employers', emptyEmployer)}>
-              <Plus size={14} /> Добавить работодателя
+              <Plus size={14} /> Add Employer
             </button>
           </div>
           <div style={{ overflowX: 'auto' }}>
@@ -509,10 +509,10 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                 {fd.employers.map((emp, i) => (
                   <tr key={emp.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                     <td style={{ padding: '0.4rem 0.5rem' }}>
-                      <Inp value={emp.company} onChange={v => setArr('employers', i, 'company', v)} placeholder="Компания / Судовладелец" />
+                      <Inp value={emp.company} onChange={v => setArr('employers', i, 'company', v)} placeholder="Company / Shipowner Name" />
                     </td>
                     <td style={{ padding: '0.4rem 0.5rem' }}>
-                      <Inp value={emp.personInCharge} onChange={v => setArr('employers', i, 'personInCharge', v)} placeholder="ФИО ответственного" />
+                      <Inp value={emp.personInCharge} onChange={v => setArr('employers', i, 'personInCharge', v)} placeholder="Person in Charge Name" />
                     </td>
                     <td style={{ padding: '0.4rem 0.5rem' }}>
                       <Inp value={emp.contactDetails} onChange={v => setArr('employers', i, 'contactDetails', v)} placeholder="+1 555 000 / email@example.com" />
@@ -539,12 +539,12 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
           {/* Upload zone */}
           <div style={{ textAlign: 'center', padding: '2rem', border: '2px dashed var(--color-accent)', borderRadius: 'var(--radius-md)', background: 'rgba(0,139,255,0.03)' }}>
             <Upload size={38} color="var(--color-accent)" style={{ marginBottom: '0.8rem' }} />
-            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.4rem', color: '#FFF' }}>Прикрепите документы и резюме</h4>
+            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.4rem', color: '#FFF' }}>Attach Scans & Certificates</h4>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-              Форматы: <strong>.doc, .docx, .pdf, .jpg, .png, .zip</strong> (до 25 МБ каждый)
+              Supported Formats: <strong>.doc, .docx, .pdf, .jpg, .png, .zip</strong> (up to 25 MB each)
             </p>
             <label className="btn btn-primary" style={{ cursor: 'pointer', display: 'inline-flex', gap: '0.5rem' }}>
-              <Plus size={17} /> Выбрать файлы
+              <Plus size={17} /> Choose Files
               <input type="file" multiple accept=".doc,.docx,.pdf,.jpg,.jpeg,.png,.zip" onChange={handleFileUpload} style={{ display: 'none' }} />
             </label>
           </div>
@@ -552,7 +552,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
           {fd.attachedFiles.length > 0 && (
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
               <h5 style={{ color: 'var(--color-emerald)', marginBottom: '0.7rem', fontSize: '0.9rem' }}>
-                ✓ Прикреплено: {fd.attachedFiles.length} файл(ов)
+                ✓ Attached: {fd.attachedFiles.length} file(s)
               </h5>
               {fd.attachedFiles.map(file => (
                 <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0.8rem', background: 'var(--bg-surface)', borderRadius: '6px', marginBottom: '0.4rem', border: '1px solid var(--border-color)' }}>
@@ -581,7 +581,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
               <input type="checkbox" id="consent" required checked={fd.consent} onChange={e => set('consent', e.target.checked)}
                 style={{ width: '18px', height: '18px', cursor: 'pointer' }} />
               <label htmlFor="consent" style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: 600 }}>
-                Я подтверждаю и согласен(на) с условиями обработки персональных данных *
+                I confirm and accept the personal data processing terms *
               </label>
             </div>
           </div>
@@ -601,7 +601,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
             <div className="badge badge-gold" style={{ marginBottom: '0.4rem' }}>IMO & BGI STANDARD APPLICATION</div>
-            <h2 style={{ fontSize: '1.7rem', color: '#FFFFFF' }}>Морская Анкета / Seafarer Application</h2>
+            <h2 style={{ fontSize: '1.7rem', color: '#FFFFFF' }}>Seafarer Application Form</h2>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
             <X size={26} />
@@ -613,15 +613,15 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
             <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'var(--color-emerald-light)', color: 'var(--color-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
               <CheckCircle2 size={42} />
             </div>
-            <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#FFFFFF' }}>Анкета успешно отправлена!</h3>
+            <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#FFFFFF' }}>Application Successfully Submitted!</h3>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
-              Ваша морская анкета зарегистрирована в базе крюингового альянса. Менеджер свяжется с вами по указанному телефону или мессенджеру.
+              Your seafarer application form has been registered in the crewing alliance database. Our manager will contact you shortly.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
               <button onClick={() => window.print()} className="btn btn-secondary">
-                <Printer size={18} /> Распечатать
+                <Printer size={18} /> Print Application
               </button>
-              <button onClick={onClose} className="btn btn-primary">Вернуться на сайт</button>
+              <button onClick={onClose} className="btn btn-primary">Return to Website</button>
             </div>
           </div>
         ) : (
@@ -654,11 +654,11 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
               {/* Navigation */}
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)' }}>
                 {step > 1
-                  ? <button type="button" onClick={() => setStep(s => s - 1)} className="btn btn-secondary"><ChevronLeft size={18} /> Назад</button>
+                  ? <button type="button" onClick={() => setStep(s => s - 1)} className="btn btn-secondary"><ChevronLeft size={18} /> Back</button>
                   : <div />}
                 {step < TOTAL_STEPS
-                  ? <button type="button" onClick={() => setStep(s => s + 1)} className="btn btn-primary">Далее <ChevronRight size={18} /></button>
-                  : <button type="submit" className="btn btn-accent btn-lg"><CheckCircle2 size={20} /> Отправить анкету</button>}
+                  ? <button type="button" onClick={() => setStep(s => s + 1)} className="btn btn-primary">Next <ChevronRight size={18} /></button>
+                  : <button type="submit" className="btn btn-accent btn-lg"><CheckCircle2 size={20} /> Submit Application</button>}
               </div>
             </form>
           </div>
