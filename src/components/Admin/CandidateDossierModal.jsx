@@ -53,29 +53,29 @@ export const CandidateDossierModal = ({
         {/* Dossier Body */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-            <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.6rem' }}>1. Personal Details / Личные данные</h4>
+            <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.6rem' }}>1. Personal Details</h4>
             <div style={{ fontSize: '0.9rem', display: 'grid', gap: '0.4rem' }}>
-              <div><strong>Full Name / ФИО:</strong> {candidate.fullName}</div>
-              <div><strong>Phone / Телефон:</strong> {candidate.phone}</div>
-              <div><strong>Email / Эл. почта:</strong> {candidate.email}</div>
-              <div><strong>Citizenship / Гражданство:</strong> {candidate.citizenship}</div>
-              <div><strong>Date of Birth / Дата рождения:</strong> {candidate.dob}</div>
+              <div><strong>Full Name:</strong> {candidate.fullName}</div>
+              <div><strong>Phone:</strong> {candidate.phone}</div>
+              <div><strong>Email:</strong> {candidate.email}</div>
+              <div><strong>Citizenship:</strong> {candidate.citizenship}</div>
+              <div><strong>Date of Birth:</strong> {candidate.dob}</div>
             </div>
           </div>
 
           <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-            <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.6rem' }}>2. Position & Qualification / Квалификация</h4>
+            <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.6rem' }}>2. Application Details</h4>
             <div style={{ fontSize: '0.9rem', display: 'grid', gap: '0.4rem' }}>
-              <div><strong>Applied Rank / Должность:</strong> {candidate.appliedRank}</div>
-              <div><strong>Desired Salary / Оклад:</strong> ${candidate.minSalary} / month</div>
-              <div><strong>Availability / Готовность:</strong> {candidate.readyDate}</div>
-              <div><strong>Marlins Score / Английский:</strong> {candidate.marlinsScore} ({candidate.englishLevel})</div>
+              <div><strong>Applied Rank:</strong> {candidate.appliedRank}</div>
+              <div><strong>Desired Salary:</strong> ${candidate.minSalary} / month</div>
+              <div><strong>Availability Date:</strong> {candidate.readyDate}</div>
+              <div><strong>Marlins Score:</strong> {candidate.marlinsScore} ({candidate.englishLevel})</div>
             </div>
           </div>
         </div>
 
         {/* Sea Experience Matrix */}
-        <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.8rem' }}>3. Sea Experience Record Matrix / Опыт работы в море</h4>
+        <h4 style={{ color: 'var(--color-accent)', marginBottom: '0.8rem' }}>3. Sea Experience Record Matrix</h4>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
           <thead>
             <tr style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid var(--border-color)' }}>
@@ -103,7 +103,7 @@ export const CandidateDossierModal = ({
         <div className="no-print" style={{ marginBottom: '1.5rem', background: 'rgba(0,139,255,0.06)', padding: '1.2rem', borderRadius: '10px', border: '1px solid rgba(0,139,255,0.25)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.8rem' }}>
             <h4 style={{ color: 'var(--color-accent)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem' }}>
-              <Paperclip size={18} /> 4. Attached Documents / Прикрепленные файлы ({candidate.attachedFiles?.length || 0})
+              <Paperclip size={18} /> 4. Attached Documents ({candidate.attachedFiles?.length || 0})
             </h4>
 
             <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer', gap: '0.4rem', color: 'var(--color-emerald)', borderColor: 'rgba(16,185,129,0.3)' }}>

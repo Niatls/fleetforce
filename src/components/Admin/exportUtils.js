@@ -50,20 +50,20 @@ export const handleExportDoc = (cand) => {
       <h1>FLEETFORCE CREWING ALLIANCE</h1>
       <div class="sub">INTERNATIONAL SEAFARER APPLICATION DOSSIER | REF: ${cand.id} | Date: ${new Date().toLocaleDateString()}</div>
 
-      <h3>1. PERSONAL DETAILS / ЛИЧНЫЕ ДАННЫЕ</h3>
+      <h3>1. PERSONAL DETAILS</h3>
       <table class="info-grid">
         <tr><td><strong>Full Name:</strong> ${cand.fullName}</td><td><strong>Date of Birth:</strong> ${cand.dob || '-'}</td></tr>
         <tr><td><strong>Phone:</strong> ${cand.phone || '-'}</td><td><strong>Citizenship:</strong> ${cand.citizenship || '-'}</td></tr>
         <tr><td><strong>Email:</strong> ${cand.email || '-'}</td><td><strong>Passport / Seaman Book:</strong> ${cand.passportNo || 'Included in Attached Docs'}</td></tr>
       </table>
 
-      <h3>2. APPLICATION DETAILS / ДАННЫЕ ВАКАНСИИ И АНГЛИЙСКИЙ</h3>
+      <h3>2. APPLICATION DETAILS</h3>
       <table class="info-grid">
         <tr><td><strong>Applied Rank:</strong> ${cand.appliedRank}</td><td><strong>Min Desired Salary:</strong> $${cand.minSalary || '0'} / month</td></tr>
         <tr><td><strong>Availability Date:</strong> ${cand.readyDate || '-'}</td><td><strong>Marlins Score:</strong> ${cand.marlinsScore || 'N/A'} (${cand.englishLevel || 'Good'})</td></tr>
       </table>
 
-      <h3>3. SEA EXPERIENCE RECORD MATRIX / ОПЫТ РАБОТЫ В МОРЕ</h3>
+      <h3>3. SEA EXPERIENCE RECORD MATRIX</h3>
       <table>
         <thead>
           <tr>
@@ -132,20 +132,20 @@ const generateDocBlob = (cand) => {
       <h1>FLEETFORCE CREWING ALLIANCE</h1>
       <div class="sub">INTERNATIONAL SEAFARER APPLICATION DOSSIER | REF: ${cand.id} | Date: ${new Date().toLocaleDateString()}</div>
 
-      <h3>1. PERSONAL DETAILS / ЛИЧНЫЕ ДАННЫЕ</h3>
+      <h3>1. PERSONAL DETAILS</h3>
       <table class="info-grid">
         <tr><td><strong>Full Name:</strong> ${cand.fullName}</td><td><strong>Date of Birth:</strong> ${cand.dob || '-'}</td></tr>
         <tr><td><strong>Phone:</strong> ${cand.phone || '-'}</td><td><strong>Citizenship:</strong> ${cand.citizenship || '-'}</td></tr>
         <tr><td><strong>Email:</strong> ${cand.email || '-'}</td><td><strong>Passport / Seaman Book:</strong> ${cand.passportNo || 'Included in Attached Docs'}</td></tr>
       </table>
 
-      <h3>2. APPLICATION DETAILS / ДАННЫЕ ВАКАНСИИ И АНГЛИЙСКИЙ</h3>
+      <h3>2. APPLICATION DETAILS</h3>
       <table class="info-grid">
         <tr><td><strong>Applied Rank:</strong> ${cand.appliedRank}</td><td><strong>Min Desired Salary:</strong> $${cand.minSalary || '0'} / month</td></tr>
         <tr><td><strong>Availability Date:</strong> ${cand.readyDate || '-'}</td><td><strong>Marlins Score:</strong> ${cand.marlinsScore || 'N/A'} (${cand.englishLevel || 'Good'})</td></tr>
       </table>
 
-      <h3>3. SEA EXPERIENCE RECORD MATRIX / ОПЫТ РАБОТЫ В МОРЕ</h3>
+      <h3>3. SEA EXPERIENCE RECORD MATRIX</h3>
       <table>
         <thead>
           <tr>
@@ -283,26 +283,26 @@ const generatePdfBlob = async (cand) => {
   };
 
   // 1. Personal
-  section('1. ЛИЧНЫЕ ДАННЫЕ / PERSONAL DETAILS');
+  section('1. PERSONAL DETAILS');
   field('Full Name', cand.fullName);
-  field('Дата рождения', cand.dob);
-  field('Телефон', cand.phone);
+  field('Date of Birth', cand.dob);
+  field('Phone', cand.phone);
   field('Email', cand.email);
-  field('Гражданство', cand.citizenship);
-  field('Паспорт / Мор. книжка', cand.passportNo || 'Включено в прикреплённые документы');
+  field('Citizenship', cand.citizenship);
+  field('Passport / Seaman Book', cand.passportNo || 'Included in Attached Docs');
   y += 2;
 
   // 2. Application
-  section('2. ДАННЫЕ ВАКАНСИИ / APPLICATION DETAILS');
+  section('2. APPLICATION DETAILS');
   field('Applied Rank', cand.appliedRank);
-  field('Дата готовности', cand.readyDate);
-  field('Мин. зарплата', `$${cand.minSalary || 0} / месяц`);
+  field('Availability Date', cand.readyDate);
+  field('Min Desired Salary', `$${cand.minSalary || 0} / month`);
   field('Marlins Score', `${cand.marlinsScore || 'N/A'} (${cand.englishLevel || 'Good'})`);
   y += 2;
 
   // 3. Sea Service
-  section('3. ОПЫТ РАБОТЫ В МОРЕ / SEA EXPERIENCE');
-  const seaHeaders = ['Судно', 'Тип', 'DWT/Engine', 'Должность', 'Manning Co.', 'Период'];
+  section('3. SEA EXPERIENCE RECORD MATRIX');
+  const seaHeaders = ['Vessel Name', 'Type', 'DWT/Engine', 'Rank', 'Manning Co.', 'Period'];
   const seaColW = [32, 24, 24, 22, 30, 32];
   const tableX = margin;
 
@@ -322,7 +322,7 @@ const generatePdfBlob = async (cand) => {
     doc.setFont(mainFont, 'normal');
     doc.setTextColor(120, 120, 120);
     doc.setFontSize(8);
-    addText('Опыт работы в море не указан', margin, y);
+    addText('No sea experience recorded', margin, y);
     y += 6;
   } else {
     seaService.forEach((s, idx) => {
@@ -352,7 +352,7 @@ const generatePdfBlob = async (cand) => {
 
   // 4. Notes
   if (cand.notes) {
-    section('4. ЗАМЕТКИ РЕКРУТЕРА / RECRUITER NOTES');
+    section('4. RECRUITER & MANAGER NOTES');
     doc.setFontSize(9);
     doc.setFont(mainFont, 'normal');
     doc.setTextColor(60, 60, 60);
@@ -390,12 +390,12 @@ export const handleDownloadAllFiles = async (cand) => {
   // 1. Add DOC questionnaire
   const docBlob = generateDocBlob(cand);
   const docArrayBuffer = await docBlob.arrayBuffer();
-  folder.file(`Анкета_${cleanName}_${cand.id}.doc`, docArrayBuffer);
+  folder.file(`Application_${cleanName}_${cand.id}.doc`, docArrayBuffer);
 
   // 2. Add PDF questionnaire (async — font loading)
   const pdfArrayBuffer = await generatePdfBlob(cand);
   if (pdfArrayBuffer) {
-    folder.file(`Анкета_${cleanName}_${cand.id}.pdf`, pdfArrayBuffer);
+    folder.file(`Application_${cleanName}_${cand.id}.pdf`, pdfArrayBuffer);
   }
 
   // 3. Add attached files (from base64 dataUrls)
@@ -404,7 +404,7 @@ export const handleDownloadAllFiles = async (cand) => {
     const file = files[i];
     if (file.dataUrl && file.dataUrl.includes(',')) {
       const uint8 = dataUrlToUint8Array(file.dataUrl);
-      folder.file(file.name || `Документ_${i + 1}`, uint8);
+      folder.file(file.name || `Document_${i + 1}`, uint8);
     }
   }
 
