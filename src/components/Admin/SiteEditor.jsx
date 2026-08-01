@@ -157,7 +157,7 @@ export const SiteEditor = ({
     markChanged();
   };
   const handleToggleOfficeActive = (id) => {
-    setDraftOffices(prev => prev.map(o => o.id === id ? { ...o, active: o.active === false } : v));
+    setDraftOffices(prev => prev.map(o => o.id === id ? { ...o, active: o.active === false } : o));
     markChanged();
   };
 
