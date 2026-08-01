@@ -683,7 +683,17 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                   : <div />}
                 {step < TOTAL_STEPS
                   ? <button type="button" onClick={() => setStep(s => s + 1)} className="btn btn-primary">Next <ChevronRight size={18} /></button>
-                  : <button type="submit" className="btn btn-accent btn-lg"><CheckCircle2 size={20} /> Submit Application</button>}
+                  : <button 
+                      type="submit" 
+                      disabled={!fd.consent} 
+                      className="btn btn-accent btn-lg"
+                      style={{ 
+                        opacity: fd.consent ? 1 : 0.4, 
+                        cursor: fd.consent ? 'pointer' : 'not-allowed'
+                      }}
+                    >
+                      <CheckCircle2 size={20} /> Submit Application
+                    </button>}
               </div>
             </form>
           </div>

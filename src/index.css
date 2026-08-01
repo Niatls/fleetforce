@@ -361,82 +361,64 @@ button, input, select, textarea {
 /* Printable CV Styles */
 @media print {
   @page {
-    margin: 0;
-    size: auto;
+    margin: 10mm 12mm;
+    size: portrait;
   }
 
-  /* Hide main website layout, background sections, navbar, footer, buttons */
-  header, nav, section, footer, .navbar-wrapper, .no-print, .btn {
-    display: none !important;
+  /* Hide everything on the page by default */
+  body * {
+    visibility: hidden !important;
   }
 
-  body {
-    background: #FFFFFF !important;
-    color: #000000 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  #root > .app-layout > *:not(.modal-overlay) {
-    display: none !important;
-  }
-
-  .modal-overlay {
-    position: static !important;
-    background: #FFFFFF !important;
-    backdrop-filter: none !important;
-    padding: 0 !important;
-    display: block !important;
-  }
-
-  .modal-content {
-    position: static !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: none !important;
-    overflow: visible !important;
-    box-shadow: none !important;
-    border: none !important;
-    background: #FFFFFF !important;
-    color: #000000 !important;
-    padding: 0 !important;
+  /* Show ONLY printable-cv and its children */
+  .printable-cv, .printable-cv * {
+    visibility: visible !important;
   }
 
   .printable-cv {
-    padding: 10mm 15mm !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
     background: #FFFFFF !important;
     color: #000000 !important;
     box-shadow: none !important;
     border: none !important;
   }
 
-  .printable-cv * {
-    color: #000000 !important;
-    background: transparent !important;
-    border-color: #CCCCCC !important;
+  /* Hide screen-only modal headers and buttons */
+  .no-print, .btn, button {
+    display: none !important;
   }
 
   .printable-cv h1, .printable-cv h2, .printable-cv h3, .printable-cv h4 {
-    color: #003366 !important;
+    color: #000000 !important;
   }
 
   .printable-cv table {
     width: 100% !important;
     border-collapse: collapse !important;
-    margin-top: 10px !important;
-    margin-bottom: 15px !important;
+    margin-top: 8px !important;
+    margin-bottom: 12px !important;
   }
 
   .printable-cv th, .printable-cv td {
-    border: 1px solid #999999 !important;
-    padding: 6px 10px !important;
-    font-size: 10pt !important;
-    text-align: left !important;
+    border: 1px solid #000000 !important;
+    padding: 4px 6px !important;
+    font-size: 8.5pt !important;
+    color: #000000 !important;
+    background-color: #FFFFFF !important;
   }
 
   .printable-cv th {
-    background-color: #F0F4F8 !important;
+    background-color: #b6d7a8 !important;
     font-weight: bold !important;
-    color: #003366 !important;
+    color: #000000 !important;
+    text-align: center !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }

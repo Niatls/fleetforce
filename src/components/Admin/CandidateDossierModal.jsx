@@ -16,13 +16,23 @@ export const CandidateDossierModal = ({
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content printable-cv" style={{ maxWidth: '950px', padding: '2.5rem', maxHeight: '92vh', overflowY: 'auto' }}>
+      <div className="modal-content printable-cv" style={{ maxWidth: '950px', padding: '2.5rem', maxHeight: '92vh', overflowY: 'auto', position: 'relative' }}>
         
-        {/* Screen Modal Actions */}
-        <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+        {/* Close Button top-right */}
+        <button 
+          onClick={onClose} 
+          className="no-print" 
+          style={{ position: 'absolute', top: '1.2rem', right: '1.2rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', zIndex: 10 }}
+          title="Close modal"
+        >
+          <X size={24} />
+        </button>
+
+        {/* Screen Modal Actions Header */}
+        <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', paddingRight: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <FileCheck size={24} color="var(--color-accent)" />
-            <h3 style={{ fontSize: '1.4rem' }}>{t('admin.dossierTitle')} - {candidate.id}</h3>
+            <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Seafarer Dossier - {candidate.id}</h3>
           </div>
           <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => onExportDoc(candidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-accent)', borderColor: 'rgba(0,139,255,0.4)', gap: '0.4rem' }}>
@@ -30,9 +40,6 @@ export const CandidateDossierModal = ({
             </button>
             <button onClick={() => window.print()} className="btn btn-primary btn-sm" style={{ gap: '0.4rem' }}>
               <Printer size={15} /> Print / Export PDF (.pdf)
-            </button>
-            <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.4rem' }}>
-              <X size={22} />
             </button>
           </div>
         </div>
@@ -46,7 +53,7 @@ export const CandidateDossierModal = ({
             </div>
             <div style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
               <div><strong>REF:</strong> {candidate.id}</div>
-              <div><strong>Date:</strong> {new Date().toLocaleDateString()}</div>
+              <div><strong>Date:</strong> {new Date().toISOString().split('T')[0]}</div>
             </div>
           </div>
         </div>

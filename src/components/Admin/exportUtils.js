@@ -18,6 +18,7 @@ export const handleExportCSV = (candidates = []) => {
 // Helper: Build comprehensive HTML application form matching Crew_Application_Form.pdf
 const buildApplicationFormHtml = (cand) => {
   const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '');
+  const todayStr = new Date().toISOString().split('T')[0];
 
   const seaServiceRows = (cand.seaService && cand.seaService.length > 0)
     ? cand.seaService.map(s => `
@@ -92,7 +93,7 @@ const buildApplicationFormHtml = (cand) => {
     </head>
     <body>
       <div class="header-title">APPLICATION FORM</div>
-      <div class="meta-line">FLEETFORCE CREWING ALLIANCE | REF: ${cand.id} | Date: ${new Date().toLocaleDateString()}</div>
+      <div class="meta-line">FLEETFORCE CREWING ALLIANCE | REF: ${cand.id || 'N/A'} | Date: ${todayStr}</div>
 
       <!-- 1. GENERAL INFORMATION -->
       <table>
@@ -266,7 +267,7 @@ export const handleExportDoc = (cand) => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `FleetForce_Application_${cleanName}_${cand.id}.doc`;
+  a.download = `FleetForce_Application_${cleanName}_${cand.id || 'FORM'}.doc`;
   a.click();
   URL.revokeObjectURL(url);
 };
@@ -321,170 +322,290 @@ const generatePdfBlob = async (cand) => {
   if (!jsPDFClass) { console.warn('jsPDF not loaded'); return null; }
   const doc = new jsPDFClass({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.getWidth();
-  const margin = 12;
+  const margin = 10;
   const colW = pageW - margin * 2;
-  let y = 14;
+  let y = 12;
 
   const cyrillicLoaded = await loadCyrillicFont(doc);
   const mainFont = cyrillicLoaded ? 'PTSerif' : 'helvetica';
-
-  const addText = (text, x, curY, opts = {}) => {
-    doc.text(String(text ?? ''), x, curY, opts);
-  };
+  const todayStr = new Date().toISOString().split('T')[0];
 
   const checkPage = (needed = 10) => {
     if (y + needed > 280) {
       doc.addPage();
-      y = 14;
+      y = 12;
     }
+  };
+
+  // Cell rendering helper matching Crew_Application_Form.pdf bordered grid
+  const cell = (x, curY, w, h, text, isHeader = false, isLabel = false, align = 'left') => {
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(0, 0, 0); // Black borders
+    if (isHeader) {
+      doc.setFillColor(182, 215, 168); // #b6d7a8 green
+      doc.rect(x, curY, w, h, 'FD');
+      doc.setFont(mainFont, 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(0, 0, 0);
+    } else if (isLabel) {
+      doc.setFillColor(238, 247, 234); // #eef7ea light green label
+      doc.rect(x, curY, w, h, 'FD');
+      doc.setFont(mainFont, 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(0, 0, 0);
+    } else {
+      doc.setFillColor(255, 255, 255);
+      doc.rect(x, curY, w, h, 'FD');
+      doc.setFont(mainFont, 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(0, 0, 0);
+    }
+    const txt = String(text ?? '-');
+    const txtX = align === 'center' ? x + w / 2 : x + 1.5;
+    doc.text(txt, txtX, curY + h / 2 + 1, { align, maxWidth: w - 2 });
   };
 
   // Header Title
   doc.setFontSize(16);
   doc.setFont(mainFont, 'bold');
-  doc.setTextColor(0, 51, 102);
-  addText('APPLICATION FORM', pageW / 2, y, { align: 'center' });
-  y += 6;
+  doc.setTextColor(0, 0, 0);
+  doc.text('APPLICATION FORM', pageW / 2, y, { align: 'center' });
+  y += 5;
 
   doc.setFontSize(8);
   doc.setFont(mainFont, 'normal');
-  doc.setTextColor(100, 100, 100);
-  addText(`FLEETFORCE CREWING ALLIANCE  |  REF: ${cand.id}  |  Date: ${new Date().toLocaleDateString()}`, pageW / 2, y, { align: 'center' });
+  doc.setTextColor(80, 80, 80);
+  doc.text(`Date: ${todayStr} | Prepared by: Quality Manager. Approved by: Crewing Director. REF: ${cand.id || 'N/A'}`, pageW / 2, y, { align: 'center' });
   y += 4;
 
-  doc.setDrawColor(0, 51, 102);
-  doc.setLineWidth(0.5);
+  doc.setLineWidth(0.4);
+  doc.setDrawColor(0, 0, 0);
   doc.line(margin, y, pageW - margin, y);
-  y += 6;
+  y += 4;
 
-  // Section helper
-  const section = (title) => {
-    checkPage(10);
-    doc.setFontSize(10);
-    doc.setFont(mainFont, 'bold');
-    doc.setFillColor(182, 215, 168);
-    doc.rect(margin, y - 4, colW, 6, 'F');
-    doc.setTextColor(0, 51, 102);
-    addText(title, margin + 2, y);
-    y += 5;
-  };
+  // 1. GENERAL INFORMATION GRID
+  const gRows = [
+    [
+      { lbl: 'Positions applied for:', val: cand.appliedRank, w1: 38, w2: 55 },
+      { lbl: 'Date of readiness:', val: cand.readyDate, w1: 38, w2: 55 }
+    ],
+    [
+      { lbl: 'Surname:', val: cand.surname || cand.fullName?.split(' ')[0], w1: 38, w2: 55 },
+      { lbl: 'Name:', val: cand.name || cand.fullName?.split(' ').slice(1).join(' '), w1: 38, w2: 55 }
+    ],
+    [
+      { lbl: 'Father’s name:', val: cand.fatherName, w1: 38, w2: 55 },
+      { lbl: 'Mother’s name:', val: cand.motherName, w1: 38, w2: 55 }
+    ],
+    [
+      { lbl: 'Date of birth:', val: cand.dob, w1: 38, w2: 55 },
+      { lbl: 'Nationality:', val: cand.nationality || cand.citizenship, w1: 38, w2: 55 }
+    ],
+    [
+      { lbl: 'Place of birth:', val: cand.placeOfBirth, w1: 38, w2: 55 },
+      { lbl: 'Marital status:', val: `${cand.maritalStatus || 'Single'} (${cand.childrenUnder18 || '0'} children)`, w1: 38, w2: 55 }
+    ],
+    [
+      { lbl: 'Home Address:', val: cand.address || cand.homeAddress, w1: 38, w2: 148 }
+    ],
+    [
+      { lbl: 'Home Zip:', val: cand.homeZip, w1: 38, w2: 55 },
+      { lbl: 'Contact Phone:', val: cand.phone, w1: 38, w2: 55 }
+    ],
+    [
+      { lbl: 'E-mail:', val: cand.email, w1: 38, w2: 55 },
+      { lbl: 'Skype/Telegram:', val: cand.skypeTelegram, w1: 38, w2: 55 }
+    ],
+    [
+      { lbl: 'Next of kin:', val: `${cand.kinName || '-'} (${cand.kinRelation || '-'})`, w1: 38, w2: 55 },
+      { lbl: 'Next of kin phone:', val: cand.kinPhone, w1: 38, w2: 55 }
+    ],
+    [
+      { lbl: 'Physical Details:', val: `Height: ${cand.height || '-'} cm, Weight: ${cand.weight || '-'} kg, Overall: ${cand.overallSize || '-'}, Shoes: ${cand.shoeSize || '-'}, Eyes: ${cand.eyesColour || '-'}, Hair: ${cand.hairColour || '-'}`, w1: 38, w2: 148 }
+    ]
+  ];
 
-  const field = (label, value) => {
+  gRows.forEach(row => {
     checkPage(6);
-    doc.setFontSize(8.5);
-    doc.setFont(mainFont, 'bold');
-    doc.setTextColor(50, 50, 50);
-    addText(label + ':', margin, y);
-    doc.setFont(mainFont, 'normal');
-    doc.setTextColor(20, 20, 20);
-    const safeVal = String(value ?? '-');
-    const lines = doc.splitTextToSize(safeVal, colW - 55);
-    addText(lines, margin + 55, y);
-    y += Math.max(5, lines.length * 4.5);
-  };
+    let curX = margin;
+    row.forEach(item => {
+      cell(curX, y, item.w1, 5.5, item.lbl, false, true);
+      curX += item.w1;
+      cell(curX, y, item.w2, 5.5, item.val, false, false);
+      curX += item.w2;
+    });
+    y += 5.5;
+  });
+  y += 3;
 
-  // 1. General Info
-  section('1. GENERAL INFORMATION');
-  field('Positions applied for', cand.appliedRank);
-  field('Date of readiness', cand.readyDate);
-  field('Full Name', cand.fullName);
-  field('Father / Mother Name', `${cand.fatherName || '-'} / ${cand.motherName || '-'}`);
-  field('Date of birth / Nationality', `${cand.dob || '-'} / ${cand.nationality || cand.citizenship || '-'}`);
-  field('Place of birth', cand.placeOfBirth || '-');
-  field('Marital status / Children <18', `${cand.maritalStatus || 'Single'} (${cand.childrenUnder18 || '0'} children)`);
-  field('Home Address', cand.address || cand.homeAddress || '-');
-  field('Contact Phone / Zip', `${cand.phone || '-'} (Zip: ${cand.homeZip || '-'})`);
-  field('E-mail / Skype', `${cand.email || '-'} / Telegram: ${cand.skypeTelegram || '-'}`);
-  field('Next of kin / Phone', `${cand.kinName || '-'} (${cand.kinRelation || '-'}) | Phone: ${cand.kinPhone || '-'}`);
-  field('Physical details', `Height: ${cand.height || '-'} cm, Weight: ${cand.weight || '-'} kg, Overall: ${cand.overallSize || '-'}, Shoes: ${cand.shoeSize || '-'}`);
-  y += 2;
+  // 2. MARINE EDUCATION
+  checkPage(16);
+  cell(margin, y, colW, 6, 'Marine Education', true, false, 'center');
+  y += 6;
+  cell(margin, y, 110, 5.5, 'Name of maritime college or academy', false, true);
+  cell(margin + 110, y, 38, 5.5, 'From', false, true);
+  cell(margin + 148, y, 38, 5.5, 'Till', false, true);
+  y += 5.5;
+  cell(margin, y, 110, 5.5, cand.collegeName || '-');
+  cell(margin + 110, y, 38, 5.5, cand.collegeFrom || '-');
+  cell(margin + 148, y, 38, 5.5, cand.collegeTill || '-');
+  y += 8.5;
 
-  // 2. Passports & Certificates
-  section('2. PASSPORTS AND CERTIFICATES');
-  field('Travel Passport', `No: ${cand.passportNo || '-'} | Issued: ${cand.passportIssued || '-'} | Expiry: ${cand.passportExpiry || '-'}`);
-  field('Seaman Book (SID)', `No: ${cand.seamanBookNo || '-'} | Issued: ${cand.seamanBookIssued || '-'} | Expiry: ${cand.seamanBookExpiry || '-'}`);
+  // 3. PASSPORTS AND CERTIFICATES
+  checkPage(24);
+  cell(margin, y, colW, 6, 'PASSPORTS and CERTIFICATES', true, false, 'center');
+  y += 6;
+  cell(margin, y, 56, 5.5, 'DOCUMENT', false, true);
+  cell(margin + 56, y, 35, 5.5, 'NUMBER', false, true);
+  cell(margin + 91, y, 30, 5.5, 'ISSUED DATE', false, true);
+  cell(margin + 121, y, 30, 5.5, 'VALID UNTIL', false, true);
+  cell(margin + 151, y, 35, 5.5, 'PLACE', false, true);
+  y += 5.5;
+
+  cell(margin, y, 56, 5.5, 'TRAVEL PASSPORT:', false, true);
+  cell(margin + 56, y, 35, 5.5, cand.passportNo);
+  cell(margin + 91, y, 30, 5.5, cand.passportIssued);
+  cell(margin + 121, y, 30, 5.5, cand.passportExpiry);
+  cell(margin + 151, y, 35, 5.5, cand.passportPlace);
+  y += 5.5;
+
+  cell(margin, y, 56, 5.5, "SEAMAN'S BOOK (SID):", false, true);
+  cell(margin + 56, y, 35, 5.5, cand.seamanBookNo);
+  cell(margin + 91, y, 30, 5.5, cand.seamanBookIssued);
+  cell(margin + 121, y, 30, 5.5, cand.seamanBookExpiry);
+  cell(margin + 151, y, 35, 5.5, cand.seamanBookPlace);
+  y += 5.5;
+
   if (cand.certificates && cand.certificates.length > 0) {
     cand.certificates.forEach(c => {
-      field(c.certName || 'Certificate', `No: ${c.certNo || '-'} | Valid: ${c.certValid || '-'} | Capacity: ${c.rankCapacity || '-'}`);
-    });
-  }
-  y += 2;
-
-  // 3. Sea Service
-  section('3. PREVIOUS SEA SERVICE');
-  const seaHeaders = ['From', 'To', 'Position', 'Vessel', 'Type', 'DWT/BHP', 'Manning Co.'];
-  const seaColW = [22, 22, 28, 30, 28, 26, 30];
-  const tableX = margin;
-
-  checkPage(8);
-  doc.setFillColor(217, 234, 211);
-  doc.rect(tableX, y - 4, colW, 6, 'F');
-  doc.setFontSize(8);
-  doc.setFont(mainFont, 'bold');
-  doc.setTextColor(0, 51, 102);
-  let hx = tableX + 1;
-  seaHeaders.forEach((h, i) => { addText(h, hx, y); hx += seaColW[i]; });
-  y += 5;
-
-  const seaService = cand.seaService || [];
-  if (seaService.length === 0) {
-    doc.setFont(mainFont, 'normal');
-    doc.setTextColor(120, 120, 120);
-    doc.setFontSize(8);
-    addText('No sea experience recorded', margin, y);
-    y += 5;
-  } else {
-    seaService.forEach((s, idx) => {
-      checkPage(7);
-      if (idx % 2 === 0) {
-        doc.setFillColor(245, 247, 250);
-        doc.rect(tableX, y - 4, colW, 6, 'F');
-      }
-      doc.setFont(mainFont, 'normal');
-      doc.setTextColor(30, 30, 30);
-      doc.setFontSize(7.5);
-      const row = [
-        s.dateFrom || '-', s.dateTo || '-',
-        String(s.rankHeld || '-'), String(s.vesselName || '-'),
-        String(s.vesselType || '-'), `${s.dwtGrt || '-'}/${s.engineBhp || '-'}`,
-        String(s.manningCompany || '-')
-      ];
-      let rx = tableX + 1;
-      row.forEach((val, i) => { addText(String(val ?? '-').substring(0, 18), rx, y); rx += seaColW[i]; });
+      checkPage(6);
+      cell(margin, y, 56, 5.5, c.certName || 'Certificate', false, true);
+      cell(margin + 56, y, 35, 5.5, c.certNo);
+      cell(margin + 91, y, 30, 5.5, c.certIssued);
+      cell(margin + 121, y, 30, 5.5, c.certValid);
+      cell(margin + 151, y, 35, 5.5, c.rankCapacity);
       y += 5.5;
     });
   }
   y += 3;
 
-  // 4. Employers
-  if (cand.employers && cand.employers.length > 0) {
-    section('4. BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS');
-    cand.employers.forEach(e => {
-      field(e.company || 'Employer', `Person in charge: ${e.personInCharge || '-'} | Contact: ${e.contactDetails || '-'}`);
+  // 4. FOREIGN SEAMAN'S ID / RECORD BOOKS
+  checkPage(16);
+  cell(margin, y, colW, 6, 'FOREIGN SEAMAN’S ID / RECORD BOOKS', true, false, 'center');
+  y += 6;
+  cell(margin, y, 40, 5.5, 'FLAG', false, true);
+  cell(margin + 40, y, 40, 5.5, 'NUMBER', false, true);
+  cell(margin + 80, y, 35, 5.5, 'ISSUED DATE', false, true);
+  cell(margin + 115, y, 35, 5.5, 'VALID UNTIL', false, true);
+  cell(margin + 150, y, 36, 5.5, 'PLACE', false, true);
+  y += 5.5;
+
+  if (cand.recordBooks && cand.recordBooks.length > 0) {
+    cand.recordBooks.forEach(rb => {
+      checkPage(6);
+      cell(margin, y, 40, 5.5, rb.flag);
+      cell(margin + 40, y, 40, 5.5, rb.number);
+      cell(margin + 80, y, 35, 5.5, rb.issuedDate);
+      cell(margin + 115, y, 35, 5.5, rb.validUntil);
+      cell(margin + 150, y, 36, 5.5, rb.place);
+      y += 5.5;
     });
-    y += 2;
+  } else {
+    cell(margin, y, colW, 5.5, 'No foreign record books listed', false, false, 'center');
+    y += 5.5;
   }
+  y += 3;
 
-  // Declaration
-  checkPage(25);
-  doc.setFontSize(7.5);
-  doc.setTextColor(80, 80, 80);
+  // 5. PREVIOUS SEA SERVICE
+  checkPage(16);
+  cell(margin, y, colW, 6, 'PREVIOUS SEA SERVICE', true, false, 'center');
+  y += 6;
+
+  const sCols = [
+    { name: 'FROM', w: 16 }, { name: 'TO', w: 16 }, { name: 'RANK', w: 20 },
+    { name: 'SALARY', w: 14 }, { name: 'VESSEL', w: 22 }, { name: 'SHIPOWNER', w: 18 },
+    { name: 'TYPE', w: 18 }, { name: 'ENGINE', w: 14 }, { name: 'BUILD', w: 11 },
+    { name: 'DWT', w: 11 }, { name: 'BHP', w: 11 }, { name: 'FLAG', w: 15 }
+  ];
+
+  let sx = margin;
+  sCols.forEach(col => {
+    cell(sx, y, col.w, 5.5, col.name, false, true);
+    sx += col.w;
+  });
+  y += 5.5;
+
+  const seaService = cand.seaService || [];
+  if (seaService.length === 0) {
+    cell(margin, y, colW, 5.5, 'No sea experience recorded', false, false, 'center');
+    y += 5.5;
+  } else {
+    seaService.forEach(s => {
+      checkPage(6);
+      let rx = margin;
+      const rData = [
+        s.dateFrom, s.dateTo, s.rankHeld, `$${s.salary || '-'}`,
+        s.vesselName, s.shipowner, s.vesselType, s.engineType,
+        s.buildYear, s.dwtGrt, s.engineBhp, s.flag
+      ];
+      rData.forEach((val, idx) => {
+        cell(rx, y, sCols[idx].w, 5.5, val);
+        rx += sCols[idx].w;
+      });
+      y += 5.5;
+    });
+  }
+  y += 3;
+
+  // 6. BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS
+  checkPage(16);
+  cell(margin, y, colW, 6, 'BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS', true, false, 'center');
+  y += 6;
+  cell(margin, y, 65, 5.5, 'COMPANY', false, true);
+  cell(margin + 65, y, 56, 5.5, 'PERSON IN CHARGE', false, true);
+  cell(margin + 121, y, 65, 5.5, 'CONTACT DETAILS (Phone / E-mail)', false, true);
+  y += 5.5;
+
+  if (cand.employers && cand.employers.length > 0) {
+    cand.employers.forEach(e => {
+      checkPage(6);
+      cell(margin, y, 65, 5.5, e.company);
+      cell(margin + 65, y, 56, 5.5, e.personInCharge);
+      cell(margin + 121, y, 65, 5.5, e.contactDetails);
+      y += 5.5;
+    });
+  } else {
+    cell(margin, y, colW, 5.5, 'No previous employer contacts listed', false, false, 'center');
+    y += 5.5;
+  }
+  y += 4;
+
+  // 7. DECLARATION
+  checkPage(30);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(0, 0, 0);
+  doc.rect(margin, y, colW, 30);
+
+  doc.setFontSize(7);
   doc.setFont(mainFont, 'normal');
+  doc.setTextColor(0, 0, 0);
   const declText = "I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.";
-  const declLines = doc.splitTextToSize(declText, colW);
-  addText(declLines, margin, y);
-  y += declLines.length * 3.5 + 4;
+  const declLines = doc.splitTextToSize(declText, colW - 4);
+  doc.text(declLines, margin + 2, y + 4);
 
-  addText('Date: ________________________', margin, y);
-  addText('Signature: ________________________', margin + 110, y);
-  y += 8;
+  y += 22;
+  doc.setFont(mainFont, 'bold');
+  doc.text('Date: ________________________', margin + 4, y);
+  doc.text('Signature: ________________________', margin + 110, y);
+  y += 12;
 
   // Footer
   doc.setFontSize(7.5);
-  doc.setTextColor(150, 150, 150);
+  doc.setFont(mainFont, 'normal');
+  doc.setTextColor(120, 120, 120);
   doc.line(margin, y, pageW - margin, y);
   y += 4;
-  addText('Generated by FleetForce Crewing Platform  |  ISO 9001 & MLC 2006 Certified System', margin, y, { maxWidth: colW });
+  doc.text('Generated by FleetForce Crewing Platform  |  ISO 9001 & MLC 2006 Certified System', pageW / 2, y, { align: 'center' });
 
   return doc.output('arraybuffer');
 };
@@ -504,12 +625,12 @@ export const handleDownloadAllFiles = async (cand) => {
   // 1. Add DOC questionnaire
   const docBlob = generateDocBlob(cand);
   const docArrayBuffer = await docBlob.arrayBuffer();
-  folder.file(`Application_${cleanName}_${cand.id}.doc`, docArrayBuffer);
+  folder.file(`Application_${cleanName}_${cand.id || 'FORM'}.doc`, docArrayBuffer);
 
   // 2. Add PDF questionnaire (async — font loading)
   const pdfArrayBuffer = await generatePdfBlob(cand);
   if (pdfArrayBuffer) {
-    folder.file(`Application_${cleanName}_${cand.id}.pdf`, pdfArrayBuffer);
+    folder.file(`Application_${cleanName}_${cand.id || 'FORM'}.pdf`, pdfArrayBuffer);
   }
 
   // 3. Add attached files (from base64 dataUrls)
