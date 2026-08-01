@@ -15,80 +15,253 @@ export const handleExportCSV = (candidates = []) => {
   URL.revokeObjectURL(url);
 };
 
-export const handleExportDoc = (cand) => {
-  if (!cand) return;
+// Helper: Build comprehensive HTML application form matching Crew_Application_Form.pdf
+const buildApplicationFormHtml = (cand) => {
   const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '');
-  const seaServiceRows = (cand.seaService || []).map(s => `
-    <tr>
-      <td style="padding:6px;border:1px solid #ccc;font-weight:bold;">${s.vesselName || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.vesselType || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.dwtGrt || '-'} / ${s.engineBhp || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.rankHeld || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.manningCompany || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.dateFrom || '-'} — ${s.dateTo || '-'}</td>
-    </tr>
-  `).join('');
 
-  const htmlContent = `
+  const seaServiceRows = (cand.seaService && cand.seaService.length > 0)
+    ? cand.seaService.map(s => `
+      <tr>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.dateFrom || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.dateTo || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-weight:bold;font-size:8.5pt;">${s.rankHeld || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">$${s.salary || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-weight:bold;font-size:8.5pt;">${s.vesselName || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.shipowner || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.vesselType || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.engineType || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.buildYear || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.dwtGrt || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.engineBhp || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.flag || '-'}</td>
+        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.manningCompany || '-'}</td>
+      </tr>
+    `).join('')
+    : '<tr><td colspan="13" style="padding:8px;text-align:center;border:1px solid #000;">No sea experience recorded</td></tr>';
+
+  const certificatesRows = (cand.certificates && cand.certificates.length > 0)
+    ? cand.certificates.map(c => `
+      <tr>
+        <td style="padding:5px;border:1px solid #000;font-weight:bold;">${c.certName || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${c.certNo || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${c.certIssued || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${c.certValid || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${c.rankCapacity || '-'}</td>
+      </tr>
+    `).join('')
+    : '';
+
+  const recordBooksRows = (cand.recordBooks && cand.recordBooks.length > 0)
+    ? cand.recordBooks.map(rb => `
+      <tr>
+        <td style="padding:5px;border:1px solid #000;font-weight:bold;">${rb.flag || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${rb.number || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${rb.issuedDate || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${rb.validUntil || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${rb.place || '-'}</td>
+      </tr>
+    `).join('')
+    : '<tr><td colspan="5" style="padding:6px;text-align:center;border:1px solid #000;">No foreign record books listed</td></tr>';
+
+  const employersRows = (cand.employers && cand.employers.length > 0)
+    ? cand.employers.map(e => `
+      <tr>
+        <td style="padding:5px;border:1px solid #000;font-weight:bold;">${e.company || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${e.personInCharge || '-'}</td>
+        <td style="padding:5px;border:1px solid #000;">${e.contactDetails || '-'}</td>
+      </tr>
+    `).join('')
+    : '<tr><td colspan="3" style="padding:6px;text-align:center;border:1px solid #000;">No previous employer contacts listed</td></tr>';
+
+  return `
     <html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
     <head>
       <meta charset='utf-8'>
-      <title>Seafarer Application - ${cand.fullName}</title>
+      <title>APPLICATION FORM - ${cand.fullName}</title>
       <style>
-        body { font-family: Arial, sans-serif; font-size: 11pt; color: #111; margin: 20px; }
-        h1 { color: #003366; font-size: 18pt; margin-bottom: 2px; }
-        .sub { color: #666; font-size: 10pt; margin-bottom: 20px; }
-        h3 { color: #003366; font-size: 13pt; border-bottom: 1px solid #003366; padding-bottom: 4px; margin-top: 18px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 10pt; }
-        th { background: #f0f4f8; color: #003366; padding: 6px; border: 1px solid #ccc; text-align: left; }
-        td { padding: 6px; border: 1px solid #ccc; }
-        .info-grid { width: 100%; margin-bottom: 10px; }
-        .info-grid td { border: none; padding: 4px 8px; }
+        body { font-family: Arial, sans-serif; font-size: 9.5pt; color: #000; margin: 15px; }
+        .header-title { text-align: center; font-size: 16pt; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 10px; text-transform: uppercase; }
+        .meta-line { font-size: 8pt; color: #555; margin-bottom: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+        th, td { border: 1px solid #000; padding: 4px 6px; font-size: 9pt; }
+        .sec-hdr { background: #b6d7a8; font-weight: bold; text-align: center; font-size: 10pt; text-transform: uppercase; padding: 6px; }
+        .tbl-hdr { background: #d9ead3; font-weight: bold; font-size: 8.5pt; text-align: left; }
+        .lbl { background: #eef7ea; font-weight: bold; width: 22%; }
+        .val { width: 28%; }
       </style>
     </head>
     <body>
-      <h1>FLEETFORCE CREWING ALLIANCE</h1>
-      <div class="sub">INTERNATIONAL SEAFARER APPLICATION DOSSIER | REF: ${cand.id} | Date: ${new Date().toLocaleDateString()}</div>
+      <div class="header-title">APPLICATION FORM</div>
+      <div class="meta-line">FLEETFORCE CREWING ALLIANCE | REF: ${cand.id} | Date: ${new Date().toLocaleDateString()}</div>
 
-      <h3>1. PERSONAL DETAILS</h3>
-      <table class="info-grid">
-        <tr><td><strong>Full Name:</strong> ${cand.fullName}</td><td><strong>Date of Birth:</strong> ${cand.dob || '-'}</td></tr>
-        <tr><td><strong>Phone:</strong> ${cand.phone || '-'}</td><td><strong>Citizenship:</strong> ${cand.citizenship || '-'}</td></tr>
-        <tr><td><strong>Email:</strong> ${cand.email || '-'}</td><td><strong>Passport / Seaman Book:</strong> ${cand.passportNo || 'Included in Attached Docs'}</td></tr>
-      </table>
-
-      <h3>2. APPLICATION DETAILS</h3>
-      <table class="info-grid">
-        <tr><td><strong>Applied Rank:</strong> ${cand.appliedRank}</td><td><strong>Min Desired Salary:</strong> $${cand.minSalary || '0'} / month</td></tr>
-        <tr><td><strong>Availability Date:</strong> ${cand.readyDate || '-'}</td><td><strong>Marlins Score:</strong> ${cand.marlinsScore || 'N/A'} (${cand.englishLevel || 'Good'})</td></tr>
-      </table>
-
-      <h3>3. SEA EXPERIENCE RECORD MATRIX</h3>
+      <!-- 1. GENERAL INFORMATION -->
       <table>
-        <thead>
-          <tr>
-            <th>Vessel Name</th>
-            <th>Type</th>
-            <th>DWT / Engine</th>
-            <th>Rank</th>
-            <th>Manning Company</th>
-            <th>Period</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${seaServiceRows || '<tr><td colspan="6">No sea experience recorded</td></tr>'}
-        </tbody>
+        <tr>
+          <td class="lbl">Positions applied for:</td>
+          <td class="val"><strong>${cand.appliedRank || '-'}</strong></td>
+          <td class="lbl">Date of readiness:</td>
+          <td class="val">${cand.readyDate || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">Surname:</td>
+          <td class="val">${cand.surname || cand.fullName?.split(' ')[0] || '-'}</td>
+          <td class="lbl">Name:</td>
+          <td class="val">${cand.name || cand.fullName?.split(' ').slice(1).join(' ') || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">Father’s name:</td>
+          <td class="val">${cand.fatherName || '-'}</td>
+          <td class="lbl">Mother’s name:</td>
+          <td class="val">${cand.motherName || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">Date of birth:</td>
+          <td class="val">${cand.dob || '-'}</td>
+          <td class="lbl">Nationality:</td>
+          <td class="val">${cand.nationality || cand.citizenship || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">Place of birth (City, Country):</td>
+          <td class="val">${cand.placeOfBirth || '-'}</td>
+          <td class="lbl">Marital status:</td>
+          <td class="val">${cand.maritalStatus || 'Single'} (Children &lt;18: ${cand.childrenUnder18 || '0'})</td>
+        </tr>
+        <tr>
+          <td class="lbl">Home Address:</td>
+          <td colspan="3">${cand.address || cand.homeAddress || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">Home Zip:</td>
+          <td class="val">${cand.homeZip || '-'}</td>
+          <td class="lbl">Contact Phone:</td>
+          <td class="val">${cand.phone || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">E-mail:</td>
+          <td class="val">${cand.email || '-'}</td>
+          <td class="lbl">Skype/Telegram:</td>
+          <td class="val">${cand.skypeTelegram || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">Next of kin:</td>
+          <td class="val">${cand.kinName || '-'} (${cand.kinRelation || '-'})</td>
+          <td class="lbl">Next of kin phone:</td>
+          <td class="val">${cand.kinPhone || '-'}</td>
+        </tr>
+        <tr>
+          <td class="lbl">Physical Details:</td>
+          <td colspan="3">Height: ${cand.height || '-'} cm | Weight: ${cand.weight || '-'} kg | Overall: ${cand.overallSize || '-'} EUR | Shoes: ${cand.shoeSize || '-'} EUR | Eyes: ${cand.eyesColour || '-'} | Hair: ${cand.hairColour || '-'}</td>
+        </tr>
       </table>
 
-      ${cand.notes ? `<h3>4. RECRUITER & MANAGER NOTES</h3><p style="background:#fffbe6;padding:10px;border:1px solid #ffe58f;">${cand.notes}</p>` : ''}
-      <br/><br/>
-      <div style="font-size:9pt;color:#888;text-align:center;border-top:1px solid #ccc;padding-top:8px;">
-        Document generated automatically by FleetForce Crewing Platform • ISO 9001 & MLC 2006 Certified System
+      <!-- 2. MARINE EDUCATION -->
+      <table>
+        <tr class="sec-hdr"><td colspan="3">Marine Education</td></tr>
+        <tr class="tbl-hdr">
+          <th style="width:60%;">Name of maritime college or academy</th>
+          <th style="width:20%;">From</th>
+          <th style="width:20%;">Till</th>
+        </tr>
+        <tr>
+          <td>${cand.collegeName || '-'}</td>
+          <td>${cand.collegeFrom || '-'}</td>
+          <td>${cand.collegeTill || '-'}</td>
+        </tr>
+      </table>
+
+      <!-- 3. PASSPORTS AND CERTIFICATES -->
+      <table>
+        <tr class="sec-hdr"><td colspan="5">PASSPORTS and CERTIFICATES</td></tr>
+        <tr class="tbl-hdr">
+          <th>DOCUMENT</th>
+          <th>NUMBER</th>
+          <th>ISSUED DATE</th>
+          <th>VALID UNTIL</th>
+          <th>PLACE</th>
+        </tr>
+        <tr>
+          <td><strong>TRAVEL PASSPORT:</strong></td>
+          <td>${cand.passportNo || '-'}</td>
+          <td>${cand.passportIssued || '-'}</td>
+          <td>${cand.passportExpiry || '-'}</td>
+          <td>${cand.passportPlace || '-'}</td>
+        </tr>
+        <tr>
+          <td><strong>SEAMAN'S BOOK (SID):</strong></td>
+          <td>${cand.seamanBookNo || '-'}</td>
+          <td>${cand.seamanBookIssued || '-'}</td>
+          <td>${cand.seamanBookExpiry || '-'}</td>
+          <td>${cand.seamanBookPlace || '-'}</td>
+        </tr>
+        ${certificatesRows}
+      </table>
+
+      <!-- 4. FOREIGN SEAMAN'S RECORD BOOKS -->
+      <table>
+        <tr class="sec-hdr"><td colspan="5">FOREIGN SEAMAN’S ID / RECORD BOOKS</td></tr>
+        <tr class="tbl-hdr">
+          <th>FLAG</th>
+          <th>NUMBER</th>
+          <th>ISSUED DATE</th>
+          <th>VALID UNTIL</th>
+          <th>PLACE</th>
+        </tr>
+        ${recordBooksRows}
+      </table>
+
+      <!-- 5. PREVIOUS SEA SERVICE -->
+      <table>
+        <tr class="sec-hdr"><td colspan="13">PREVIOUS SEA SERVICE</td></tr>
+        <tr class="tbl-hdr" style="font-size:7.5pt;">
+          <th>FROM</th>
+          <th>TO</th>
+          <th>POSITION</th>
+          <th>SALARY</th>
+          <th>VESSEL</th>
+          <th>SHIPOWNER</th>
+          <th>TYPE</th>
+          <th>ENGINE</th>
+          <th>BUILD</th>
+          <th>DWT</th>
+          <th>BHP</th>
+          <th>FLAG</th>
+          <th>AGENT</th>
+        </tr>
+        ${seaServiceRows}
+      </table>
+
+      <!-- 6. BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS -->
+      <table>
+        <tr class="sec-hdr"><td colspan="3">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td></tr>
+        <tr class="tbl-hdr">
+          <th style="width:35%;">COMPANY</th>
+          <th style="width:30%;">PERSON IN CHARGE</th>
+          <th style="width:35%;">CONTACT DETAILS (Phone Number, e-mail)</th>
+        </tr>
+        ${employersRows}
+      </table>
+
+      <!-- 7. DECLARATION & SIGNATURE -->
+      <div style="margin-top:15px; font-size:8.5pt; border:1px solid #000; padding:10px;">
+        <p style="margin:0 0 10px 0; line-height:1.4;">
+          I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.
+        </p>
+        <table style="width:100%; border:none; margin-top:15px;">
+          <tr>
+            <td style="border:none; width:50%;"><strong>Date:</strong> ________________________</td>
+            <td style="border:none; width:50%; text-align:right;"><strong>Signature:</strong> ________________________</td>
+          </tr>
+        </table>
       </div>
     </body>
     </html>
   `;
+};
 
+export const handleExportDoc = (cand) => {
+  if (!cand) return;
+  const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '');
+  const htmlContent = buildApplicationFormHtml(cand);
   const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -100,71 +273,7 @@ export const handleExportDoc = (cand) => {
 
 // Helper: generate DOC HTML content and return as blob
 const generateDocBlob = (cand) => {
-  const seaServiceRows = (cand.seaService || []).map(s => `
-    <tr>
-      <td style="padding:6px;border:1px solid #ccc;font-weight:bold;">${s.vesselName || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.vesselType || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.dwtGrt || '-'} / ${s.engineBhp || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.rankHeld || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.manningCompany || '-'}</td>
-      <td style="padding:6px;border:1px solid #ccc;">${s.dateFrom || '-'} — ${s.dateTo || '-'}</td>
-    </tr>
-  `).join('');
-
-  const htmlContent = `
-    <html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-    <head>
-      <meta charset='utf-8'>
-      <title>Seafarer Application - ${cand.fullName}</title>
-      <style>
-        body { font-family: Arial, sans-serif; font-size: 11pt; color: #111; margin: 20px; }
-        h1 { color: #003366; font-size: 18pt; margin-bottom: 2px; }
-        .sub { color: #666; font-size: 10pt; margin-bottom: 20px; }
-        h3 { color: #003366; font-size: 13pt; border-bottom: 1px solid #003366; padding-bottom: 4px; margin-top: 18px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 10pt; }
-        th { background: #f0f4f8; color: #003366; padding: 6px; border: 1px solid #ccc; text-align: left; }
-        td { padding: 6px; border: 1px solid #ccc; }
-        .info-grid { width: 100%; margin-bottom: 10px; }
-        .info-grid td { border: none; padding: 4px 8px; }
-      </style>
-    </head>
-    <body>
-      <h1>FLEETFORCE CREWING ALLIANCE</h1>
-      <div class="sub">INTERNATIONAL SEAFARER APPLICATION DOSSIER | REF: ${cand.id} | Date: ${new Date().toLocaleDateString()}</div>
-
-      <h3>1. PERSONAL DETAILS</h3>
-      <table class="info-grid">
-        <tr><td><strong>Full Name:</strong> ${cand.fullName}</td><td><strong>Date of Birth:</strong> ${cand.dob || '-'}</td></tr>
-        <tr><td><strong>Phone:</strong> ${cand.phone || '-'}</td><td><strong>Citizenship:</strong> ${cand.citizenship || '-'}</td></tr>
-        <tr><td><strong>Email:</strong> ${cand.email || '-'}</td><td><strong>Passport / Seaman Book:</strong> ${cand.passportNo || 'Included in Attached Docs'}</td></tr>
-      </table>
-
-      <h3>2. APPLICATION DETAILS</h3>
-      <table class="info-grid">
-        <tr><td><strong>Applied Rank:</strong> ${cand.appliedRank}</td><td><strong>Min Desired Salary:</strong> $${cand.minSalary || '0'} / month</td></tr>
-        <tr><td><strong>Availability Date:</strong> ${cand.readyDate || '-'}</td><td><strong>Marlins Score:</strong> ${cand.marlinsScore || 'N/A'} (${cand.englishLevel || 'Good'})</td></tr>
-      </table>
-
-      <h3>3. SEA EXPERIENCE RECORD MATRIX</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Vessel Name</th><th>Type</th><th>DWT / Engine</th><th>Rank</th><th>Manning Company</th><th>Period</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${seaServiceRows || '<tr><td colspan="6">No sea experience recorded</td></tr>'}
-        </tbody>
-      </table>
-
-      ${cand.notes ? `<h3>4. RECRUITER & MANAGER NOTES</h3><p style="background:#fffbe6;padding:10px;border:1px solid #ffe58f;">${cand.notes}</p>` : ''}
-      <br/><br/>
-      <div style="font-size:9pt;color:#888;text-align:center;border-top:1px solid #ccc;padding-top:8px;">
-        Document generated automatically by FleetForce Crewing Platform • ISO 9001 & MLC 2006 Certified System
-      </div>
-    </body>
-    </html>
-  `;
+  const htmlContent = buildApplicationFormHtml(cand);
   return new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
 };
 
@@ -184,18 +293,12 @@ let _cyrillicFontCache = null;
 
 // Load PT Serif (Times New Roman-style, full Cyrillic support) and register in jsPDF
 const loadCyrillicFont = async (doc) => {
-  // PT Serif Regular TTF from jsDelivr CDN (open source, Google Fonts)
-  const TTF_URL = 'https://cdn.jsdelivr.net/npm/@fontsource/pt-serif@5.0.8/files/pt-serif-latin-ext-400-normal.woff2';
-  const TTF_URL_CYRILLIC = 'https://fonts.gstatic.com/s/ptserif/v18/EJRVQgYoZZY2vCFuvAFT9gaQVy7VocNB6Iph.woff2';
-
   try {
     if (!_cyrillicFontCache) {
-      // Fetch the TTF version that includes Cyrillic glyphs
       const TTF_DIRECT = 'https://fonts.gstatic.com/s/ptserif/v18/EJRQQgYoZZY2vCFuvAFWzr-_dSb_.woff2';
       const resp = await fetch(TTF_DIRECT);
       if (!resp.ok) throw new Error('Font fetch failed: ' + resp.status);
       const buf = await resp.arrayBuffer();
-      // Convert ArrayBuffer to base64
       const bytes = new Uint8Array(buf);
       let binary = '';
       for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
@@ -218,11 +321,10 @@ const generatePdfBlob = async (cand) => {
   if (!jsPDFClass) { console.warn('jsPDF not loaded'); return null; }
   const doc = new jsPDFClass({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.getWidth();
-  const margin = 16;
+  const margin = 12;
   const colW = pageW - margin * 2;
-  let y = 18;
+  let y = 14;
 
-  // Try to load Cyrillic-capable font (PT Serif — Times New Roman style)
   const cyrillicLoaded = await loadCyrillicFont(doc);
   const mainFont = cyrillicLoaded ? 'PTSerif' : 'helvetica';
 
@@ -231,85 +333,92 @@ const generatePdfBlob = async (cand) => {
   };
 
   const checkPage = (needed = 10) => {
-    if (y + needed > 275) {
+    if (y + needed > 280) {
       doc.addPage();
-      y = 18;
+      y = 14;
     }
   };
 
-  // Header
-  doc.setFontSize(18);
+  // Header Title
+  doc.setFontSize(16);
   doc.setFont(mainFont, 'bold');
   doc.setTextColor(0, 51, 102);
-  addText('FLEETFORCE CREWING ALLIANCE', margin, y);
-  y += 7;
+  addText('APPLICATION FORM', pageW / 2, y, { align: 'center' });
+  y += 6;
 
-  doc.setFontSize(9);
+  doc.setFontSize(8);
   doc.setFont(mainFont, 'normal');
   doc.setTextColor(100, 100, 100);
-  addText(`SEAFARER APPLICATION DOSSIER  |  REF: ${cand.id}  |  Date: ${new Date().toLocaleDateString()}`, margin, y);
-  y += 5;
+  addText(`FLEETFORCE CREWING ALLIANCE  |  REF: ${cand.id}  |  Date: ${new Date().toLocaleDateString()}`, pageW / 2, y, { align: 'center' });
+  y += 4;
 
   doc.setDrawColor(0, 51, 102);
   doc.setLineWidth(0.5);
   doc.line(margin, y, pageW - margin, y);
-  y += 7;
+  y += 6;
 
   // Section helper
   const section = (title) => {
-    checkPage(12);
-    doc.setFontSize(11);
+    checkPage(10);
+    doc.setFontSize(10);
     doc.setFont(mainFont, 'bold');
+    doc.setFillColor(182, 215, 168);
+    doc.rect(margin, y - 4, colW, 6, 'F');
     doc.setTextColor(0, 51, 102);
-    addText(title, margin, y);
-    y += 2;
-    doc.setLineWidth(0.3);
-    doc.line(margin, y, pageW - margin, y);
+    addText(title, margin + 2, y);
     y += 5;
   };
 
   const field = (label, value) => {
-    checkPage(7);
-    doc.setFontSize(9);
+    checkPage(6);
+    doc.setFontSize(8.5);
     doc.setFont(mainFont, 'bold');
-    doc.setTextColor(60, 60, 60);
+    doc.setTextColor(50, 50, 50);
     addText(label + ':', margin, y);
     doc.setFont(mainFont, 'normal');
-    doc.setTextColor(30, 30, 30);
+    doc.setTextColor(20, 20, 20);
     const safeVal = String(value ?? '-');
     const lines = doc.splitTextToSize(safeVal, colW - 55);
     addText(lines, margin + 55, y);
-    y += Math.max(6, lines.length * 5);
+    y += Math.max(5, lines.length * 4.5);
   };
 
-  // 1. Personal
-  section('1. PERSONAL DETAILS');
+  // 1. General Info
+  section('1. GENERAL INFORMATION');
+  field('Positions applied for', cand.appliedRank);
+  field('Date of readiness', cand.readyDate);
   field('Full Name', cand.fullName);
-  field('Date of Birth', cand.dob);
-  field('Phone', cand.phone);
-  field('Email', cand.email);
-  field('Citizenship', cand.citizenship);
-  field('Passport / Seaman Book', cand.passportNo || 'Included in Attached Docs');
+  field('Father / Mother Name', `${cand.fatherName || '-'} / ${cand.motherName || '-'}`);
+  field('Date of birth / Nationality', `${cand.dob || '-'} / ${cand.nationality || cand.citizenship || '-'}`);
+  field('Place of birth', cand.placeOfBirth || '-');
+  field('Marital status / Children <18', `${cand.maritalStatus || 'Single'} (${cand.childrenUnder18 || '0'} children)`);
+  field('Home Address', cand.address || cand.homeAddress || '-');
+  field('Contact Phone / Zip', `${cand.phone || '-'} (Zip: ${cand.homeZip || '-'})`);
+  field('E-mail / Skype', `${cand.email || '-'} / Telegram: ${cand.skypeTelegram || '-'}`);
+  field('Next of kin / Phone', `${cand.kinName || '-'} (${cand.kinRelation || '-'}) | Phone: ${cand.kinPhone || '-'}`);
+  field('Physical details', `Height: ${cand.height || '-'} cm, Weight: ${cand.weight || '-'} kg, Overall: ${cand.overallSize || '-'}, Shoes: ${cand.shoeSize || '-'}`);
   y += 2;
 
-  // 2. Application
-  section('2. APPLICATION DETAILS');
-  field('Applied Rank', cand.appliedRank);
-  field('Availability Date', cand.readyDate);
-  field('Min Desired Salary', `$${cand.minSalary || 0} / month`);
-  field('Marlins Score', `${cand.marlinsScore || 'N/A'} (${cand.englishLevel || 'Good'})`);
+  // 2. Passports & Certificates
+  section('2. PASSPORTS AND CERTIFICATES');
+  field('Travel Passport', `No: ${cand.passportNo || '-'} | Issued: ${cand.passportIssued || '-'} | Expiry: ${cand.passportExpiry || '-'}`);
+  field('Seaman Book (SID)', `No: ${cand.seamanBookNo || '-'} | Issued: ${cand.seamanBookIssued || '-'} | Expiry: ${cand.seamanBookExpiry || '-'}`);
+  if (cand.certificates && cand.certificates.length > 0) {
+    cand.certificates.forEach(c => {
+      field(c.certName || 'Certificate', `No: ${c.certNo || '-'} | Valid: ${c.certValid || '-'} | Capacity: ${c.rankCapacity || '-'}`);
+    });
+  }
   y += 2;
 
   // 3. Sea Service
-  section('3. SEA EXPERIENCE RECORD MATRIX');
-  const seaHeaders = ['Vessel Name', 'Type', 'DWT/Engine', 'Rank', 'Manning Co.', 'Period'];
-  const seaColW = [32, 24, 24, 22, 30, 32];
+  section('3. PREVIOUS SEA SERVICE');
+  const seaHeaders = ['From', 'To', 'Position', 'Vessel', 'Type', 'DWT/BHP', 'Manning Co.'];
+  const seaColW = [22, 22, 28, 30, 28, 26, 30];
   const tableX = margin;
 
-  // Table header row
-  checkPage(10);
-  doc.setFillColor(220, 230, 242);
-  doc.rect(tableX, y - 4, colW, 7, 'F');
+  checkPage(8);
+  doc.setFillColor(217, 234, 211);
+  doc.rect(tableX, y - 4, colW, 6, 'F');
   doc.setFontSize(8);
   doc.setFont(mainFont, 'bold');
   doc.setTextColor(0, 51, 102);
@@ -323,52 +432,58 @@ const generatePdfBlob = async (cand) => {
     doc.setTextColor(120, 120, 120);
     doc.setFontSize(8);
     addText('No sea experience recorded', margin, y);
-    y += 6;
+    y += 5;
   } else {
     seaService.forEach((s, idx) => {
-      checkPage(8);
+      checkPage(7);
       if (idx % 2 === 0) {
         doc.setFillColor(245, 247, 250);
-        doc.rect(tableX, y - 4, colW, 7, 'F');
+        doc.rect(tableX, y - 4, colW, 6, 'F');
       }
       doc.setFont(mainFont, 'normal');
       doc.setTextColor(30, 30, 30);
-      doc.setFontSize(8);
-      const period = `${s.dateFrom || '-'} - ${s.dateTo || '-'}`;
+      doc.setFontSize(7.5);
       const row = [
-        String(s.vesselName || '-'),
-        String(s.vesselType || '-'),
-        `${s.dwtGrt || '-'}/${s.engineBhp || '-'}`,
-        String(s.rankHeld || '-'),
-        String(s.manningCompany || '-'),
-        period
+        s.dateFrom || '-', s.dateTo || '-',
+        String(s.rankHeld || '-'), String(s.vesselName || '-'),
+        String(s.vesselType || '-'), `${s.dwtGrt || '-'}/${s.engineBhp || '-'}`,
+        String(s.manningCompany || '-')
       ];
       let rx = tableX + 1;
-      row.forEach((val, i) => { addText(String(val ?? '-').substring(0, 20), rx, y); rx += seaColW[i]; });
-      y += 6;
+      row.forEach((val, i) => { addText(String(val ?? '-').substring(0, 18), rx, y); rx += seaColW[i]; });
+      y += 5.5;
     });
   }
   y += 3;
 
-  // 4. Notes
-  if (cand.notes) {
-    section('4. RECRUITER & MANAGER NOTES');
-    doc.setFontSize(9);
-    doc.setFont(mainFont, 'normal');
-    doc.setTextColor(60, 60, 60);
-    const noteLines = doc.splitTextToSize(String(cand.notes), colW);
-    checkPage(noteLines.length * 5 + 4);
-    addText(noteLines, margin, y);
-    y += noteLines.length * 5 + 4;
+  // 4. Employers
+  if (cand.employers && cand.employers.length > 0) {
+    section('4. BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS');
+    cand.employers.forEach(e => {
+      field(e.company || 'Employer', `Person in charge: ${e.personInCharge || '-'} | Contact: ${e.contactDetails || '-'}`);
+    });
+    y += 2;
   }
 
-  // Footer
-  checkPage(10);
-  doc.setFontSize(8);
-  doc.setTextColor(150, 150, 150);
+  // Declaration
+  checkPage(25);
+  doc.setFontSize(7.5);
+  doc.setTextColor(80, 80, 80);
   doc.setFont(mainFont, 'normal');
+  const declText = "I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.";
+  const declLines = doc.splitTextToSize(declText, colW);
+  addText(declLines, margin, y);
+  y += declLines.length * 3.5 + 4;
+
+  addText('Date: ________________________', margin, y);
+  addText('Signature: ________________________', margin + 110, y);
+  y += 8;
+
+  // Footer
+  doc.setFontSize(7.5);
+  doc.setTextColor(150, 150, 150);
   doc.line(margin, y, pageW - margin, y);
-  y += 5;
+  y += 4;
   addText('Generated by FleetForce Crewing Platform  |  ISO 9001 & MLC 2006 Certified System', margin, y, { maxWidth: colW });
 
   return doc.output('arraybuffer');
@@ -380,7 +495,6 @@ export const handleDownloadAllFiles = async (cand) => {
   const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '').trim();
   const folderName = `FleetForce_${cleanName}_${cand.id}`;
 
-  // Load ZIP from CDN global (window.JSZip)
   const JSZip = window.JSZip;
   if (!JSZip) { alert('JSZip library not loaded. Check internet connection.'); return; }
 
@@ -417,4 +531,3 @@ export const handleDownloadAllFiles = async (cand) => {
   a.click();
   URL.revokeObjectURL(url);
 };
-
