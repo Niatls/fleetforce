@@ -5,6 +5,7 @@
   --font-display: 'Outfit', 'Inter', sans-serif;
 
   /* Maritime Color Palette - Soft Ocean Slate (Default) */
+  --bg-main: #060d19;
   --bg-deep: #0f172a;
   --bg-surface: #1e293b;
   --bg-surface-elevated: #334155;

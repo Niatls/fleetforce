@@ -28,7 +28,11 @@ function AppContent() {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardParams, setWizardParams] = useState({ rank: '', vesselType: '' });
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    return sessionStorage.getItem('fleetforce_admin_auth') === 'true';
+    try {
+      return sessionStorage.getItem('fleetforce_admin_auth') === 'true' || localStorage.getItem('fleetforce_admin_auth') === 'true';
+    } catch (e) {
+      return false;
+    }
   });
 
   // Standalone Page View: 'main' or 'admin'
@@ -105,52 +109,88 @@ function AppContent() {
 
   // Data State with LocalStorage Persistence Fallback
   const [vacancies, setVacancies] = useState(() => {
-    const saved = localStorage.getItem('fleetforce_vacancies');
-    return saved ? JSON.parse(saved) : INITIAL_VACANCIES;
+    try {
+      const saved = localStorage.getItem('fleetforce_vacancies');
+      return saved ? JSON.parse(saved) : INITIAL_VACANCIES;
+    } catch (e) {
+      return INITIAL_VACANCIES;
+    }
   });
 
   const [candidates, setCandidates] = useState(() => {
-    const saved = localStorage.getItem('fleetforce_candidates');
-    return saved ? JSON.parse(saved) : INITIAL_CANDIDATES;
+    try {
+      const saved = localStorage.getItem('fleetforce_candidates');
+      return saved ? JSON.parse(saved) : INITIAL_CANDIDATES;
+    } catch (e) {
+      return INITIAL_CANDIDATES;
+    }
   });
 
   const [offices, setOffices] = useState(() => {
-    const saved = localStorage.getItem('fleetforce_offices');
-    return saved ? JSON.parse(saved) : INITIAL_OFFICES;
+    try {
+      const saved = localStorage.getItem('fleetforce_offices');
+      return saved ? JSON.parse(saved) : INITIAL_OFFICES;
+    } catch (e) {
+      return INITIAL_OFFICES;
+    }
   });
 
   const [hubBlocks, setHubBlocks] = useState(() => {
-    const saved = localStorage.getItem('fleetforce_hub_blocks');
-    return saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
+    try {
+      const saved = localStorage.getItem('fleetforce_hub_blocks');
+      return saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
+    } catch (e) {
+      return INITIAL_HUB_BLOCKS;
+    }
   });
 
   const [stats, setStats] = useState(() => {
-    const saved = localStorage.getItem('fleetforce_stats');
-    return saved ? JSON.parse(saved) : INITIAL_STATS;
+    try {
+      const saved = localStorage.getItem('fleetforce_stats');
+      return saved ? JSON.parse(saved) : INITIAL_STATS;
+    } catch (e) {
+      return INITIAL_STATS;
+    }
   });
 
   const [shipownerRequests, setShipownerRequests] = useState(() => {
-    const saved = localStorage.getItem('fleetforce_shipowner_requests');
-    return saved ? JSON.parse(saved) : INITIAL_SHIPOWNER_REQUESTS;
+    try {
+      const saved = localStorage.getItem('fleetforce_shipowner_requests');
+      return saved ? JSON.parse(saved) : INITIAL_SHIPOWNER_REQUESTS;
+    } catch (e) {
+      return INITIAL_SHIPOWNER_REQUESTS;
+    }
   });
 
   const [sectionVisibility, setSectionVisibility] = useState(() => {
-    const saved = localStorage.getItem('fleetforce_section_visibility');
-    return saved ? JSON.parse(saved) : {
-      hero: true,
-      vacancies: true,
-      hub: true,
-      shipowners: true,
-      offices: true
-    };
+    try {
+      const saved = localStorage.getItem('fleetforce_section_visibility');
+      return saved ? JSON.parse(saved) : {
+        hero: true,
+        vacancies: true,
+        hub: true,
+        shipowners: true,
+        offices: true
+      };
+    } catch (e) {
+      return { hero: true, vacancies: true, hub: true, shipowners: true, offices: true };
+    }
   });
 
   const [heroTitle, setHeroTitle] = useState(() => {
-    return localStorage.getItem('fleetforce_hero_title') || '';
+    try {
+      return localStorage.getItem('fleetforce_hero_title') || '';
+    } catch (e) {
+      return '';
+    }
   });
 
   const [heroSubtitle, setHeroSubtitle] = useState(() => {
-    return localStorage.getItem('fleetforce_hero_subtitle') || '';
+    try {
+      return localStorage.getItem('fleetforce_hero_subtitle') || '';
+    } catch (e) {
+      return '';
+    }
   });
 
   useEffect(() => {
