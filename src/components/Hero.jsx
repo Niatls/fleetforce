@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Search, ShieldCheck, FileText, ChevronRight, Anchor, Award, Users, Ship } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel, INITIAL_STATS } from '../data/initialData';
 
-export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customTitle, customSubtitle, renderStatItem }) => {
+export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadge, customTitle, customSubtitle, renderStatItem }) => {
   const { lang, t } = useLanguage();
   const [selectedRank, setSelectedRank] = useState('');
   const [selectedVessel, setSelectedVessel] = useState('');
@@ -66,7 +66,7 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customTitl
             boxShadow: '0 4px 15px rgba(0, 139, 255, 0.15)'
           }}>
             <ShieldCheck size={16} />
-            <span>{t('hero.badge')}</span>
+            <span>{customBadge ? customBadge : t('hero.badge')}</span>
           </div>
 
           {/* Main Headline */}

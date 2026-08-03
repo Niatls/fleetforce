@@ -533,9 +533,9 @@ export const INITIAL_OFFICES = [
 export const INITIAL_HUB_BLOCKS = [
   {
     id: 1,
-    title: 'Standard Crew Application Form (PDF)',
+    title: 'FleetForce Standard Application (PDF)',
     description: 'Официальный 5-страничный бланк морской анкеты FleetForce Crewing Alliance в формате PDF.',
-    buttonText: 'Скачать бланки анкеты (.PDF)',
+    buttonText: 'Скачать бланки анкеты FLEET FORCE (.PDF)',
     actionType: 'download',
     filename: 'Crew_Application_Form.pdf',
     iconType: 'FileText',
@@ -543,9 +543,9 @@ export const INITIAL_HUB_BLOCKS = [
   },
   {
     id: 2,
-    title: 'Crew Application Form (DOC)',
-    description: 'Редактируемый Word (.DOC) бланк морской анкеты с полной матрицей плавательского ценза.',
-    buttonText: 'Скачать анкету (.DOC)',
+    title: 'FleetForce CV Form (DOC)',
+    description: 'Редактируемый Word (.DOC) бланк морской анкеты с полной матрицей плавательского ценза FLEET FORCE.',
+    buttonText: 'Скачать анкету FLEET FORCE (.DOC)',
     actionType: 'download',
     filename: 'Crew_Application_Form.doc',
     iconType: 'Download',

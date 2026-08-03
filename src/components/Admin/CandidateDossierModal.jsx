@@ -43,7 +43,9 @@ export const CandidateDossierModal = ({
               <Printer size={15} /> Print / Export PDF (.pdf)
             </button>
             <button 
-              onClick={() => {
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
                 const name = candidate.fullNameRu || candidate.fullNameEn || candidate.fullName || candidate.id;
                 if (window.confirm(`Вы действительно хотите удалить анкету кандидата "${name}"?`)) {
                   if (onDeleteCandidate) onDeleteCandidate(candidate.id);

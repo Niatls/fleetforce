@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Search, Flame, DollarSign, Calendar, MapPin, Anchor, ArrowRight, X, CheckCircle, Info } from 'lucide-react';
 import { MARITIME_RANKS, VESSEL_TYPES, getRankLabel, getVesselLabel } from '../data/initialData';
 
-export const VacancyList = ({ vacancies = [], searchFilter, onApplyVacancy, renderVacancyCard }) => {
+export const VacancyList = ({ vacancies = [], searchFilter, onApplyVacancy, renderVacancyCard, customTitle, customSubtitle }) => {
   const { lang, t } = useLanguage();
 
   const [selectedRank, setSelectedRank] = useState(searchFilter?.rank || '');
@@ -43,10 +43,10 @@ export const VacancyList = ({ vacancies = [], searchFilter, onApplyVacancy, rend
         {/* Section Header */}
         <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem' }}>
           <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>
-            {t('vacancies.title')}
+            {customTitle || t('vacancies.title')}
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            {t('vacancies.subtitle')}
+            {customSubtitle || t('vacancies.subtitle')}
           </p>
         </div>
 

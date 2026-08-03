@@ -156,7 +156,9 @@ export const CandidatesTab = ({
                       <Archive size={14} /> Скачать всё
                     </button>
                     <button 
-                      onClick={() => {
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         const name = cand.fullNameRu || cand.fullNameEn || cand.fullName || cand.id;
                         if (window.confirm(`Вы действительно хотите удалить анкету кандидата "${name}"?`)) {
                           if (onDeleteCandidate) onDeleteCandidate(cand.id);

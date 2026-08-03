@@ -4,7 +4,7 @@ import { Download, FileCheck, Award, TrendingUp, HelpCircle, FileText } from 'lu
 
 import { INITIAL_HUB_BLOCKS } from '../data/initialData';
 
-export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, renderBlockItem }) => {
+export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, renderBlockItem, customTitle, customSubtitle }) => {
   const { t } = useLanguage();
   const rawList = hubBlocks && hubBlocks.length > 0 ? hubBlocks : INITIAL_HUB_BLOCKS;
   const blocksList = renderBlockItem ? rawList : rawList.filter(b => b.active !== false && !b.hidden);
@@ -65,9 +65,9 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
       <div className="container">
         <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3.5rem' }}>
           <span className="badge badge-emerald" style={{ marginBottom: '0.6rem' }}>FOR SEAFARERS / МОРЯКАМ</span>
-          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{t('seafarersHub.title')}</h2>
+          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{customTitle || t('seafarersHub.title')}</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            {t('seafarersHub.subtitle')}
+            {customSubtitle || t('seafarersHub.subtitle')}
           </p>
         </div>
 

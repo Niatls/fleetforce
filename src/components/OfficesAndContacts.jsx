@@ -4,7 +4,7 @@ import { MapPin, Phone, Mail, Clock, Building } from 'lucide-react';
 
 import { INITIAL_OFFICES } from '../data/initialData';
 
-export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard }) => {
+export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard, customTitle, customSubtitle }) => {
   const { t } = useLanguage();
   const rawList = offices && offices.length > 0 ? offices : INITIAL_OFFICES;
   const officesList = renderOfficeCard ? rawList : rawList.filter(o => o.active !== false && !o.hidden);
@@ -15,9 +15,9 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
         
         <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3.5rem' }}>
           <span className="badge badge-emerald" style={{ marginBottom: '0.6rem' }}>OFFICE NETWORK</span>
-          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{t('offices.title')}</h2>
+          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{customTitle || t('offices.title')}</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            {t('offices.subtitle')}
+            {customSubtitle || t('offices.subtitle')}
           </p>
         </div>
 

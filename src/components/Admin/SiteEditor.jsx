@@ -42,8 +42,21 @@ export const SiteEditor = ({
   const [draftSectionVisibility, setDraftSectionVisibility] = useState({});
 
   // Hero custom text state (persisted in draft/local)
+  const [draftHeroBadge, setDraftHeroBadge] = useState(() => localStorage.getItem('fleetforce_hero_badge') || 'Международный крюинговый альянс FLEET FORCE');
   const [draftHeroTitle, setDraftHeroTitle] = useState(liveHeroTitle || 'Трудоустройство моряков на мировой торговый флот');
   const [draftHeroSubtitle, setDraftHeroSubtitle] = useState(liveHeroSubtitle || 'Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.');
+
+  // Vacancies section custom text draft state
+  const [draftVacanciesTitle, setDraftVacanciesTitle] = useState(() => localStorage.getItem('fleetforce_vacancies_title') || 'Актуальные Вакансии в Море');
+  const [draftVacanciesSubtitle, setDraftVacanciesSubtitle] = useState(() => localStorage.getItem('fleetforce_vacancies_subtitle') || 'Прямые контракты от ведущих мировых судовладельцев и операторов флота');
+
+  // Hub section custom text draft state
+  const [draftHubTitle, setDraftHubTitle] = useState(() => localStorage.getItem('fleetforce_hub_title') || 'Центр Загрузок и Информация для Моряков');
+  const [draftHubSubtitle, setDraftHubSubtitle] = useState(() => localStorage.getItem('fleetforce_hub_subtitle') || 'Скачайте бланки анкет или пройдите подготовку к тестированию');
+
+  // Offices section custom text draft state
+  const [draftOfficesTitle, setDraftOfficesTitle] = useState(() => localStorage.getItem('fleetforce_offices_title') || 'Наши Офисы и Представительства');
+  const [draftOfficesSubtitle, setDraftOfficesSubtitle] = useState(() => localStorage.getItem('fleetforce_offices_subtitle') || 'Сеть крюинговых центров в ключевых портовых городах');
 
   const [previewMode, setPreviewMode] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -67,7 +80,7 @@ export const SiteEditor = ({
   const DEFAULT_SERVICE3_TITLE = 'Управление бюджетом crew-management';
   const DEFAULT_SERVICE3_DESC = 'Оптимизация расходов на смену команд, медицинское страхование и выплату заработной платы.';
 
-  const DEFAULT_FOOTER_BRAND = 'Объединенный портал морских крюинговых агентств (Legacy Marine • Top Crew • BGI • Good Crew).';
+  const DEFAULT_FOOTER_BRAND = 'Объединенный портал морских крюинговых агентств (FleetForce Alliance).';
   const DEFAULT_FOOTER_CERT = 'Соответствует стандартам Конвенции КТМС 2006 (MLC 2006) и ISO 9001:2015.';
   const DEFAULT_FOOTER_COPYRIGHT = '© 2026 FleetForce Alliance. Все права защищены. Объединенный портал крюинговых услуг FleetForce.';
 
@@ -97,9 +110,19 @@ export const SiteEditor = ({
       setDraftHubBlocks(JSON.parse(JSON.stringify(liveHubBlocks)));
       setDraftStats(JSON.parse(JSON.stringify(liveStats)));
       setDraftSectionVisibility(JSON.parse(JSON.stringify(liveSectionVisibility)));
+      setDraftHeroBadge(localStorage.getItem('fleetforce_hero_badge') || 'Международный крюинговый альянс FLEET FORCE');
       setDraftHeroTitle(liveHeroTitle || 'Трудоустройство моряков на мировой торговый флот');
       setDraftHeroSubtitle(liveHeroSubtitle || 'Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.');
       
+      setDraftVacanciesTitle(localStorage.getItem('fleetforce_vacancies_title') || 'Актуальные Вакансии в Море');
+      setDraftVacanciesSubtitle(localStorage.getItem('fleetforce_vacancies_subtitle') || 'Прямые контракты от ведущих мировых судовладельцев и операторов флота');
+      
+      setDraftHubTitle(localStorage.getItem('fleetforce_hub_title') || 'Центр Загрузок и Информация для Моряков');
+      setDraftHubSubtitle(localStorage.getItem('fleetforce_hub_subtitle') || 'Скачайте бланки анкет или пройдите подготовку к тестированию');
+      
+      setDraftOfficesTitle(localStorage.getItem('fleetforce_offices_title') || 'Наши Офисы и Представительства');
+      setDraftOfficesSubtitle(localStorage.getItem('fleetforce_offices_subtitle') || 'Сеть крюинговых центров в ключевых портовых городах');
+
       setDraftShipownerTitle(localStorage.getItem('fleetforce_shipowner_title') || DEFAULT_SHIPOWNER_TITLE);
       setDraftShipownerSubtitle(localStorage.getItem('fleetforce_shipowner_subtitle') || DEFAULT_SHIPOWNER_SUBTITLE);
       setDraftService1Title(localStorage.getItem('fleetforce_service1_title') || DEFAULT_SERVICE1_TITLE);
@@ -150,8 +173,16 @@ export const SiteEditor = ({
 
   // Publish Draft -> Live
   const handlePublishAll = () => {
+    localStorage.setItem('fleetforce_hero_badge', draftHeroBadge);
     localStorage.setItem('fleetforce_hero_title', draftHeroTitle);
     localStorage.setItem('fleetforce_hero_subtitle', draftHeroSubtitle);
+    localStorage.setItem('fleetforce_vacancies_title', draftVacanciesTitle);
+    localStorage.setItem('fleetforce_vacancies_subtitle', draftVacanciesSubtitle);
+    localStorage.setItem('fleetforce_hub_title', draftHubTitle);
+    localStorage.setItem('fleetforce_hub_subtitle', draftHubSubtitle);
+    localStorage.setItem('fleetforce_offices_title', draftOfficesTitle);
+    localStorage.setItem('fleetforce_offices_subtitle', draftOfficesSubtitle);
+
     localStorage.setItem('fleetforce_shipowner_title', draftShipownerTitle);
     localStorage.setItem('fleetforce_shipowner_subtitle', draftShipownerSubtitle);
     localStorage.setItem('fleetforce_service1_title', draftService1Title);
@@ -170,8 +201,15 @@ export const SiteEditor = ({
       hubBlocks: draftHubBlocks,
       stats: draftStats,
       sectionVisibility: draftSectionVisibility,
+      heroBadge: draftHeroBadge,
       heroTitle: draftHeroTitle,
       heroSubtitle: draftHeroSubtitle,
+      vacanciesTitle: draftVacanciesTitle,
+      vacanciesSubtitle: draftVacanciesSubtitle,
+      hubTitle: draftHubTitle,
+      hubSubtitle: draftHubSubtitle,
+      officesTitle: draftOfficesTitle,
+      officesSubtitle: draftOfficesSubtitle,
       shipownerTitle: draftShipownerTitle,
       shipownerSubtitle: draftShipownerSubtitle,
       service1Title: draftService1Title,
@@ -417,6 +455,15 @@ export const SiteEditor = ({
             
             <Hero
               stats={draftStats}
+              customBadge={
+                !previewMode ? (
+                  <InlineText
+                    value={draftHeroBadge}
+                    onChange={(val) => { setDraftHeroBadge(val); markChanged(); }}
+                    tag="span"
+                  />
+                ) : draftHeroBadge
+              }
               customTitle={
                 !previewMode ? (
                   <InlineText
@@ -483,6 +530,25 @@ export const SiteEditor = ({
 
             <VacancyList
               vacancies={draftVacancies}
+              customTitle={
+                !previewMode ? (
+                  <InlineText
+                    value={draftVacanciesTitle}
+                    onChange={(val) => { setDraftVacanciesTitle(val); markChanged(); }}
+                    tag="span"
+                  />
+                ) : draftVacanciesTitle
+              }
+              customSubtitle={
+                !previewMode ? (
+                  <InlineText
+                    value={draftVacanciesSubtitle}
+                    onChange={(val) => { setDraftVacanciesSubtitle(val); markChanged(); }}
+                    tag="span"
+                    multiline
+                  />
+                ) : draftVacanciesSubtitle
+              }
               renderVacancyCard={(vac, defaultCardNode) => {
                 if (previewMode) return defaultCardNode;
                 return (
@@ -524,6 +590,25 @@ export const SiteEditor = ({
 
             <SeafarerHub
               hubBlocks={draftHubBlocks}
+              customTitle={
+                !previewMode ? (
+                  <InlineText
+                    value={draftHubTitle}
+                    onChange={(val) => { setDraftHubTitle(val); markChanged(); }}
+                    tag="span"
+                  />
+                ) : draftHubTitle
+              }
+              customSubtitle={
+                !previewMode ? (
+                  <InlineText
+                    value={draftHubSubtitle}
+                    onChange={(val) => { setDraftHubSubtitle(val); markChanged(); }}
+                    tag="span"
+                    multiline
+                  />
+                ) : draftHubSubtitle
+              }
               renderBlockItem={(block, defaultBlockNode) => {
                 if (previewMode) return defaultBlockNode;
                 return (
@@ -660,6 +745,25 @@ export const SiteEditor = ({
 
             <OfficesAndContacts
               offices={draftOffices}
+              customTitle={
+                !previewMode ? (
+                  <InlineText
+                    value={draftOfficesTitle}
+                    onChange={(val) => { setDraftOfficesTitle(val); markChanged(); }}
+                    tag="span"
+                  />
+                ) : draftOfficesTitle
+              }
+              customSubtitle={
+                !previewMode ? (
+                  <InlineText
+                    value={draftOfficesSubtitle}
+                    onChange={(val) => { setDraftOfficesSubtitle(val); markChanged(); }}
+                    tag="span"
+                    multiline
+                  />
+                ) : draftOfficesSubtitle
+              }
               renderOfficeCard={(off, defaultOfficeNode) => {
                 if (previewMode) return defaultOfficeNode;
                 return (

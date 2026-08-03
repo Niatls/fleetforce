@@ -14,7 +14,7 @@ export const translations = {
     },
     // Hero Section
     hero: {
-      badge: "Международный крюинговый альянс (Legacy Marine • Top Crew • BGI • Good Crew)",
+      badge: "Международный крюинговый альянс FLEET FORCE",
       titleLine1: "Трудоустройство моряков на",
       titleHighlight: "мировой торговый флот",
       subtitle: "Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.",
@@ -53,7 +53,7 @@ export const translations = {
     // Application Wizard ("Анкета Моряка")
     wizard: {
       title: "Онлайн Анкета Моряка",
-      subtitle: "Стандартная морская анкета (BGI / Legacy Marine / IMO format). Заполнение занимает 5-7 минут.",
+      subtitle: "Стандартная морская анкета (FleetForce / IMO format). Заполнение занимает 5-7 минут.",
       step1Title: "1. Личные данные",
       step2Title: "2. Должность и Флот",
       step3Title: "3. Документы и STCW",
@@ -115,8 +115,8 @@ export const translations = {
     seafarersHub: {
       title: "Центр Загрузок и Информация для Моряков",
       subtitle: "Скачайте бланки анкет или пройдите подготовку к тестированию",
-      downloadBgiForm: "Скачать бланки анкеты BGI (.DOCX)",
-      downloadLegacyForm: "Скачать анкету Legacy Marine (.PDF)",
+      downloadBgiForm: "Скачать бланки анкеты FLEET FORCE (.DOCX)",
+      downloadLegacyForm: "Скачать анкету FLEET FORCE (.PDF)",
       stcwChecklist: "Чек-лист документов для посадки",
       marlinsInfo: "Подготовка к Marlins & CES тестам",
       salaryGuide: "Обзор окладов на торговом флоте 2026"
@@ -214,7 +214,7 @@ export const translations = {
     },
     // Hero Section
     hero: {
-      badge: "International Crewing Alliance (Legacy Marine • Top Crew • BGI • Good Crew)",
+      badge: "International Crewing Alliance FLEET FORCE",
       titleLine1: "Global Seafarer Employment on",
       titleHighlight: "Merchant Fleet Vessels",
       subtitle: "Official recruitment, competitive wages, stable contracts on Tankers, Containers, Bulk Carriers and Offshore Fleet.",
@@ -253,7 +253,7 @@ export const translations = {
     // Application Wizard ("Анкета Моряка")
     wizard: {
       title: "Online Seafarer Application Wizard",
-      subtitle: "Standard Maritime Application Form (BGI / Legacy Marine / IMO Format). Takes 5-7 minutes.",
+      subtitle: "Standard Maritime Application Form (FleetForce / IMO Format). Takes 5-7 minutes.",
       step1Title: "1. Personal Information",
       step2Title: "2. Rank & Fleet Choice",
       step3Title: "3. Documents & STCW",
@@ -315,8 +315,8 @@ export const translations = {
     seafarersHub: {
       title: "Seafarers Resource & Download Hub",
       subtitle: "Download official application forms or prepare for marine assessments",
-      downloadBgiForm: "Download BGI Application Form (.DOCX)",
-      downloadLegacyForm: "Download Legacy Marine Form (.PDF)",
+      downloadBgiForm: "Download FLEET FORCE Application Form (.DOCX)",
+      downloadLegacyForm: "Download FLEET FORCE Form (.PDF)",
       stcwChecklist: "Embarkation Document Checklist",
       marlinsInfo: "Marlins & CES Test Preparation",
       salaryGuide: "2026 Merchant Fleet Wage Benchmark"

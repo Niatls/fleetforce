@@ -52,14 +52,24 @@ if ($method === 'PUT') {
 if ($method === 'DELETE') {
     $input = json_decode(file_get_contents('php://input'), true) ?? [];
     $id = isset($_GET['id']) ? $_GET['id'] : (isset($input['id']) ? $input['id'] : '');
+    if (!$id && isset($_SERVER['REQUEST_URI'])) {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $parts = explode('/', trim($path, '/'));
+        $last = end($parts);
+        if ($last && $last !== 'candidates.php') {
+            $id = urldecode($last);
+        }
+    }
     if ($id) {
         $db['candidates'] = array_values(array_filter($db['candidates'], function($c) use ($id) {
-            return isset($c['id']) && $c['id'] != $id;
+            return isset($c['id']) && (string)$c['id'] !== (string)$id;
         }));
         save_database($db);
         echo json_encode(['success' => true]);
         exit();
     }
+    echo json_encode(['success' => true, 'message' => 'No candidate ID provided']);
+    exit();
 }
 
 http_response_code(405);

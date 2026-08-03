@@ -12,7 +12,7 @@ if ($method === 'GET') {
 if ($method === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true) ?? [];
     $newCand = array_merge([
-        'id' => 'APP-2026-' . rand(100, 999),
+        'id' => 'APP-2026-' . date('His') . '-' . rand(10, 99),
         'status' => 'New',
         'submittedAt' => date('c'),
         'fullName' => 'Candidate',
@@ -46,6 +46,29 @@ if ($method === 'PUT') {
         http_response_code(404);
         echo json_encode(['success' => false, 'message' => 'Candidate not found']);
     }
+    exit();
+}
+
+if ($method === 'DELETE') {
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $id = isset($_GET['id']) ? $_GET['id'] : (isset($input['id']) ? $input['id'] : '');
+    if (!$id && isset($_SERVER['REQUEST_URI'])) {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $parts = explode('/', trim($path, '/'));
+        $last = end($parts);
+        if ($last && $last !== 'candidates.php') {
+            $id = urldecode($last);
+        }
+    }
+    if ($id) {
+        $db['candidates'] = array_values(array_filter($db['candidates'], function($c) use ($id) {
+            return isset($c['id']) && (string)$c['id'] !== (string)$id;
+        }));
+        save_database($db);
+        echo json_encode(['success' => true]);
+        exit();
+    }
+    echo json_encode(['success' => true, 'message' => 'No candidate ID provided']);
     exit();
 }
 

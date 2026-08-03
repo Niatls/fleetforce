@@ -119,7 +119,8 @@ function AppContent() {
 
   const getDeletedCandidateIds = () => {
     try {
-      return new Set(JSON.parse(localStorage.getItem('fleetforce_deleted_candidate_ids') || '[]'));
+      const arr = JSON.parse(localStorage.getItem('fleetforce_deleted_candidate_ids') || '[]');
+      return new Set(arr.map((id) => String(id || '').trim().toLowerCase()));
     } catch (e) {
       return new Set();
     }
@@ -130,7 +131,7 @@ function AppContent() {
       const deletedIds = getDeletedCandidateIds();
       const saved = localStorage.getItem('fleetforce_candidates');
       const list = saved ? JSON.parse(saved) : INITIAL_CANDIDATES;
-      return list.filter(c => !deletedIds.has(String(c.id)));
+      return list.filter(c => !deletedIds.has(String(c.id || '').trim().toLowerCase()));
     } catch (e) {
       return INITIAL_CANDIDATES;
     }
@@ -148,7 +149,26 @@ function AppContent() {
   const [hubBlocks, setHubBlocks] = useState(() => {
     try {
       const saved = localStorage.getItem('fleetforce_hub_blocks');
-      return saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
+      let blocks = saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
+      // Migration: clean up any old BGI / Legacy Marine text
+      let hasOldText = false;
+      const cleanBlocks = blocks.map(b => {
+        let title = b.title || '';
+        let description = b.description || '';
+        let buttonText = b.buttonText || '';
+        if (/BGI|Legacy Marine/i.test(title) || /BGI|Legacy Marine/i.test(description) || /BGI|Legacy Marine/i.test(buttonText)) {
+          hasOldText = true;
+          title = title.replace(/BGI|Legacy Marine/gi, 'FleetForce');
+          description = description.replace(/BGI|Legacy Marine/gi, 'FleetForce');
+          buttonText = buttonText.replace(/BGI|Legacy Marine/gi, 'FLEET FORCE');
+          return { ...b, title, description, buttonText };
+        }
+        return b;
+      });
+      if (hasOldText) {
+        localStorage.setItem('fleetforce_hub_blocks', JSON.stringify(cleanBlocks));
+      }
+      return cleanBlocks;
     } catch (e) {
       return INITIAL_HUB_BLOCKS;
     }
@@ -187,21 +207,18 @@ function AppContent() {
     }
   });
 
-  const [heroTitle, setHeroTitle] = useState(() => {
-    try {
-      return localStorage.getItem('fleetforce_hero_title') || '';
-    } catch (e) {
-      return '';
-    }
-  });
+  const [heroBadge, setHeroBadge] = useState(() => localStorage.getItem('fleetforce_hero_badge') || '');
+  const [heroTitle, setHeroTitle] = useState(() => localStorage.getItem('fleetforce_hero_title') || '');
+  const [heroSubtitle, setHeroSubtitle] = useState(() => localStorage.getItem('fleetforce_hero_subtitle') || '');
 
-  const [heroSubtitle, setHeroSubtitle] = useState(() => {
-    try {
-      return localStorage.getItem('fleetforce_hero_subtitle') || '';
-    } catch (e) {
-      return '';
-    }
-  });
+  const [vacanciesTitle, setVacanciesTitle] = useState(() => localStorage.getItem('fleetforce_vacancies_title') || '');
+  const [vacanciesSubtitle, setVacanciesSubtitle] = useState(() => localStorage.getItem('fleetforce_vacancies_subtitle') || '');
+
+  const [hubTitle, setHubTitle] = useState(() => localStorage.getItem('fleetforce_hub_title') || '');
+  const [hubSubtitle, setHubSubtitle] = useState(() => localStorage.getItem('fleetforce_hub_subtitle') || '');
+
+  const [officesTitle, setOfficesTitle] = useState(() => localStorage.getItem('fleetforce_offices_title') || '');
+  const [officesSubtitle, setOfficesSubtitle] = useState(() => localStorage.getItem('fleetforce_offices_subtitle') || '');
 
   const [shipownerTitle, setShipownerTitle] = useState(() => localStorage.getItem('fleetforce_shipowner_title') || '');
   const [shipownerSubtitle, setShipownerSubtitle] = useState(() => localStorage.getItem('fleetforce_shipowner_subtitle') || '');
@@ -265,25 +282,30 @@ function AppContent() {
 
     const syncCandidatesWithServer = (serverCandidates) => {
       const deletedIds = getDeletedCandidateIds();
-      const seenIds = new Set();
-      const cleanList = [];
+      setCandidates((prev) => {
+        const localCandidateMap = new Map();
+        prev.forEach((cand) => {
+          const idStr = String(cand.id);
+          if (!deletedIds.has(idStr)) {
+            localCandidateMap.set(idStr, cand);
+          }
+        });
 
-      serverCandidates.forEach((cand, idx) => {
-        let candId = String(cand.id);
-        if (deletedIds.has(candId)) return;
-        
-        if (seenIds.has(candId)) {
-          candId = `${candId}-${idx}`;
-          cand = { ...cand, id: candId };
-        }
-        seenIds.add(candId);
-        cleanList.push(cand);
+        serverCandidates.forEach((cand) => {
+          const idStr = String(cand.id);
+          if (!deletedIds.has(idStr)) {
+            if (!localCandidateMap.has(idStr)) {
+              localCandidateMap.set(idStr, cand);
+            }
+          }
+        });
+
+        const mergedList = Array.from(localCandidateMap.values());
+        try {
+          localStorage.setItem('fleetforce_candidates', JSON.stringify(mergedList));
+        } catch (e) {}
+        return mergedList;
       });
-
-      setCandidates(cleanList);
-      try {
-        localStorage.setItem('fleetforce_candidates', JSON.stringify(cleanList));
-      } catch (e) {}
     };
 
     fetch('/api/candidates.php')
@@ -398,6 +420,12 @@ function AppContent() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newCandidate)
     }).catch(() => {});
+
+    fetch('/api/candidates.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newCandidate)
+    }).catch(() => {});
   };
 
   const handleUpdateCandidateStatus = (id, newStatus) => {
@@ -437,22 +465,29 @@ function AppContent() {
   };
 
   const handleDeleteCandidate = (id) => {
+    const cleanId = String(id || '').trim();
+    if (!cleanId) return;
+    const cleanIdLower = cleanId.toLowerCase();
+
     try {
       const deletedIds = JSON.parse(localStorage.getItem('fleetforce_deleted_candidate_ids') || '[]');
-      if (!deletedIds.includes(String(id))) {
-        deletedIds.push(String(id));
+      const exists = deletedIds.some(x => String(x || '').trim().toLowerCase() === cleanIdLower);
+      if (!exists) {
+        deletedIds.push(cleanId);
         localStorage.setItem('fleetforce_deleted_candidate_ids', JSON.stringify(deletedIds));
       }
     } catch (e) {}
 
     setCandidates((prev) => {
-      const updated = prev.filter((c) => String(c.id) !== String(id));
-      localStorage.setItem('fleetforce_candidates', JSON.stringify(updated));
+      const updated = prev.filter((c) => String(c.id || '').trim().toLowerCase() !== cleanIdLower);
+      try {
+        localStorage.setItem('fleetforce_candidates', JSON.stringify(updated));
+      } catch (e) {}
       return updated;
     });
 
-    fetch(`/api/candidates.php?id=${id}`, { method: 'DELETE' }).catch(() => {});
-    fetch(`/api/candidates/${id}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/candidates.php?id=${encodeURIComponent(cleanId)}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/candidates/${encodeURIComponent(cleanId)}`, { method: 'DELETE' }).catch(() => {});
   };
 
   const handleAddVacancy = (newVac) => {
@@ -551,8 +586,15 @@ function AppContent() {
     if (publishedData.hubBlocks) setHubBlocks(publishedData.hubBlocks);
     if (publishedData.stats) setStats(publishedData.stats);
     if (publishedData.sectionVisibility) setSectionVisibility(publishedData.sectionVisibility);
+    if (publishedData.heroBadge !== undefined) setHeroBadge(publishedData.heroBadge);
     if (publishedData.heroTitle !== undefined) setHeroTitle(publishedData.heroTitle);
     if (publishedData.heroSubtitle !== undefined) setHeroSubtitle(publishedData.heroSubtitle);
+    if (publishedData.vacanciesTitle !== undefined) setVacanciesTitle(publishedData.vacanciesTitle);
+    if (publishedData.vacanciesSubtitle !== undefined) setVacanciesSubtitle(publishedData.vacanciesSubtitle);
+    if (publishedData.hubTitle !== undefined) setHubTitle(publishedData.hubTitle);
+    if (publishedData.hubSubtitle !== undefined) setHubSubtitle(publishedData.hubSubtitle);
+    if (publishedData.officesTitle !== undefined) setOfficesTitle(publishedData.officesTitle);
+    if (publishedData.officesSubtitle !== undefined) setOfficesSubtitle(publishedData.officesSubtitle);
     if (publishedData.shipownerTitle !== undefined) setShipownerTitle(publishedData.shipownerTitle);
     if (publishedData.shipownerSubtitle !== undefined) setShipownerSubtitle(publishedData.shipownerSubtitle);
     if (publishedData.service1Title !== undefined) setService1Title(publishedData.service1Title);
@@ -655,6 +697,7 @@ function AppContent() {
           onSearch={(filters) => setSearchFilter(filters)}
           onOpenWizard={() => handleOpenWizard('')}
           stats={stats}
+          customBadge={heroBadge || undefined}
           customTitle={heroTitle || undefined}
           customSubtitle={heroSubtitle || undefined}
         />
@@ -666,6 +709,8 @@ function AppContent() {
           vacancies={vacancies}
           searchFilter={searchFilter}
           onApplyVacancy={handleApplyVacancy}
+          customTitle={vacanciesTitle || undefined}
+          customSubtitle={vacanciesSubtitle || undefined}
         />
       )}
 
@@ -674,6 +719,8 @@ function AppContent() {
         <SeafarerHub 
           onOpenWizard={() => handleOpenWizard('')}
           hubBlocks={hubBlocks}
+          customTitle={hubTitle || undefined}
+          customSubtitle={hubSubtitle || undefined}
         />
       )}
 
@@ -696,6 +743,8 @@ function AppContent() {
       {sectionVisibility.offices && (
         <OfficesAndContacts 
           offices={offices}
+          customTitle={officesTitle || undefined}
+          customSubtitle={officesSubtitle || undefined}
         />
       )}
 
