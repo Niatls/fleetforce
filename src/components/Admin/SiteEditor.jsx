@@ -91,8 +91,40 @@ export const SiteEditor = ({
     }
   };
 
+  // Shipowner Services custom text draft state
+  const [draftShipownerTitle, setDraftShipownerTitle] = useState(() => localStorage.getItem('fleetforce_shipowner_title') || 'Услуги для Судовладельцев и Операторов');
+  const [draftShipownerSubtitle, setDraftShipownerSubtitle] = useState(() => localStorage.getItem('fleetforce_shipowner_subtitle') || 'Качественный подбор дипломированного командного и рядового состава');
+  
+  const [draftService1Title, setDraftService1Title] = useState(() => localStorage.getItem('fleetforce_service1_title') || 'Подбор и комплектование экипажей');
+  const [draftService1Desc, setDraftService1Desc] = useState(() => localStorage.getItem('fleetforce_service1_desc') || 'Полная проверка рабочих дипломов, сертификатов, отзывов с предыдущих мест работы и проверка знания морского английского.');
+  
+  const [draftService2Title, setDraftService2Title] = useState(() => localStorage.getItem('fleetforce_service2_title') || 'Технический и Кадровый аудит');
+  const [draftService2Desc, setDraftService2Desc] = useState(() => localStorage.getItem('fleetforce_service2_desc') || 'Содействие в оформлении флажных документов, визовой поддержке и логистике смены экипажей в любых портах мира.');
+
+  const [draftService3Title, setDraftService3Title] = useState(() => localStorage.getItem('fleetforce_service3_title') || 'Управление бюджетом crew-management');
+  const [draftService3Desc, setDraftService3Desc] = useState(() => localStorage.getItem('fleetforce_service3_desc') || 'Оптимизация расходов на смену команд, медицинское страхование и выплату заработной платы.');
+
+  // Footer custom text state
+  const [draftFooterBrandDesc, setDraftFooterBrandDesc] = useState(() => localStorage.getItem('fleetforce_footer_brand_desc') || 'Объединенный портал морских крюинговых агентств (Legacy Marine • Top Crew • BGI • Good Crew).');
+  const [draftFooterCertText, setDraftFooterCertText] = useState(() => localStorage.getItem('fleetforce_footer_cert_text') || 'Соответствует стандартам Конвенции КТМС 2006 (MLC 2006) и ISO 9001:2015.');
+  const [draftFooterCopyright, setDraftFooterCopyright] = useState(() => localStorage.getItem('fleetforce_footer_copyright') || '© 2026 FleetForce Alliance. Все права защищены. Объединенный портал крюинговых услуг FleetForce.');
+
   // Publish Draft -> Live
   const handlePublishAll = () => {
+    localStorage.setItem('fleetforce_hero_title', draftHeroTitle);
+    localStorage.setItem('fleetforce_hero_subtitle', draftHeroSubtitle);
+    localStorage.setItem('fleetforce_shipowner_title', draftShipownerTitle);
+    localStorage.setItem('fleetforce_shipowner_subtitle', draftShipownerSubtitle);
+    localStorage.setItem('fleetforce_service1_title', draftService1Title);
+    localStorage.setItem('fleetforce_service1_desc', draftService1Desc);
+    localStorage.setItem('fleetforce_service2_title', draftService2Title);
+    localStorage.setItem('fleetforce_service2_desc', draftService2Desc);
+    localStorage.setItem('fleetforce_service3_title', draftService3Title);
+    localStorage.setItem('fleetforce_service3_desc', draftService3Desc);
+    localStorage.setItem('fleetforce_footer_brand_desc', draftFooterBrandDesc);
+    localStorage.setItem('fleetforce_footer_cert_text', draftFooterCertText);
+    localStorage.setItem('fleetforce_footer_copyright', draftFooterCopyright);
+
     onPublish({
       vacancies: draftVacancies,
       offices: draftOffices,
@@ -100,7 +132,18 @@ export const SiteEditor = ({
       stats: draftStats,
       sectionVisibility: draftSectionVisibility,
       heroTitle: draftHeroTitle,
-      heroSubtitle: draftHeroSubtitle
+      heroSubtitle: draftHeroSubtitle,
+      shipownerTitle: draftShipownerTitle,
+      shipownerSubtitle: draftShipownerSubtitle,
+      service1Title: draftService1Title,
+      service1Desc: draftService1Desc,
+      service2Title: draftService2Title,
+      service2Desc: draftService2Desc,
+      service3Title: draftService3Title,
+      service3Desc: draftService3Desc,
+      footerBrandDesc: draftFooterBrandDesc,
+      footerCertText: draftFooterCertText,
+      footerCopyright: draftFooterCopyright
     });
 
     setHasChanges(false);
@@ -466,13 +509,93 @@ export const SiteEditor = ({
           <section style={{ position: 'relative', marginTop: '3rem' }}>
             {!previewMode && (
               <div style={{ padding: '0 2rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dashed var(--color-accent)', paddingBottom: '0.8rem' }}>
-                <span className="badge badge-gold">СУДОВЛАДЕЛЬЦАМ (ФОРМА ЗАЯВОК)</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span className="badge badge-gold">СУДОВЛАДЕЛЬЦАМ (УСЛУГИ И ЗАЯВКИ)</span>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>✏️ Кликните по заголовкам и карточкам для редактирования</span>
+                </div>
                 <button onClick={() => handleToggleSection('shipowners')} className="btn btn-secondary btn-sm">
                   <EyeOff size={14} /> Скрыть форму для судовладельцев
                 </button>
               </div>
             )}
-            <ShipownerServices />
+            <ShipownerServices 
+              customTitle={
+                previewMode ? draftShipownerTitle : (
+                  <InlineText 
+                    text={draftShipownerTitle}
+                    onSave={(val) => { setDraftShipownerTitle(val); markChanged(); }}
+                    placeholder="Заголовок услуг для судовладельцев..."
+                  />
+                )
+              }
+              customSubtitle={
+                previewMode ? draftShipownerSubtitle : (
+                  <InlineText 
+                    text={draftShipownerSubtitle}
+                    onSave={(val) => { setDraftShipownerSubtitle(val); markChanged(); }}
+                    multiline
+                    placeholder="Подзаголовок услуг..."
+                  />
+                )
+              }
+              customCard1Title={
+                previewMode ? draftService1Title : (
+                  <InlineText 
+                    text={draftService1Title}
+                    onSave={(val) => { setDraftService1Title(val); markChanged(); }}
+                    placeholder="Название услуги 1..."
+                  />
+                )
+              }
+              customCard1Desc={
+                previewMode ? draftService1Desc : (
+                  <InlineText 
+                    text={draftService1Desc}
+                    onSave={(val) => { setDraftService1Desc(val); markChanged(); }}
+                    multiline
+                    placeholder="Описание услуги 1..."
+                  />
+                )
+              }
+              customCard2Title={
+                previewMode ? draftService2Title : (
+                  <InlineText 
+                    text={draftService2Title}
+                    onSave={(val) => { setDraftService2Title(val); markChanged(); }}
+                    placeholder="Название услуги 2..."
+                  />
+                )
+              }
+              customCard2Desc={
+                previewMode ? draftService2Desc : (
+                  <InlineText 
+                    text={draftService2Desc}
+                    onSave={(val) => { setDraftService2Desc(val); markChanged(); }}
+                    multiline
+                    placeholder="Описание услуги 2..."
+                  />
+                )
+              }
+              customCard3Title={
+                previewMode ? draftService3Title : (
+                  <InlineText 
+                    text={draftService3Title}
+                    onSave={(val) => { setDraftService3Title(val); markChanged(); }}
+                    placeholder="Название услуги 3..."
+                  />
+                )
+              }
+              customCard3Desc={
+                previewMode ? draftService3Desc : (
+                  <InlineText 
+                    text={draftService3Desc}
+                    onSave={(val) => { setDraftService3Desc(val); markChanged(); }}
+                    multiline
+                    placeholder="Описание услуги 3..."
+                  />
+                )
+              }
+            />
           </section>
         )}
 
@@ -517,8 +640,48 @@ export const SiteEditor = ({
           </section>
         )}
 
-        {/* FOOTER (Full Page Copy) */}
-        <Footer onOpenAdmin={() => {}} />
+        {/* FOOTER (Full Page Copy with Editable Text) */}
+        <section style={{ position: 'relative', marginTop: '2rem' }}>
+          {!previewMode && (
+            <div style={{ padding: '0.5rem 2rem', background: 'rgba(0,139,255,0.05)', borderTop: '1px dashed var(--color-accent)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <span className="badge badge-gold">ПОДВАЛ САЙТА (FOOTER)</span>
+              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>✏️ Кликните по текстам описания, сертификатов и копирайта для редактирования</span>
+            </div>
+          )}
+          <Footer 
+            onOpenAdmin={() => {}}
+            customBrandDesc={
+              previewMode ? draftFooterBrandDesc : (
+                <InlineText 
+                  text={draftFooterBrandDesc}
+                  onSave={(val) => { setDraftFooterBrandDesc(val); markChanged(); }}
+                  multiline
+                  placeholder="Описание компании в подвале..."
+                />
+              )
+            }
+            customCertText={
+              previewMode ? draftFooterCertText : (
+                <InlineText 
+                  text={draftFooterCertText}
+                  onSave={(val) => { setDraftFooterCertText(val); markChanged(); }}
+                  multiline
+                  placeholder="Текст сертификации..."
+                />
+              )
+            }
+            customCopyright={
+              previewMode ? draftFooterCopyright : (
+                <InlineText 
+                  text={draftFooterCopyright}
+                  onSave={(val) => { setDraftFooterCopyright(val); markChanged(); }}
+                  multiline
+                  placeholder="Текст авторских прав..."
+                />
+              )
+            }
+          />
+        </section>
 
       </div>
 

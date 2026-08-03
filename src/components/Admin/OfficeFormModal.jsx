@@ -62,8 +62,8 @@ export const OfficeFormModal = ({
   const isEdit = !!(editingOffice || editingOfficeId);
 
   return (
-    <div className="modal-overlay" style={{ zIndex: 1100 }}>
-      <div className="modal-content" style={{ maxWidth: '600px', padding: '2rem' }}>
+    <div className="modal-overlay" style={{ zIndex: 2000, paddingTop: '85px', paddingBottom: '2rem', overflowY: 'auto', alignItems: 'flex-start' }}>
+      <div className="modal-content" style={{ maxWidth: '600px', padding: '2rem', marginTop: '0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h3 style={{ fontSize: '1.3rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>
             {isEdit ? '✏️ Редактировать Филиал' : '➕ Добавить Новый Филиал'}

@@ -2,7 +2,17 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Shield, Anchor, FileText, CheckCircle, Mail, Send } from 'lucide-react';
 
-export const ShipownerServices = ({ onRequestSubmit }) => {
+export const ShipownerServices = ({ 
+  onRequestSubmit,
+  customTitle,
+  customSubtitle,
+  customCard1Title,
+  customCard1Desc,
+  customCard2Title,
+  customCard2Desc,
+  customCard3Title,
+  customCard3Desc
+}) => {
   const { t } = useLanguage();
   const [formData, setFormData] = React.useState({
     companyName: '',
@@ -39,9 +49,11 @@ export const ShipownerServices = ({ onRequestSubmit }) => {
         
         <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 3.5rem' }}>
           <span className="badge badge-blue" style={{ marginBottom: '0.6rem' }}>CREW MANAGEMENT & MANNING</span>
-          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{t('shipowners.title')}</h2>
+          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>
+            {customTitle !== undefined ? customTitle : t('shipowners.title')}
+          </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            {t('shipowners.subtitle')}
+            {customSubtitle !== undefined ? customSubtitle : t('shipowners.subtitle')}
           </p>
         </div>
 
@@ -59,9 +71,11 @@ export const ShipownerServices = ({ onRequestSubmit }) => {
                 </div>
               </div>
               {/* Row 2: Title */}
-              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>{t('shipowners.service1Title')}</h3>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
+                {customCard1Title !== undefined ? customCard1Title : t('shipowners.service1Title')}
+              </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {t('shipowners.service1Desc')}
+                {customCard1Desc !== undefined ? customCard1Desc : t('shipowners.service1Desc')}
               </p>
             </div>
           </div>
@@ -78,9 +92,11 @@ export const ShipownerServices = ({ onRequestSubmit }) => {
                 </div>
               </div>
               {/* Row 2: Title */}
-              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>{t('shipowners.service2Title')}</h3>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
+                {customCard2Title !== undefined ? customCard2Title : t('shipowners.service2Title')}
+              </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {t('shipowners.service2Desc')}
+                {customCard2Desc !== undefined ? customCard2Desc : t('shipowners.service2Desc')}
               </p>
             </div>
           </div>
@@ -97,9 +113,11 @@ export const ShipownerServices = ({ onRequestSubmit }) => {
                 </div>
               </div>
               {/* Row 2: Title */}
-              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>{t('shipowners.service3Title')}</h3>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
+                {customCard3Title !== undefined ? customCard3Title : t('shipowners.service3Title')}
+              </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {t('shipowners.service3Desc')}
+                {customCard3Desc !== undefined ? customCard3Desc : t('shipowners.service3Desc')}
               </p>
             </div>
           </div>

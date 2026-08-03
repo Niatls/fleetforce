@@ -193,6 +193,19 @@ function AppContent() {
     }
   });
 
+  const [shipownerTitle, setShipownerTitle] = useState(() => localStorage.getItem('fleetforce_shipowner_title') || '');
+  const [shipownerSubtitle, setShipownerSubtitle] = useState(() => localStorage.getItem('fleetforce_shipowner_subtitle') || '');
+  const [service1Title, setService1Title] = useState(() => localStorage.getItem('fleetforce_service1_title') || '');
+  const [service1Desc, setService1Desc] = useState(() => localStorage.getItem('fleetforce_service1_desc') || '');
+  const [service2Title, setService2Title] = useState(() => localStorage.getItem('fleetforce_service2_title') || '');
+  const [service2Desc, setService2Desc] = useState(() => localStorage.getItem('fleetforce_service2_desc') || '');
+  const [service3Title, setService3Title] = useState(() => localStorage.getItem('fleetforce_service3_title') || '');
+  const [service3Desc, setService3Desc] = useState(() => localStorage.getItem('fleetforce_service3_desc') || '');
+
+  const [footerBrandDesc, setFooterBrandDesc] = useState(() => localStorage.getItem('fleetforce_footer_brand_desc') || '');
+  const [footerCertText, setFooterCertText] = useState(() => localStorage.getItem('fleetforce_footer_cert_text') || '');
+  const [footerCopyright, setFooterCopyright] = useState(() => localStorage.getItem('fleetforce_footer_copyright') || '');
+
   useEffect(() => {
     localStorage.setItem('fleetforce_section_visibility', JSON.stringify(sectionVisibility));
   }, [sectionVisibility]);
@@ -481,6 +494,17 @@ function AppContent() {
     if (publishedData.sectionVisibility) setSectionVisibility(publishedData.sectionVisibility);
     if (publishedData.heroTitle !== undefined) setHeroTitle(publishedData.heroTitle);
     if (publishedData.heroSubtitle !== undefined) setHeroSubtitle(publishedData.heroSubtitle);
+    if (publishedData.shipownerTitle !== undefined) setShipownerTitle(publishedData.shipownerTitle);
+    if (publishedData.shipownerSubtitle !== undefined) setShipownerSubtitle(publishedData.shipownerSubtitle);
+    if (publishedData.service1Title !== undefined) setService1Title(publishedData.service1Title);
+    if (publishedData.service1Desc !== undefined) setService1Desc(publishedData.service1Desc);
+    if (publishedData.service2Title !== undefined) setService2Title(publishedData.service2Title);
+    if (publishedData.service2Desc !== undefined) setService2Desc(publishedData.service2Desc);
+    if (publishedData.service3Title !== undefined) setService3Title(publishedData.service3Title);
+    if (publishedData.service3Desc !== undefined) setService3Desc(publishedData.service3Desc);
+    if (publishedData.footerBrandDesc !== undefined) setFooterBrandDesc(publishedData.footerBrandDesc);
+    if (publishedData.footerCertText !== undefined) setFooterCertText(publishedData.footerCertText);
+    if (publishedData.footerCopyright !== undefined) setFooterCopyright(publishedData.footerCopyright);
   };
 
   // Standalone Admin Page View
@@ -598,6 +622,14 @@ function AppContent() {
       {sectionVisibility.shipowners && (
         <ShipownerServices 
           onRequestSubmit={handleAddShipownerRequest}
+          customTitle={shipownerTitle || undefined}
+          customSubtitle={shipownerSubtitle || undefined}
+          customCard1Title={service1Title || undefined}
+          customCard1Desc={service1Desc || undefined}
+          customCard2Title={service2Title || undefined}
+          customCard2Desc={service2Desc || undefined}
+          customCard3Title={service3Title || undefined}
+          customCard3Desc={service3Desc || undefined}
         />
       )}
 
@@ -611,6 +643,9 @@ function AppContent() {
       {/* Footer */}
       <Footer 
         onOpenAdmin={handleOpenAdminTrigger}
+        customBrandDesc={footerBrandDesc || undefined}
+        customCertText={footerCertText || undefined}
+        customCopyright={footerCopyright || undefined}
       />
 
       {/* Seafarer Application Wizard Modal */}
