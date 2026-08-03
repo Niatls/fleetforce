@@ -90,12 +90,12 @@ export const AdminDashboard = ({
     setShowOfficeModal(true);
   };
 
-  const handleSaveOffice = (e) => {
-    e.preventDefault();
-    if (editingOfficeId) {
-      if (onUpdateOffice) onUpdateOffice({ ...officeForm, id: editingOfficeId });
+  const handleSaveOffice = (savedOffice) => {
+    const data = (savedOffice && typeof savedOffice === 'object' && savedOffice.city) ? savedOffice : officeForm;
+    if (editingOfficeId || data.id) {
+      if (onUpdateOffice) onUpdateOffice({ ...data, id: editingOfficeId || data.id });
     } else {
-      if (onAddOffice) onAddOffice({ ...officeForm, id: Date.now() });
+      if (onAddOffice) onAddOffice({ ...data, id: Date.now() });
     }
     setShowOfficeModal(false);
   };
@@ -139,12 +139,12 @@ export const AdminDashboard = ({
     setShowHubModal(true);
   };
 
-  const handleSaveHub = (e) => {
-    e.preventDefault();
-    if (editingHubId) {
-      if (onUpdateHubBlock) onUpdateHubBlock({ ...hubForm, id: editingHubId });
+  const handleSaveHub = (savedHub) => {
+    const data = (savedHub && typeof savedHub === 'object' && savedHub.title) ? savedHub : hubForm;
+    if (editingHubId || data.id) {
+      if (onUpdateHubBlock) onUpdateHubBlock({ ...data, id: editingHubId || data.id });
     } else {
-      if (onAddHubBlock) onAddHubBlock({ ...hubForm, id: Date.now() });
+      if (onAddHubBlock) onAddHubBlock({ ...data, id: Date.now() });
     }
     setShowHubModal(false);
   };
@@ -240,12 +240,12 @@ export const AdminDashboard = ({
     setShowVacancyModal(true);
   };
 
-  const handleSaveVacancy = (e) => {
-    e.preventDefault();
-    if (editingVacancyId) {
-      if (onUpdateVacancy) onUpdateVacancy({ ...vacancyForm, id: editingVacancyId });
+  const handleSaveVacancy = (savedVacancy) => {
+    const data = (savedVacancy && typeof savedVacancy === 'object' && (savedVacancy.title || savedVacancy.rank)) ? savedVacancy : vacancyForm;
+    if (editingVacancyId || data.id) {
+      if (onUpdateVacancy) onUpdateVacancy({ ...data, id: editingVacancyId || data.id });
     } else {
-      if (onAddVacancy) onAddVacancy({ ...vacancyForm, id: Date.now() });
+      if (onAddVacancy) onAddVacancy({ ...data, id: Date.now() });
     }
     setEditingVacancyId(null);
     setShowVacancyModal(false);

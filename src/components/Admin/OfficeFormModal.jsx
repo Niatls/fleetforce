@@ -12,55 +12,51 @@ export const OfficeFormModal = ({
 }) => {
   const defaultForm = {
     city: '',
-    flag: '',
+    flag: '🌊 Филиал',
     address: '',
     phone: '',
     email: '',
     active: true
   };
 
-  const [localForm, setLocalForm] = useState(defaultForm);
+  const [formData, setFormData] = useState(defaultForm);
 
   useEffect(() => {
     if (!isOpen) return;
-    if (editingOffice) {
-      setLocalForm({
-        id: editingOffice.id,
-        city: editingOffice.city || '',
-        flag: editingOffice.flag || '',
-        address: editingOffice.address || '',
-        phone: editingOffice.phone || '',
-        email: editingOffice.email || '',
-        active: editingOffice.active !== undefined ? editingOffice.active : true
+    const target = editingOffice || externalForm;
+    if (target) {
+      setFormData({
+        id: target.id || editingOfficeId || Date.now(),
+        city: target.city || '',
+        flag: target.flag || '🌊 Филиал',
+        address: target.address || '',
+        phone: target.phone || '',
+        email: target.email || '',
+        active: target.active !== undefined ? target.active : true
       });
-    } else if (externalForm) {
-      setLocalForm(externalForm);
     } else {
-      setLocalForm(defaultForm);
+      setFormData(defaultForm);
     }
-  }, [isOpen, editingOffice, externalForm]);
+  }, [isOpen, editingOffice, editingOfficeId, externalForm]);
 
   if (!isOpen) return null;
 
-  const currentForm = externalForm || localForm;
-
   const updateField = (field, value) => {
-    if (setExternalForm && externalForm) {
-      setExternalForm({ ...externalForm, [field]: value });
-    } else {
-      setLocalForm(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (setExternalForm) {
+      setExternalForm(prev => (typeof prev === 'object' && prev ? { ...prev, [field]: value } : { [field]: value }));
     }
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (editingOffice) {
-      onSave({ ...localForm, id: editingOffice.id });
-    } else if (externalForm) {
-      onSave(e);
-    } else {
-      onSave({ ...localForm, id: Date.now() });
-    }
+    if (e && e.preventDefault) e.preventDefault();
+    const finalData = {
+      ...formData,
+      city: formData.city || 'Office',
+      id: formData.id || Date.now()
+    };
+    if (onSave) onSave(finalData);
+    if (onClose) onClose();
   };
 
   const isEdit = !!(editingOffice || editingOfficeId);
@@ -68,84 +64,96 @@ export const OfficeFormModal = ({
   return (
     <div className="modal-overlay" style={{ zIndex: 1100 }}>
       <div className="modal-content" style={{ maxWidth: '600px', padding: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-          <h3 style={{ fontSize: '1.5rem', color: '#FFFFFF' }}>
-            {isEdit ? 'Редактировать Филиал' : 'Добавить Новый Филиал'}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.3rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>
+            {isEdit ? '✏️ Редактировать Филиал' : '➕ Добавить Новый Филиал'}
           </h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-            <X size={24} />
+          <button 
+            type="button" 
+            onClick={onClose} 
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.4rem' }}
+          >
+            <X size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
-            <div className="form-group">
-              <label className="form-label">Город / Регион</label>
-              <input 
-                type="text" 
-                required
-                placeholder="Санкт-Петербург"
-                className="form-input"
-                value={currentForm.city || ''}
-                onChange={(e) => updateField('city', e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Бейдж / Метка</label>
-              <input 
-                type="text" 
-                placeholder="⚓ Главный Офис"
-                className="form-input"
-                value={currentForm.flag || ''}
-                onChange={(e) => updateField('flag', e.target.value)}
-              />
-            </div>
+          <div className="form-group">
+            <label className="form-label">Город / Регион</label>
+            <input 
+              type="text" 
+              placeholder="e.g. Санкт-Петербург / Калининград" 
+              className="form-input"
+              value={formData.city || ''}
+              onChange={(e) => updateField('city', e.target.value)}
+              required
+            />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Адрес офиса</label>
+            <label className="form-label">Метка / Флаг филиала</label>
             <input 
               type="text" 
-              required
-              placeholder="Набережная Реки Мойки 58, Офис 402"
+              placeholder="e.g. ⚓ Головной Офис / 🌊 Региональный филиал" 
               className="form-input"
-              value={currentForm.address || ''}
+              value={formData.flag || ''}
+              onChange={(e) => updateField('flag', e.target.value)}
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Физический Адрес</label>
+            <textarea 
+              rows={2}
+              placeholder="Полный адрес офиса..." 
+              className="form-input"
+              value={formData.address || ''}
               onChange={(e) => updateField('address', e.target.value)}
+              style={{ resize: 'vertical' }}
             />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
             <div className="form-group">
-              <label className="form-label">Телефон (необязательно)</label>
+              <label className="form-label">Телефон связи</label>
               <input 
                 type="text" 
-                placeholder="+7 (812) 334-55-66 (необязательно)"
+                placeholder="+7 (812) 000-00-00" 
                 className="form-input"
-                value={currentForm.phone || ''}
+                value={formData.phone || ''}
                 onChange={(e) => updateField('phone', e.target.value)}
               />
             </div>
 
             <div className="form-group">
-              <label className="form-label">Email</label>
+              <label className="form-label">Email офиса</label>
               <input 
                 type="email" 
-                required
-                placeholder="spb@fleetforce-crewing.com"
+                placeholder="office@fleetforce.ru" 
                 className="form-input"
-                value={currentForm.email || ''}
+                value={formData.email || ''}
                 onChange={(e) => updateField('email', e.target.value)}
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '0.4rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: 'var(--color-emerald)', fontWeight: 600 }}>
+              <input 
+                type="checkbox"
+                checked={formData.active !== false}
+                onChange={(e) => updateField('active', e.target.checked)}
+              />
+              👁️ Отображать на сайте
+            </label>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginTop: '1.5rem' }}>
             <button type="button" onClick={onClose} className="btn btn-secondary">
               Отмена
             </button>
-            <button type="submit" className="btn btn-accent">
-              Сохранить Филиал
+            <button type="submit" className="btn btn-primary">
+              {isEdit ? 'Сохранить изменения' : 'Создать филиал'}
             </button>
           </div>
         </form>

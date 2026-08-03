@@ -574,10 +574,45 @@ function AppContent() {
   );
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("App Error Boundary caught an error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '4rem 2rem', textAlign: 'center', color: '#fff', background: 'var(--bg-main, #0b1329)', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+          <h2 style={{ fontSize: '1.8rem', color: '#ffffff', marginBottom: '1rem', fontWeight: 700 }}>Произошла ошибка системы</h2>
+          <p style={{ color: 'var(--color-danger, #ef4444)', maxWidth: '600px', margin: '0 auto 2rem auto', background: 'rgba(239,68,68,0.1)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)' }}>
+            {this.state.error?.toString()}
+          </p>
+          <button 
+            className="btn btn-primary btn-lg" 
+            onClick={() => { this.setState({ hasError: false }); window.location.hash = ''; window.location.reload(); }}
+          >
+            🔄 Сбросить и вернуться на сайт
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </ErrorBoundary>
   );
 }
