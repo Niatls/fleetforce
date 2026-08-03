@@ -107,9 +107,10 @@ export const VacancyFormModal = ({
               <label className="form-label">Должность</label>
               <select 
                 className="form-select"
-                value={currentForm.rank || MARITIME_RANKS[0]}
+                value={currentForm.rank || ''}
                 onChange={(e) => updateField('rank', e.target.value)}
               >
+                <option value="">-- SELECT (Выберите должность) --</option>
                 {MARITIME_RANKS.map((r) => (
                   <option key={r} value={r}>{getRankLabel(r, lang)}</option>
                 ))}
@@ -120,9 +121,10 @@ export const VacancyFormModal = ({
               <label className="form-label">Тип судна</label>
               <select 
                 className="form-select"
-                value={currentForm.vesselType || VESSEL_TYPES[0]}
+                value={currentForm.vesselType || ''}
                 onChange={(e) => updateField('vesselType', e.target.value)}
               >
+                <option value="">-- SELECT (Выберите тип судна) --</option>
                 {VESSEL_TYPES.map((v) => (
                   <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
                 ))}

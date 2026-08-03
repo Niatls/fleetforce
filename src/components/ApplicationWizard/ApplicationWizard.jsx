@@ -18,21 +18,21 @@ const emptySeaService = (rank = '') => ({
   id: mkId(), dateFrom: '', dateTo: '',
   rankHeld: rank, salary: '',
   vesselName: '', shipowner: '',
-  vesselType: VESSEL_TYPES[0], engineType: ENGINE_TYPES[0],
+  vesselType: '', engineType: '',
   buildYear: '', dwtGrt: '', engineBhp: '',
-  flag: FLAG_STATES[1], manningCompany: ''
+  flag: '', manningCompany: ''
 });
 
 const emptyRecordBook = () => ({
-  id: mkId(), flag: FLAG_STATES[1], number: '',
+  id: mkId(), flag: '', number: '',
   issuedDate: '', validUntil: '', place: ''
 });
 
 const emptyCertificate = () => ({
   id: mkId(),
-  certName: CERTIFICATE_TYPES[0],
+  certName: '',
   certNo: '', certIssued: '', certValid: '',
-  rankCapacity: MARITIME_RANKS[0],
+  rankCapacity: '',
   endorseNo: '', endorseIssued: '', endorseValid: ''
 });
 
@@ -52,11 +52,19 @@ const Inp = ({ value, onChange, ...rest }) => (
   <input className="form-input" value={value} onChange={e => onChange(e.target.value)} {...rest} />
 );
 
-const Sel = ({ value, onChange, options, children, ...rest }) => (
+const Sel = ({ value, onChange, options, children, placeholder = '-- SELECT --', ...rest }) => (
   <select className="form-select" value={value} onChange={e => onChange(e.target.value)} {...rest}>
-    {options
-      ? options.map(o => <option key={o} value={o}>{o}</option>)
-      : children}
+    {options ? (
+      <>
+        {placeholder !== false && <option value="">{placeholder}</option>}
+        {options.map(o => {
+          const val = typeof o === 'object' ? o.value : o;
+          const lbl = typeof o === 'object' ? o.label : o;
+          if (val === '') return null;
+          return <option key={val} value={val}>{lbl}</option>;
+        })}
+      </>
+    ) : children}
   </select>
 );
 
