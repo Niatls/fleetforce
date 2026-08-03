@@ -49,5 +49,17 @@ if ($method === 'PUT') {
     exit();
 }
 
+if ($method === 'DELETE') {
+    $id = isset($_GET['id']) ? $_GET['id'] : '';
+    if ($id) {
+        $db['candidates'] = array_values(array_filter($db['candidates'], function($c) use ($id) {
+            return isset($c['id']) && $c['id'] != $id;
+        }));
+        save_database($db);
+        echo json_encode(['success' => true]);
+        exit();
+    }
+}
+
 http_response_code(405);
 echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);

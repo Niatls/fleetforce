@@ -6,6 +6,7 @@ export const CandidateDossierModal = ({
   candidate,
   onClose,
   onExportDoc,
+  onDeleteCandidate,
   onAdminFileUpload,
   onAdminFileDelete,
   onPreviewFile,
@@ -40,6 +41,20 @@ export const CandidateDossierModal = ({
             </button>
             <button onClick={() => window.print()} className="btn btn-primary btn-sm" style={{ gap: '0.4rem' }}>
               <Printer size={15} /> Print / Export PDF (.pdf)
+            </button>
+            <button 
+              onClick={() => {
+                const name = candidate.fullNameRu || candidate.fullNameEn || candidate.fullName || candidate.id;
+                if (window.confirm(`Вы действительно хотите удалить анкету кандидата "${name}"?`)) {
+                  if (onDeleteCandidate) onDeleteCandidate(candidate.id);
+                  onClose();
+                }
+              }} 
+              className="btn btn-secondary btn-sm" 
+              style={{ color: 'var(--color-danger)', borderColor: 'rgba(239,68,68,0.4)', gap: '0.4rem' }}
+              title="Удалить анкету моряка"
+            >
+              <Trash2 size={15} /> Удалить анкету
             </button>
           </div>
         </div>

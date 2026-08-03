@@ -373,6 +373,16 @@ function AppContent() {
     }).catch(() => {});
   };
 
+  const handleDeleteCandidate = (id) => {
+    setCandidates((prev) => {
+      const updated = prev.filter((c) => c.id !== id);
+      localStorage.setItem('fleetforce_candidates', JSON.stringify(updated));
+      return updated;
+    });
+
+    fetch(`/api/candidates.php?id=${id}`, { method: 'DELETE' }).catch(() => {});
+  };
+
   const handleAddVacancy = (newVac) => {
     setVacancies((prev) => [newVac, ...prev]);
 
@@ -525,6 +535,7 @@ function AppContent() {
         onToggleOfficeActive={handleToggleOfficeActive}
         onToggleHubBlockActive={handleToggleHubBlockActive}
         onUpdateCandidateStatus={handleUpdateCandidateStatus}
+        onDeleteCandidate={handleDeleteCandidate}
         onSaveCandidateNotes={handleSaveCandidateNotes}
         onUpdateCandidateFiles={handleUpdateCandidateFiles}
         onAddVacancy={handleAddVacancy}

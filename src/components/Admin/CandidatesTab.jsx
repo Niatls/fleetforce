@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { Search, Eye, FileText, Archive, Paperclip } from 'lucide-react';
+import { Search, Eye, FileText, Archive, Paperclip, Trash2 } from 'lucide-react';
 import { MARITIME_RANKS, getRankLabel } from '../../data/initialData';
 import { handleDownloadAllFiles } from './exportUtils';
 
@@ -13,6 +13,7 @@ export const CandidatesTab = ({
   filterRank,
   setFilterRank,
   onUpdateCandidateStatus,
+  onDeleteCandidate,
   onSelectCandidate,
   onExportDoc,
 }) => {
@@ -153,6 +154,19 @@ export const CandidatesTab = ({
                       title="Скачать ZIP-архив с анкетой (.doc) и всеми прикреплёнными документами"
                     >
                       <Archive size={14} /> Скачать всё
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const name = cand.fullNameRu || cand.fullNameEn || cand.fullName || cand.id;
+                        if (window.confirm(`Вы действительно хотите удалить анкету кандидата "${name}"?`)) {
+                          if (onDeleteCandidate) onDeleteCandidate(cand.id);
+                        }
+                      }}
+                      className="btn btn-secondary btn-sm"
+                      style={{ color: 'var(--color-danger)', borderColor: 'rgba(239, 68, 68, 0.3)', padding: '0.35rem 0.5rem' }}
+                      title="Удалить анкету моряка"
+                    >
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </td>

@@ -38,6 +38,7 @@ export const AdminDashboard = ({
   onToggleOfficeActive,
   onToggleHubBlockActive,
   onUpdateCandidateStatus, 
+  onDeleteCandidate,
   onSaveCandidateNotes,
   onUpdateCandidateFiles,
   onAddVacancy,
@@ -509,6 +510,7 @@ export const AdminDashboard = ({
           candidate={selectedCandidate}
           onClose={() => setSelectedCandidate(null)}
           onExportDoc={handleExportDoc}
+          onDeleteCandidate={onDeleteCandidate}
           onAdminFileUpload={handleAdminFileUpload}
           onAdminFileDelete={handleAdminFileDelete}
           onPreviewFile={(file) => openFilePreview(file, selectedCandidate?.attachedFiles || [])}
