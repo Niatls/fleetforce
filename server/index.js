@@ -146,6 +146,13 @@ app.put('/api/candidates/:id', (req, res) => {
   res.status(404).json({ success: false, message: 'Candidate not found' });
 });
 
+app.delete('/api/candidates/:id', (req, res) => {
+  const { id } = req.params;
+  db.candidates = db.candidates.filter((c) => String(c.id) !== String(id));
+  saveDatabase(db);
+  res.json({ success: true });
+});
+
 // --- ADMIN AUTH ---
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;

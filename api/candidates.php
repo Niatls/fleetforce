@@ -50,7 +50,8 @@ if ($method === 'PUT') {
 }
 
 if ($method === 'DELETE') {
-    $id = isset($_GET['id']) ? $_GET['id'] : '';
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $id = isset($_GET['id']) ? $_GET['id'] : (isset($input['id']) ? $input['id'] : '');
     if ($id) {
         $db['candidates'] = array_values(array_filter($db['candidates'], function($c) use ($id) {
             return isset($c['id']) && $c['id'] != $id;

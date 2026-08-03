@@ -117,10 +117,20 @@ function AppContent() {
     }
   });
 
+  const getDeletedCandidateIds = () => {
+    try {
+      return new Set(JSON.parse(localStorage.getItem('fleetforce_deleted_candidate_ids') || '[]'));
+    } catch (e) {
+      return new Set();
+    }
+  };
+
   const [candidates, setCandidates] = useState(() => {
     try {
+      const deletedIds = getDeletedCandidateIds();
       const saved = localStorage.getItem('fleetforce_candidates');
-      return saved ? JSON.parse(saved) : INITIAL_CANDIDATES;
+      const list = saved ? JSON.parse(saved) : INITIAL_CANDIDATES;
+      return list.filter(c => !deletedIds.has(String(c.id)));
     } catch (e) {
       return INITIAL_CANDIDATES;
     }
@@ -227,11 +237,16 @@ function AppContent() {
   // Try fetching from Backend API — localStorage always wins (API store resets on server restart)
   useEffect(() => {
     // Helper: merge API data into local state, but LOCAL records always take priority
-    // Only truly new IDs from API (not in localStorage) get added.
-    const mergeApiIntoLocal = (apiItems, setFn, keyField = 'id') => {
+    // Deleted IDs are never re-added.
+    const mergeApiIntoLocal = (apiItems, setFn, keyField = 'id', isCandidates = false) => {
+      const deletedIds = isCandidates ? getDeletedCandidateIds() : new Set();
       setFn((prev) => {
         const localIds = new Set(prev.map((item) => String(item[keyField])));
-        const newFromApi = apiItems.filter((item) => !localIds.has(String(item[keyField])));
+        const newFromApi = apiItems.filter((item) => {
+          const itemKey = String(item[keyField]);
+          if (deletedIds.has(itemKey)) return false;
+          return !localIds.has(itemKey);
+        });
         return newFromApi.length > 0 ? [...prev, ...newFromApi] : prev;
       });
     };
@@ -255,7 +270,7 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          mergeApiIntoLocal(data.data, setCandidates);
+          mergeApiIntoLocal(data.data, setCandidates, 'id', true);
         }
       })
       .catch(() => {});
@@ -387,13 +402,22 @@ function AppContent() {
   };
 
   const handleDeleteCandidate = (id) => {
+    try {
+      const deletedIds = JSON.parse(localStorage.getItem('fleetforce_deleted_candidate_ids') || '[]');
+      if (!deletedIds.includes(String(id))) {
+        deletedIds.push(String(id));
+        localStorage.setItem('fleetforce_deleted_candidate_ids', JSON.stringify(deletedIds));
+      }
+    } catch (e) {}
+
     setCandidates((prev) => {
-      const updated = prev.filter((c) => c.id !== id);
+      const updated = prev.filter((c) => String(c.id) !== String(id));
       localStorage.setItem('fleetforce_candidates', JSON.stringify(updated));
       return updated;
     });
 
     fetch(`/api/candidates.php?id=${id}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/candidates/${id}`, { method: 'DELETE' }).catch(() => {});
   };
 
   const handleAddVacancy = (newVac) => {
