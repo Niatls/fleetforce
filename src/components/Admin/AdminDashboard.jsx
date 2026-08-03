@@ -453,6 +453,7 @@ export const AdminDashboard = ({
             filterRank={filterRank}
             setFilterRank={setFilterRank}
             onUpdateCandidateStatus={onUpdateCandidateStatus}
+            onDeleteCandidate={onDeleteCandidate}
             onSelectCandidate={setSelectedCandidate}
             onExportDoc={handleExportDoc}
             onPreviewFile={(file) => openFilePreview(file, [])}
