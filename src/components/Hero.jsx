@@ -100,49 +100,6 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customTitl
             {customSubtitle ? customSubtitle : t('hero.subtitle')}
           </p>
 
-          {/* Vacancy Quick Search Widget */}
-          <form onSubmit={handleSearchSubmit} className="glass-card" style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr auto',
-            gap: '0.8rem',
-            padding: '0.8rem',
-            background: 'rgba(21, 39, 66, 0.75)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-            marginBottom: '2.5rem'
-          }}>
-            <select 
-              className="form-select"
-              value={selectedRank}
-              onChange={(e) => setSelectedRank(e.target.value)}
-              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}
-            >
-              <option value="">{t('hero.selectRank')}</option>
-              {MARITIME_RANKS.map((r) => (
-                <option key={r} value={r}>{getRankLabel(r, lang)}</option>
-              ))}
-            </select>
-
-            <select 
-              className="form-select"
-              value={selectedVessel}
-              onChange={(e) => setSelectedVessel(e.target.value)}
-              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}
-            >
-              <option value="">{t('hero.selectVessel')}</option>
-              {VESSEL_TYPES.map((v) => (
-                <option key={v} value={v}>{getVesselLabel(v, lang)}</option>
-              ))}
-            </select>
-
-            <button type="submit" className="btn btn-primary" style={{ height: '100%', whiteSpace: 'nowrap' }}>
-              <Search size={18} />
-              <span>{t('hero.searchBtn')}</span>
-            </button>
-          </form>
-
           {/* Quick Apply CTA */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button 
