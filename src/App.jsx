@@ -265,7 +265,21 @@ function AppContent() {
 
     const syncCandidatesWithServer = (serverCandidates) => {
       const deletedIds = getDeletedCandidateIds();
-      const cleanList = serverCandidates.filter((c) => !deletedIds.has(String(c.id)));
+      const seenIds = new Set();
+      const cleanList = [];
+
+      serverCandidates.forEach((cand, idx) => {
+        let candId = String(cand.id);
+        if (deletedIds.has(candId)) return;
+        
+        if (seenIds.has(candId)) {
+          candId = `${candId}-${idx}`;
+          cand = { ...cand, id: candId };
+        }
+        seenIds.add(candId);
+        cleanList.push(cand);
+      });
+
       setCandidates(cleanList);
       try {
         localStorage.setItem('fleetforce_candidates', JSON.stringify(cleanList));

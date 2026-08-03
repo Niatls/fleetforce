@@ -201,7 +201,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
     e.preventDefault();
     if (!fd.consent) { alert('Please confirm consent to data processing!'); return; }
     onSubmitSuccess({
-      id: `APP-2026-${Math.floor(100 + Math.random() * 900)}`,
+      id: `APP-2026-${Date.now().toString().slice(-5)}-${Math.floor(10 + Math.random() * 90)}`,
       fullName: fd.fullName || 'Seafarer',
       surname: fd.fullName.split(' ')[0] || '',
       name: fd.fullName.split(' ').slice(1).join(' ') || '',

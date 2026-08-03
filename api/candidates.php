@@ -12,7 +12,7 @@ if ($method === 'GET') {
 if ($method === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true) ?? [];
     $newCand = array_merge([
-        'id' => 'APP-2026-' . rand(100, 999),
+        'id' => 'APP-2026-' . date('His') . '-' . rand(10, 99),
         'status' => 'New',
         'submittedAt' => date('c'),
         'fullName' => 'Candidate',

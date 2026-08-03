@@ -110,7 +110,7 @@ app.get('/api/candidates', (req, res) => {
 
 app.post('/api/candidates', (req, res) => {
   const newCandidate = {
-    id: `APP-2026-${Math.floor(100 + Math.random() * 900)}`,
+    id: `APP-2026-${Date.now().toString().slice(-5)}-${Math.floor(10 + Math.random() * 90)}`,
     fullName: req.body.fullName || 'Candidate',
     dob: req.body.dob || '',
     citizenship: req.body.citizenship || 'Russia',
