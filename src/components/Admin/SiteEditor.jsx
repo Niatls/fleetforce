@@ -58,6 +58,37 @@ export const SiteEditor = ({
   const [hubModalOpen, setHubModalOpen] = useState(false);
   const [editingHubBlock, setEditingHubBlock] = useState(null);
 
+  const DEFAULT_SHIPOWNER_TITLE = 'Услуги для Судовладельцев и Операторов';
+  const DEFAULT_SHIPOWNER_SUBTITLE = 'Качественный подбор дипломированного командного и рядового состава';
+  const DEFAULT_SERVICE1_TITLE = 'Подбор и комплектование экипажей';
+  const DEFAULT_SERVICE1_DESC = 'Полная проверка рабочих дипломов, сертификатов, отзывов с предыдущих мест работы и проверка знания морского английского.';
+  const DEFAULT_SERVICE2_TITLE = 'Технический и Кадровый аудит';
+  const DEFAULT_SERVICE2_DESC = 'Содействие в оформлении флажных документов, визовой поддержке и логистике смены экипажей в любых портах мира.';
+  const DEFAULT_SERVICE3_TITLE = 'Управление бюджетом crew-management';
+  const DEFAULT_SERVICE3_DESC = 'Оптимизация расходов на смену команд, медицинское страхование и выплату заработной платы.';
+
+  const DEFAULT_FOOTER_BRAND = 'Объединенный портал морских крюинговых агентств (Legacy Marine • Top Crew • BGI • Good Crew).';
+  const DEFAULT_FOOTER_CERT = 'Соответствует стандартам Конвенции КТМС 2006 (MLC 2006) и ISO 9001:2015.';
+  const DEFAULT_FOOTER_COPYRIGHT = '© 2026 FleetForce Alliance. Все права защищены. Объединенный портал крюинговых услуг FleetForce.';
+
+  // Shipowner Services custom text draft state
+  const [draftShipownerTitle, setDraftShipownerTitle] = useState(() => localStorage.getItem('fleetforce_shipowner_title') || DEFAULT_SHIPOWNER_TITLE);
+  const [draftShipownerSubtitle, setDraftShipownerSubtitle] = useState(() => localStorage.getItem('fleetforce_shipowner_subtitle') || DEFAULT_SHIPOWNER_SUBTITLE);
+  
+  const [draftService1Title, setDraftService1Title] = useState(() => localStorage.getItem('fleetforce_service1_title') || DEFAULT_SERVICE1_TITLE);
+  const [draftService1Desc, setDraftService1Desc] = useState(() => localStorage.getItem('fleetforce_service1_desc') || DEFAULT_SERVICE1_DESC);
+  
+  const [draftService2Title, setDraftService2Title] = useState(() => localStorage.getItem('fleetforce_service2_title') || DEFAULT_SERVICE2_TITLE);
+  const [draftService2Desc, setDraftService2Desc] = useState(() => localStorage.getItem('fleetforce_service2_desc') || DEFAULT_SERVICE2_DESC);
+
+  const [draftService3Title, setDraftService3Title] = useState(() => localStorage.getItem('fleetforce_service3_title') || DEFAULT_SERVICE3_TITLE);
+  const [draftService3Desc, setDraftService3Desc] = useState(() => localStorage.getItem('fleetforce_service3_desc') || DEFAULT_SERVICE3_DESC);
+
+  // Footer custom text state
+  const [draftFooterBrandDesc, setDraftFooterBrandDesc] = useState(() => localStorage.getItem('fleetforce_footer_brand_desc') || DEFAULT_FOOTER_BRAND);
+  const [draftFooterCertText, setDraftFooterCertText] = useState(() => localStorage.getItem('fleetforce_footer_cert_text') || DEFAULT_FOOTER_CERT);
+  const [draftFooterCopyright, setDraftFooterCopyright] = useState(() => localStorage.getItem('fleetforce_footer_copyright') || DEFAULT_FOOTER_COPYRIGHT);
+
   // Initialize draft when editor opens
   useEffect(() => {
     if (isOpen) {
@@ -68,6 +99,19 @@ export const SiteEditor = ({
       setDraftSectionVisibility(JSON.parse(JSON.stringify(liveSectionVisibility)));
       setDraftHeroTitle(liveHeroTitle || 'Трудоустройство моряков на мировой торговый флот');
       setDraftHeroSubtitle(liveHeroSubtitle || 'Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.');
+      
+      setDraftShipownerTitle(localStorage.getItem('fleetforce_shipowner_title') || DEFAULT_SHIPOWNER_TITLE);
+      setDraftShipownerSubtitle(localStorage.getItem('fleetforce_shipowner_subtitle') || DEFAULT_SHIPOWNER_SUBTITLE);
+      setDraftService1Title(localStorage.getItem('fleetforce_service1_title') || DEFAULT_SERVICE1_TITLE);
+      setDraftService1Desc(localStorage.getItem('fleetforce_service1_desc') || DEFAULT_SERVICE1_DESC);
+      setDraftService2Title(localStorage.getItem('fleetforce_service2_title') || DEFAULT_SERVICE2_TITLE);
+      setDraftService2Desc(localStorage.getItem('fleetforce_service2_desc') || DEFAULT_SERVICE2_DESC);
+      setDraftService3Title(localStorage.getItem('fleetforce_service3_title') || DEFAULT_SERVICE3_TITLE);
+      setDraftService3Desc(localStorage.getItem('fleetforce_service3_desc') || DEFAULT_SERVICE3_DESC);
+
+      setDraftFooterBrandDesc(localStorage.getItem('fleetforce_footer_brand_desc') || DEFAULT_FOOTER_BRAND);
+      setDraftFooterCertText(localStorage.getItem('fleetforce_footer_cert_text') || DEFAULT_FOOTER_CERT);
+      setDraftFooterCopyright(localStorage.getItem('fleetforce_footer_copyright') || DEFAULT_FOOTER_COPYRIGHT);
       setHasChanges(false);
     }
   }, [isOpen, liveVacancies, liveOffices, liveHubBlocks, liveStats, liveSectionVisibility, liveHeroTitle, liveHeroSubtitle]);
@@ -87,27 +131,22 @@ export const SiteEditor = ({
       setDraftSectionVisibility(JSON.parse(JSON.stringify(liveSectionVisibility)));
       setDraftHeroTitle(liveHeroTitle || 'Трудоустройство моряков на мировой торговый флот');
       setDraftHeroSubtitle(liveHeroSubtitle || 'Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.');
+
+      setDraftShipownerTitle(DEFAULT_SHIPOWNER_TITLE);
+      setDraftShipownerSubtitle(DEFAULT_SHIPOWNER_SUBTITLE);
+      setDraftService1Title(DEFAULT_SERVICE1_TITLE);
+      setDraftService1Desc(DEFAULT_SERVICE1_DESC);
+      setDraftService2Title(DEFAULT_SERVICE2_TITLE);
+      setDraftService2Desc(DEFAULT_SERVICE2_DESC);
+      setDraftService3Title(DEFAULT_SERVICE3_TITLE);
+      setDraftService3Desc(DEFAULT_SERVICE3_DESC);
+
+      setDraftFooterBrandDesc(DEFAULT_FOOTER_BRAND);
+      setDraftFooterCertText(DEFAULT_FOOTER_CERT);
+      setDraftFooterCopyright(DEFAULT_FOOTER_COPYRIGHT);
       setHasChanges(false);
     }
   };
-
-  // Shipowner Services custom text draft state
-  const [draftShipownerTitle, setDraftShipownerTitle] = useState(() => localStorage.getItem('fleetforce_shipowner_title') || 'Услуги для Судовладельцев и Операторов');
-  const [draftShipownerSubtitle, setDraftShipownerSubtitle] = useState(() => localStorage.getItem('fleetforce_shipowner_subtitle') || 'Качественный подбор дипломированного командного и рядового состава');
-  
-  const [draftService1Title, setDraftService1Title] = useState(() => localStorage.getItem('fleetforce_service1_title') || 'Подбор и комплектование экипажей');
-  const [draftService1Desc, setDraftService1Desc] = useState(() => localStorage.getItem('fleetforce_service1_desc') || 'Полная проверка рабочих дипломов, сертификатов, отзывов с предыдущих мест работы и проверка знания морского английского.');
-  
-  const [draftService2Title, setDraftService2Title] = useState(() => localStorage.getItem('fleetforce_service2_title') || 'Технический и Кадровый аудит');
-  const [draftService2Desc, setDraftService2Desc] = useState(() => localStorage.getItem('fleetforce_service2_desc') || 'Содействие в оформлении флажных документов, визовой поддержке и логистике смены экипажей в любых портах мира.');
-
-  const [draftService3Title, setDraftService3Title] = useState(() => localStorage.getItem('fleetforce_service3_title') || 'Управление бюджетом crew-management');
-  const [draftService3Desc, setDraftService3Desc] = useState(() => localStorage.getItem('fleetforce_service3_desc') || 'Оптимизация расходов на смену команд, медицинское страхование и выплату заработной платы.');
-
-  // Footer custom text state
-  const [draftFooterBrandDesc, setDraftFooterBrandDesc] = useState(() => localStorage.getItem('fleetforce_footer_brand_desc') || 'Объединенный портал морских крюинговых агентств (Legacy Marine • Top Crew • BGI • Good Crew).');
-  const [draftFooterCertText, setDraftFooterCertText] = useState(() => localStorage.getItem('fleetforce_footer_cert_text') || 'Соответствует стандартам Конвенции КТМС 2006 (MLC 2006) и ISO 9001:2015.');
-  const [draftFooterCopyright, setDraftFooterCopyright] = useState(() => localStorage.getItem('fleetforce_footer_copyright') || '© 2026 FleetForce Alliance. Все права защищены. Объединенный портал крюинговых услуг FleetForce.');
 
   // Publish Draft -> Live
   const handlePublishAll = () => {

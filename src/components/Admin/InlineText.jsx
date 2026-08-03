@@ -3,7 +3,9 @@ import { Edit2, Check } from 'lucide-react';
 
 export const InlineText = ({ 
   value, 
+  text,
   onChange, 
+  onSave,
   tag = 'span', 
   className = '', 
   style = {}, 
@@ -11,17 +13,19 @@ export const InlineText = ({
   isEditingEnabled = true,
   multiline = false
 }) => {
+  const actualValue = value !== undefined && value !== null ? value : (text !== undefined && text !== null ? text : '');
+  const actualOnChange = onChange || onSave || (() => {});
   const [isEditing, setIsEditing] = useState(false);
-  const [tempValue, setTempValue] = useState(value || '');
+  const [tempValue, setTempValue] = useState(actualValue);
 
   useEffect(() => {
-    setTempValue(value || '');
-  }, [value]);
+    setTempValue(actualValue);
+  }, [actualValue]);
 
   const handleSave = () => {
     setIsEditing(false);
-    if (tempValue !== value) {
-      onChange(tempValue);
+    if (tempValue !== actualValue) {
+      actualOnChange(tempValue);
     }
   };
 
@@ -95,7 +99,7 @@ export const InlineText = ({
         display: tag === 'span' ? 'inline-block' : 'block'
       }}
     >
-      {value || <span style={{ color: 'var(--text-muted)', italic: true }}>{placeholder}</span>}
+      {actualValue || <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{placeholder}</span>}
       <span 
         className="inline-edit-icon"
         style={{
