@@ -263,14 +263,35 @@ function AppContent() {
       })
       .catch(() => {});
 
+    const syncCandidatesWithServer = (serverCandidates) => {
+      const deletedIds = getDeletedCandidateIds();
+      const cleanList = serverCandidates.filter((c) => !deletedIds.has(String(c.id)));
+      setCandidates(cleanList);
+      try {
+        localStorage.setItem('fleetforce_candidates', JSON.stringify(cleanList));
+      } catch (e) {}
+    };
+
+    fetch('/api/candidates.php')
+      .then((res) => {
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data)) {
+          syncCandidatesWithServer(data.data);
+        }
+      })
+      .catch(() => {});
+
     fetch('/api/candidates')
       .then((res) => {
         if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
         return res.json();
       })
       .then((data) => {
-        if (data && data.success && data.data?.length) {
-          mergeApiIntoLocal(data.data, setCandidates, 'id', true);
+        if (data && data.success && Array.isArray(data.data)) {
+          syncCandidatesWithServer(data.data);
         }
       })
       .catch(() => {});
