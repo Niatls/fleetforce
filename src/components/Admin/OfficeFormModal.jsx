@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Plus, Trash2 } from 'lucide-react';
 
 export const OfficeFormModal = ({
   isOpen,
@@ -16,15 +16,39 @@ export const OfficeFormModal = ({
     address: '',
     phone: '',
     email: '',
+    phones: [''],
+    emails: [''],
     active: true
   };
 
   const [formData, setFormData] = useState(defaultForm);
+  const [phonesList, setPhonesList] = useState(['']);
+  const [emailsList, setEmailsList] = useState(['']);
 
   useEffect(() => {
     if (!isOpen) return;
     const target = editingOffice || externalForm;
     if (target) {
+      // Parse phones
+      let parsedPhones = [''];
+      if (Array.isArray(target.phones) && target.phones.length > 0) {
+        parsedPhones = target.phones;
+      } else if (target.phone) {
+        parsedPhones = String(target.phone).split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+        if (parsedPhones.length === 0) parsedPhones = [''];
+      }
+
+      // Parse emails
+      let parsedEmails = [''];
+      if (Array.isArray(target.emails) && target.emails.length > 0) {
+        parsedEmails = target.emails;
+      } else if (target.email) {
+        parsedEmails = String(target.email).split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+        if (parsedEmails.length === 0) parsedEmails = [''];
+      }
+
+      setPhonesList(parsedPhones);
+      setEmailsList(parsedEmails);
       setFormData({
         id: target.id || editingOfficeId || Date.now(),
         city: target.city || '',
@@ -35,6 +59,8 @@ export const OfficeFormModal = ({
         active: target.active !== undefined ? target.active : true
       });
     } else {
+      setPhonesList(['']);
+      setEmailsList(['']);
       setFormData(defaultForm);
     }
   }, [isOpen, editingOffice, editingOfficeId, externalForm]);
@@ -43,16 +69,54 @@ export const OfficeFormModal = ({
 
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    if (setExternalForm) {
-      setExternalForm(prev => (typeof prev === 'object' && prev ? { ...prev, [field]: value } : { [field]: value }));
+  };
+
+  // Phones Handlers
+  const handlePhoneChange = (idx, val) => {
+    const updated = [...phonesList];
+    updated[idx] = val;
+    setPhonesList(updated);
+  };
+  const handleAddPhone = () => {
+    setPhonesList(prev => [...prev, '']);
+  };
+  const handleRemovePhone = (idx) => {
+    if (phonesList.length === 1) {
+      setPhonesList(['']);
+    } else {
+      setPhonesList(prev => prev.filter((_, i) => i !== idx));
+    }
+  };
+
+  // Emails Handlers
+  const handleEmailChange = (idx, val) => {
+    const updated = [...emailsList];
+    updated[idx] = val;
+    setEmailsList(updated);
+  };
+  const handleAddEmail = () => {
+    setEmailsList(prev => [...prev, '']);
+  };
+  const handleRemoveEmail = (idx) => {
+    if (emailsList.length === 1) {
+      setEmailsList(['']);
+    } else {
+      setEmailsList(prev => prev.filter((_, i) => i !== idx));
     }
   };
 
   const handleSubmit = (e) => {
     if (e && e.preventDefault) e.preventDefault();
+    const cleanPhones = phonesList.map(p => p.trim()).filter(Boolean);
+    const cleanEmails = emailsList.map(m => m.trim()).filter(Boolean);
+
     const finalData = {
       ...formData,
       city: formData.city || 'Office',
+      phones: cleanPhones,
+      phone: cleanPhones.join(', ') || formData.phone || '',
+      emails: cleanEmails,
+      email: cleanEmails.join(', ') || formData.email || '',
       id: formData.id || Date.now()
     };
     if (onSave) onSave(finalData);
@@ -63,9 +127,9 @@ export const OfficeFormModal = ({
 
   return (
     <div className="modal-overlay" style={{ zIndex: 2000, paddingTop: '85px', paddingBottom: '2rem', overflowY: 'auto', alignItems: 'flex-start' }}>
-      <div className="modal-content" style={{ maxWidth: '600px', padding: '2rem', marginTop: '0' }}>
+      <div className="modal-content" style={{ maxWidth: '650px', padding: '2rem', marginTop: '0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h3 style={{ fontSize: '1.3rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>
+          <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', margin: 0, fontWeight: 700 }}>
             {isEdit ? '✏️ Редактировать Филиал' : '➕ Добавить Новый Филиал'}
           </h3>
           <button 
@@ -77,7 +141,7 @@ export const OfficeFormModal = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.1rem' }}>
           <div className="form-group">
             <label className="form-label">Город / Регион</label>
             <input 
@@ -113,31 +177,85 @@ export const OfficeFormModal = ({
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
-            <div className="form-group">
-              <label className="form-label">Телефон связи</label>
-              <input 
-                type="text" 
-                placeholder="+7 (812) 000-00-00" 
-                className="form-input"
-                value={formData.phone || ''}
-                onChange={(e) => updateField('phone', e.target.value)}
-              />
+          {/* Multiple Phone Numbers Section */}
+          <div className="form-group" style={{ background: 'rgba(0,0,0,0.1)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ margin: 0, fontWeight: 700, color: 'var(--color-emerald)' }}>
+                📞 Телефоны связи (несколько)
+              </label>
+              <button 
+                type="button"
+                onClick={handleAddPhone}
+                className="btn btn-sm"
+                style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', color: 'var(--color-emerald)', padding: '0.2rem 0.5rem', fontSize: '0.78rem' }}
+              >
+                <Plus size={13} /> Добавить телефон
+              </button>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Email офиса</label>
-              <input 
-                type="email" 
-                placeholder="office@fleetforce.ru" 
-                className="form-input"
-                value={formData.email || ''}
-                onChange={(e) => updateField('email', e.target.value)}
-              />
+            <div style={{ display: 'grid', gap: '0.5rem' }}>
+              {phonesList.map((phoneVal, pIdx) => (
+                <div key={pIdx} style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                  <input 
+                    type="text"
+                    placeholder={`Телефон ${pIdx + 1} (e.g. +7 (812) 000-00-00)`}
+                    className="form-input"
+                    value={phoneVal}
+                    onChange={(e) => handlePhoneChange(pIdx, e.target.value)}
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => handleRemovePhone(pIdx)}
+                    style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer', padding: '0.4rem', flexShrink: 0 }}
+                    title="Удалить телефон"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '0.4rem' }}>
+          {/* Multiple Email Addresses Section */}
+          <div className="form-group" style={{ background: 'rgba(0,0,0,0.1)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+              <label className="form-label" style={{ margin: 0, fontWeight: 700, color: 'var(--color-accent)' }}>
+                ✉️ Email адреса (несколько)
+              </label>
+              <button 
+                type="button"
+                onClick={handleAddEmail}
+                className="btn btn-sm"
+                style={{ background: 'rgba(0,139,255,0.15)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', padding: '0.2rem 0.5rem', fontSize: '0.78rem' }}
+              >
+                <Plus size={13} /> Добавить email
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gap: '0.5rem' }}>
+              {emailsList.map((emailVal, eIdx) => (
+                <div key={eIdx} style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                  <input 
+                    type="email"
+                    placeholder={`Email ${eIdx + 1} (e.g. office@fleetforce.ru)`}
+                    className="form-input"
+                    value={emailVal}
+                    onChange={(e) => handleEmailChange(eIdx, e.target.value)}
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => handleRemoveEmail(eIdx)}
+                    style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer', padding: '0.4rem', flexShrink: 0 }}
+                    title="Удалить email"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '0.2rem' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: 'var(--color-emerald)', fontWeight: 600 }}>
               <input 
                 type="checkbox"
@@ -161,3 +279,4 @@ export const OfficeFormModal = ({
     </div>
   );
 };
+

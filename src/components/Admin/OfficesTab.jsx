@@ -79,16 +79,41 @@ export const OfficesTab = ({
                   <span style={{ color: 'var(--color-accent)', flexShrink: 0 }}>📍</span>
                   <span>{off.address}</span>
                 </div>
-                {off.phone && (
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <span style={{ color: 'var(--color-emerald)', flexShrink: 0 }}>📞</span>
-                    <strong style={{ color: '#FFFFFF' }}>{off.phone}</strong>
-                  </div>
-                )}
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--text-muted)', flexShrink: 0 }}>✉️</span>
-                  <span style={{ wordBreak: 'break-all' }}>{off.email}</span>
-                </div>
+                {/* Phones list */}
+                {(() => {
+                  const phones = Array.isArray(off.phones) && off.phones.length > 0
+                    ? off.phones
+                    : String(off.phone || '').split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+                  if (phones.length === 0) return null;
+                  return (
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                      <span style={{ color: 'var(--color-emerald)', flexShrink: 0, marginTop: '2px' }}>📞</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                        {phones.map((p, pIdx) => (
+                          <strong key={pIdx} style={{ color: 'var(--text-primary)' }}>{p}</strong>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Emails list */}
+                {(() => {
+                  const emails = Array.isArray(off.emails) && off.emails.length > 0
+                    ? off.emails
+                    : String(off.email || '').split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+                  if (emails.length === 0) return null;
+                  return (
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                      <span style={{ color: 'var(--text-muted)', flexShrink: 0, marginTop: '2px' }}>✉️</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                        {emails.map((m, mIdx) => (
+                          <span key={mIdx} style={{ wordBreak: 'break-all', color: 'var(--text-secondary)' }}>{m}</span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </div>

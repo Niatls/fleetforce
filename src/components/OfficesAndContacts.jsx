@@ -43,17 +43,41 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
                       <span>{off.address}</span>
                     </div>
 
-                    {off.phone && (
-                      <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                        <Phone size={16} color="var(--color-emerald)" />
-                        <a href={`tel:${off.phone}`} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{off.phone}</a>
-                      </div>
-                    )}
+                    {/* Phones list */}
+                    {(() => {
+                      const phones = Array.isArray(off.phones) && off.phones.length > 0
+                        ? off.phones
+                        : String(off.phone || '').split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+                      if (phones.length === 0) return null;
+                      return (
+                        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
+                          <Phone size={16} color="var(--color-emerald)" style={{ marginTop: '3px', flexShrink: 0 }} />
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                            {phones.map((p, pIdx) => (
+                              <a key={pIdx} href={`tel:${p.replace(/[^\d+]/g, '')}`} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{p}</a>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
 
-                    <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                      <Mail size={16} color="var(--color-gold)" />
-                      <a href={`mailto:${off.email}`}>{off.email}</a>
-                    </div>
+                    {/* Emails list */}
+                    {(() => {
+                      const emails = Array.isArray(off.emails) && off.emails.length > 0
+                        ? off.emails
+                        : String(off.email || '').split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+                      if (emails.length === 0) return null;
+                      return (
+                        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
+                          <Mail size={16} color="var(--color-gold)" style={{ marginTop: '3px', flexShrink: 0 }} />
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                            {emails.map((m, mIdx) => (
+                              <a key={mIdx} href={`mailto:${m}`} style={{ color: 'var(--text-primary)', wordBreak: 'break-all' }}>{m}</a>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
