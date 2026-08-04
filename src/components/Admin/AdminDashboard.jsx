@@ -270,7 +270,7 @@ export const AdminDashboard = ({
               <img src="/favicon.png" alt="FleetForce Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div>
-              <h2 style={{ fontSize: '1.25rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>FleetForce Admin</h2>
+              <h2 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', margin: 0, fontWeight: 700 }}>FleetForce Admin</h2>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Панель управления крюингового агентства</div>
             </div>
           </div>
@@ -280,19 +280,20 @@ export const AdminDashboard = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           
           {/* Theme Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.25)', padding: '0.3rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.15)', padding: '0.3rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
             <Palette size={14} color="var(--color-accent)" />
             <select 
               value={currentTheme}
               onChange={(e) => handleThemeChange(e.target.value)}
               className="form-select"
-              style={{ padding: '0.2rem 0.4rem', fontSize: '0.78rem', background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}
+              style={{ padding: '0.2rem 0.4rem', fontSize: '0.78rem', background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}
             >
-              <option value="ocean-soft" style={{ background: '#1e293b', color: '#fff' }}>🌊 Океан (Pacific Blue)</option>
+              <option value="ocean-soft" style={{ background: '#1e293b', color: '#fff' }}>🌊 Тихий Океан (Pacific Blue)</option>
+              <option value="light-daylight" style={{ background: '#ffffff', color: '#0f172a' }}>☀️ Дневной Порт (Light Daylight)</option>
               <option value="deep-navy" style={{ background: '#0e1b33', color: '#fff' }}>⚓ Полуночный Флот (Midnight Navy)</option>
               <option value="emerald-sea" style={{ background: '#0a3338', color: '#fff' }}>🐬 Изумрудный Бриз (Caribbean Teal)</option>
-              <option value="nordic-storm" style={{ background: '#172338', color: '#fff' }}>⚡ Северное Море (Nordic Storm)</option>
-              <option value="sunset-haven" style={{ background: '#1e1b3a', color: '#fff' }}>🌅 Закат в Гавани (Sunset Haven)</option>
+              <option value="nordic-storm" style={{ background: '#172338', color: '#fff' }}>⚡ Северный Шторм (Nordic Steel)</option>
+              <option value="sunset-haven" style={{ background: '#1e1b3a', color: '#fff' }}>🌅 Морской Закат (Sunset Haven)</option>
             </select>
           </div>
 
