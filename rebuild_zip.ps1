@@ -1,8 +1,8 @@
 Add-Type -Assembly 'System.IO.Compression.FileSystem'
 
-$zipPath  = 'c:\Users\asdqw\Project\fleetforce\fleetforce.zip'
-$baseDir  = 'c:\Users\asdqw\Project\fleetforce'
-$distDir  = 'c:\Users\asdqw\Project\fleetforce\dist'
+$baseDir  = $PSScriptRoot
+$zipPath  = Join-Path $baseDir 'fleetforce.zip'
+$distDir  = Join-Path $baseDir 'dist'
 $prefix   = 'fleetforce/'   # Корневая папка внутри архива
 
 # Файлы из dist (свежий билд)

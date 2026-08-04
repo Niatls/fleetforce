@@ -13,6 +13,7 @@ export const CandidateDossierModal = ({
   onSaveCandidateNotes
 }) => {
   const { t } = useLanguage();
+  const [confirmDelete, setConfirmDelete] = React.useState(false);
   if (!candidate) return null;
 
   return (
@@ -42,22 +43,36 @@ export const CandidateDossierModal = ({
             <button onClick={() => window.print()} className="btn btn-primary btn-sm" style={{ gap: '0.4rem' }}>
               <Printer size={15} /> Print / Export PDF (.pdf)
             </button>
-            <button 
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                const name = candidate.fullNameRu || candidate.fullNameEn || candidate.fullName || candidate.id;
-                if (window.confirm(`Вы действительно хотите удалить анкету кандидата "${name}"?`)) {
+            {confirmDelete ? (
+              <button 
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
                   if (onDeleteCandidate) onDeleteCandidate(candidate.id);
+                  setConfirmDelete(false);
                   onClose();
-                }
-              }} 
-              className="btn btn-secondary btn-sm" 
-              style={{ color: 'var(--color-danger)', borderColor: 'rgba(239,68,68,0.4)', gap: '0.4rem' }}
-              title="Удалить анкету моряка"
-            >
-              <Trash2 size={15} /> Удалить анкету
-            </button>
+                }}
+                className="btn btn-sm"
+                style={{ background: 'var(--color-danger)', color: '#fff', border: 'none', gap: '0.4rem', fontWeight: 700 }}
+                title="Нажмите ещё раз для подтверждения удаления"
+              >
+                ⚠️ Подтвердить удаление?
+              </button>
+            ) : (
+              <button 
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setConfirmDelete(true);
+                  setTimeout(() => setConfirmDelete(false), 4000);
+                }} 
+                className="btn btn-secondary btn-sm" 
+                style={{ color: 'var(--color-danger)', borderColor: 'rgba(239,68,68,0.4)', gap: '0.4rem' }}
+                title="Удалить анкету моряка"
+              >
+                <Trash2 size={15} /> Удалить анкету
+              </button>
+            )}
           </div>
         </div>
 

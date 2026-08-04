@@ -18,6 +18,7 @@ export const CandidatesTab = ({
   onExportDoc,
 }) => {
   const { lang, t } = useLanguage();
+  const [confirmDeleteId, setConfirmDeleteId] = React.useState(null);
 
   const filteredCandidates = candidates.filter((cand) => {
     if (filterStatus && cand.status !== filterStatus) return false;
@@ -155,21 +156,35 @@ export const CandidatesTab = ({
                     >
                       <Archive size={14} /> Скачать всё
                     </button>
-                    <button 
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const name = cand.fullNameRu || cand.fullNameEn || cand.fullName || cand.id;
-                        if (window.confirm(`Вы действительно хотите удалить анкету кандидата "${name}"?`)) {
+                    {confirmDeleteId === cand.id ? (
+                      <button 
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           if (onDeleteCandidate) onDeleteCandidate(cand.id);
-                        }
-                      }}
-                      className="btn btn-secondary btn-sm"
-                      style={{ color: 'var(--color-danger)', borderColor: 'rgba(239, 68, 68, 0.3)', padding: '0.35rem 0.5rem' }}
-                      title="Удалить анкету моряка"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                          setConfirmDeleteId(null);
+                        }}
+                        className="btn btn-sm"
+                        style={{ background: 'var(--color-danger)', color: '#fff', border: 'none', padding: '0.35rem 0.6rem', fontSize: '0.78rem', fontWeight: 700, whiteSpace: 'nowrap' }}
+                        title="Нажмите ещё раз для подтверждения удаления"
+                      >
+                        ⚠️ Подтвердить?
+                      </button>
+                    ) : (
+                      <button 
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setConfirmDeleteId(cand.id);
+                          setTimeout(() => setConfirmDeleteId(null), 4000);
+                        }}
+                        className="btn btn-secondary btn-sm"
+                        style={{ color: 'var(--color-danger)', borderColor: 'rgba(239, 68, 68, 0.3)', padding: '0.35rem 0.5rem' }}
+                        title="Удалить анкету моряка"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
