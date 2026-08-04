@@ -249,6 +249,7 @@ function AppContent() {
   useEffect(() => {
     const savedTheme = localStorage.getItem('fleetforce_theme') || 'ocean-soft';
     document.documentElement.setAttribute('data-theme', savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
   }, []);
 
   // Try fetching from Backend API — localStorage always wins (API store resets on server restart)

@@ -65,6 +65,7 @@ export const AdminDashboard = ({
   const handleThemeChange = (newTheme) => {
     setCurrentTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
+    document.body.setAttribute('data-theme', newTheme);
     localStorage.setItem('fleetforce_theme', newTheme);
   };
 
@@ -277,39 +278,21 @@ export const AdminDashboard = ({
 
         {/* Global Action Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          <button 
-            onClick={() => {
-              if (onOpenSiteEditor) {
-                onOpenSiteEditor();
-              } else {
-                alert('Редактор открывается...');
-              }
-            }} 
-            className="btn btn-accent btn-md" 
-            style={{ 
-              gap: '0.5rem', 
-              fontWeight: 700, 
-              background: 'linear-gradient(135deg, #008BFF 0%, #0056B3 100%)',
-              color: '#FFFFFF',
-              boxShadow: '0 0 15px rgba(0,139,255,0.4)',
-              border: '1px solid rgba(255,255,255,0.2)'
-            }}
-          >
-            <Edit3 size={17} /> 🎨 Визуальный редактор сайта
-          </button>
-
+          
           {/* Theme Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.2)', padding: '0.3rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.25)', padding: '0.3rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
             <Palette size={14} color="var(--color-accent)" />
             <select 
               value={currentTheme}
               onChange={(e) => handleThemeChange(e.target.value)}
               className="form-select"
-              style={{ padding: '0.2rem 0.4rem', fontSize: '0.78rem', background: 'none', border: 'none' }}
+              style={{ padding: '0.2rem 0.4rem', fontSize: '0.78rem', background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}
             >
-              <option value="ocean-soft">Тема: Океан (Soft Ocean)</option>
-              <option value="dark-navy">Тема: Тёмно-Синяя (Navy)</option>
-              <option value="emerald-marine">Тема: Изумруд (Emerald)</option>
+              <option value="ocean-soft" style={{ background: '#1e293b', color: '#fff' }}>🌊 Океан (Pacific Blue)</option>
+              <option value="deep-navy" style={{ background: '#0e1b33', color: '#fff' }}>⚓ Полуночный Флот (Midnight Navy)</option>
+              <option value="emerald-sea" style={{ background: '#0a3338', color: '#fff' }}>🐬 Изумрудный Бриз (Caribbean Teal)</option>
+              <option value="nordic-storm" style={{ background: '#172338', color: '#fff' }}>⚡ Северное Море (Nordic Storm)</option>
+              <option value="sunset-haven" style={{ background: '#1e1b3a', color: '#fff' }}>🌅 Закат в Гавани (Sunset Haven)</option>
             </select>
           </div>
 
@@ -336,7 +319,7 @@ export const AdminDashboard = ({
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'space-between', 
-            background: 'linear-gradient(135deg, rgba(0,139,255,0.2) 0%, rgba(245,158,11,0.15) 100%)', 
+            background: 'linear-gradient(135deg, rgba(0,139,255,0.18) 0%, rgba(15,23,42,0.85) 100%)', 
             border: '1px solid var(--color-accent)', 
             borderRadius: 'var(--radius-md)',
             cursor: 'pointer',
@@ -344,7 +327,7 @@ export const AdminDashboard = ({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #008BFF 0%, #0056B3 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 0 12px rgba(0,139,255,0.4)' }}>
               <Edit3 size={24} />
             </div>
             <div>
@@ -357,8 +340,16 @@ export const AdminDashboard = ({
             </div>
           </div>
           <button 
-            className="btn btn-accent btn-md"
-            style={{ fontWeight: 700, gap: '0.5rem', flexShrink: 0 }}
+            className="btn btn-primary btn-md"
+            style={{ 
+              fontWeight: 700, 
+              gap: '0.5rem', 
+              flexShrink: 0,
+              background: 'linear-gradient(135deg, #008BFF 0%, #0056B3 100%)',
+              color: '#FFFFFF',
+              border: '1px solid rgba(255,255,255,0.25)',
+              boxShadow: '0 4px 15px rgba(0,139,255,0.4)'
+            }}
           >
             <span>Открыть редактор сайта</span>
             <Layout size={16} />
