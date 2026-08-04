@@ -43,10 +43,10 @@ export const VacancyList = ({ vacancies = [], searchFilter, onApplyVacancy, rend
         {/* Section Header */}
         <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem' }}>
           <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>
-            {customTitle || t('vacancies.title')}
+            {(lang === 'ru' && customTitle) ? customTitle : t('vacancies.title')}
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            {customSubtitle || t('vacancies.subtitle')}
+            {(lang === 'ru' && customSubtitle) ? customSubtitle : t('vacancies.subtitle')}
           </p>
         </div>
 

@@ -115,8 +115,8 @@ export const translations = {
     seafarersHub: {
       title: "Центр Загрузок и Информация для Моряков",
       subtitle: "Скачайте бланки анкет или пройдите подготовку к тестированию",
-      downloadBgiForm: "Скачать бланки анкеты FLEET FORCE (.DOCX)",
-      downloadLegacyForm: "Скачать анкету FLEET FORCE (.PDF)",
+      downloadBgiForm: "Скачать бланки анкеты Fleet Force (.DOCX)",
+      downloadLegacyForm: "Скачать анкету Fleet Force (.PDF)",
       stcwChecklist: "Чек-лист документов для посадки",
       marlinsInfo: "Подготовка к Marlins & CES тестам",
       salaryGuide: "Обзор окладов на торговом флоте 2026"
@@ -149,6 +149,8 @@ export const translations = {
     // Admin Dashboard
     admin: {
       portalTitle: "FleetForce Crewing Admin Panel",
+      backToSite: "← Вернуться на сайт",
+      exitBtn: "Выйти из системы",
       logout: "Выйти из системы",
       tabOverview: "Обзор и Статистика",
       tabCandidates: "База Моряков (Анкеты)",
@@ -315,8 +317,8 @@ export const translations = {
     seafarersHub: {
       title: "Seafarers Resource & Download Hub",
       subtitle: "Download official application forms or prepare for marine assessments",
-      downloadBgiForm: "Download FLEET FORCE Application Form (.DOCX)",
-      downloadLegacyForm: "Download FLEET FORCE Form (.PDF)",
+      downloadBgiForm: "Download Fleet Force Application Form (.DOCX)",
+      downloadLegacyForm: "Download Fleet Force Form (.PDF)",
       stcwChecklist: "Embarkation Document Checklist",
       marlinsInfo: "Marlins & CES Test Preparation",
       salaryGuide: "2026 Merchant Fleet Wage Benchmark"
@@ -349,6 +351,8 @@ export const translations = {
     // Admin Dashboard
     admin: {
       portalTitle: "FleetForce Crewing Admin Panel",
+      backToSite: "← Back to Site",
+      exitBtn: "Log Out",
       logout: "Log Out",
       tabOverview: "Dashboard Overview",
       tabCandidates: "Seafarer Database",

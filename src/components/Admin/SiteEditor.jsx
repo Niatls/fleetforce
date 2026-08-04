@@ -57,6 +57,7 @@ export const SiteEditor = ({
   // Offices section custom text draft state
   const [draftOfficesTitle, setDraftOfficesTitle] = useState(() => localStorage.getItem('fleetforce_offices_title') || 'Наши Офисы и Представительства');
   const [draftOfficesSubtitle, setDraftOfficesSubtitle] = useState(() => localStorage.getItem('fleetforce_offices_subtitle') || 'Сеть крюинговых центров в ключевых портовых городах');
+  const [draftOfficesHours, setDraftOfficesHours] = useState(() => localStorage.getItem('fleetforce_offices_hours') || 'Часы работы: Пн-Пт 09:00 - 18:00 (МСК)');
 
   const [previewMode, setPreviewMode] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -182,6 +183,7 @@ export const SiteEditor = ({
     localStorage.setItem('fleetforce_hub_subtitle', draftHubSubtitle);
     localStorage.setItem('fleetforce_offices_title', draftOfficesTitle);
     localStorage.setItem('fleetforce_offices_subtitle', draftOfficesSubtitle);
+    localStorage.setItem('fleetforce_offices_hours', draftOfficesHours);
 
     localStorage.setItem('fleetforce_shipowner_title', draftShipownerTitle);
     localStorage.setItem('fleetforce_shipowner_subtitle', draftShipownerSubtitle);
@@ -763,6 +765,15 @@ export const SiteEditor = ({
                     multiline
                   />
                 ) : draftOfficesSubtitle
+              }
+              renderEditableHours={
+                !previewMode ? (
+                  <InlineText
+                    value={draftOfficesHours}
+                    onChange={(val) => { setDraftOfficesHours(val); markChanged(); }}
+                    tag="span"
+                  />
+                ) : draftOfficesHours
               }
               renderOfficeCard={(off, defaultOfficeNode) => {
                 if (previewMode) return defaultOfficeNode;

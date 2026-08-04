@@ -4,10 +4,14 @@ import { MapPin, Phone, Mail, Clock, Building } from 'lucide-react';
 
 import { INITIAL_OFFICES } from '../data/initialData';
 
-export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard, customTitle, customSubtitle }) => {
-  const { t } = useLanguage();
+export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard, customTitle, customSubtitle, customHours, renderEditableHours }) => {
+  const { lang, t } = useLanguage();
   const rawList = offices && offices.length > 0 ? offices : INITIAL_OFFICES;
   const officesList = renderOfficeCard ? rawList : rawList.filter(o => o.active !== false && !o.hidden);
+
+  const displayTitle = (lang === 'ru' && customTitle) ? customTitle : t('offices.title');
+  const displaySubtitle = (lang === 'ru' && customSubtitle) ? customSubtitle : t('offices.subtitle');
+  const displayHours = (lang === 'ru' && customHours) ? customHours : t('offices.hours');
 
   return (
     <section id="offices" style={{ padding: '5rem 0', background: 'var(--bg-surface)' }}>
@@ -15,9 +19,9 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
         
         <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3.5rem' }}>
           <span className="badge badge-emerald" style={{ marginBottom: '0.6rem' }}>OFFICE NETWORK</span>
-          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{customTitle || t('offices.title')}</h2>
+          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{displayTitle}</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            {customSubtitle || t('offices.subtitle')}
+            {displaySubtitle}
           </p>
         </div>
 
@@ -42,6 +46,14 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
                       <MapPin size={16} color="var(--color-accent)" style={{ marginTop: '3px', flexShrink: 0 }} />
                       <span>{off.address}</span>
                     </div>
+
+                    {/* Individual Office Working Hours */}
+                    {off.hours && (
+                      <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                        <Clock size={16} color="var(--color-accent)" style={{ flexShrink: 0 }} />
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{off.hours}</span>
+                      </div>
+                    )}
 
                     {/* Phones list */}
                     {(() => {
@@ -92,7 +104,7 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
 
         <div style={{ textAlign: 'center', marginTop: '2.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
           <Clock size={16} style={{ verticalAlign: 'middle', marginRight: '6px' }} />
-          {t('offices.hours')}
+          {renderEditableHours ? renderEditableHours : displayHours}
         </div>
 
       </div>

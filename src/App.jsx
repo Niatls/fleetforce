@@ -158,9 +158,9 @@ function AppContent() {
         let buttonText = b.buttonText || '';
         if (/BGI|Legacy Marine/i.test(title) || /BGI|Legacy Marine/i.test(description) || /BGI|Legacy Marine/i.test(buttonText)) {
           hasOldText = true;
-          title = title.replace(/BGI|Legacy Marine/gi, 'FleetForce');
-          description = description.replace(/BGI|Legacy Marine/gi, 'FleetForce');
-          buttonText = buttonText.replace(/BGI|Legacy Marine/gi, 'FLEET FORCE');
+          title = title.replace(/BGI|Legacy Marine/gi, 'Fleet Force');
+          description = description.replace(/BGI|Legacy Marine/gi, 'Fleet Force');
+          buttonText = buttonText.replace(/BGI|Legacy Marine|FLEET FORCE/gi, 'Fleet Force');
           return { ...b, title, description, buttonText };
         }
         return b;
@@ -219,6 +219,7 @@ function AppContent() {
 
   const [officesTitle, setOfficesTitle] = useState(() => localStorage.getItem('fleetforce_offices_title') || '');
   const [officesSubtitle, setOfficesSubtitle] = useState(() => localStorage.getItem('fleetforce_offices_subtitle') || '');
+  const [officesHours, setOfficesHours] = useState(() => localStorage.getItem('fleetforce_offices_hours') || '');
 
   const [shipownerTitle, setShipownerTitle] = useState(() => localStorage.getItem('fleetforce_shipowner_title') || '');
   const [shipownerSubtitle, setShipownerSubtitle] = useState(() => localStorage.getItem('fleetforce_shipowner_subtitle') || '');
@@ -746,6 +747,7 @@ function AppContent() {
           offices={offices}
           customTitle={officesTitle || undefined}
           customSubtitle={officesSubtitle || undefined}
+          customHours={officesHours || undefined}
         />
       )}
 

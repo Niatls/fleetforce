@@ -56,6 +56,7 @@ export const OfficeFormModal = ({
         address: target.address || '',
         phone: target.phone || '',
         email: target.email || '',
+        hours: target.hours || '',
         active: target.active !== undefined ? target.active : true
       });
     } else {
@@ -174,6 +175,17 @@ export const OfficeFormModal = ({
               value={formData.address || ''}
               onChange={(e) => updateField('address', e.target.value)}
               style={{ resize: 'vertical' }}
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">🕒 Дни и часы работы филиала</label>
+            <input 
+              type="text" 
+              placeholder="e.g. Пн-Пт 09:00 - 18:00 (МСК)" 
+              className="form-input"
+              value={formData.hours || ''}
+              onChange={(e) => updateField('hours', e.target.value)}
             />
           </div>
 

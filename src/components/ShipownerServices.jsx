@@ -13,7 +13,7 @@ export const ShipownerServices = ({
   customCard3Title,
   customCard3Desc
 }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const [formData, setFormData] = React.useState({
     companyName: '',
     contactName: '',
@@ -22,6 +22,15 @@ export const ShipownerServices = ({
     details: ''
   });
   const [submitted, setSubmitted] = React.useState(false);
+
+  const displayTitle = (lang === 'ru' && customTitle !== undefined) ? customTitle : t('shipowners.title');
+  const displaySubtitle = (lang === 'ru' && customSubtitle !== undefined) ? customSubtitle : t('shipowners.subtitle');
+  const c1Title = (lang === 'ru' && customCard1Title !== undefined) ? customCard1Title : t('shipowners.service1Title');
+  const c1Desc = (lang === 'ru' && customCard1Desc !== undefined) ? customCard1Desc : t('shipowners.service1Desc');
+  const c2Title = (lang === 'ru' && customCard2Title !== undefined) ? customCard2Title : t('shipowners.service2Title');
+  const c2Desc = (lang === 'ru' && customCard2Desc !== undefined) ? customCard2Desc : t('shipowners.service2Desc');
+  const c3Title = (lang === 'ru' && customCard3Title !== undefined) ? customCard3Title : t('shipowners.service3Title');
+  const c3Desc = (lang === 'ru' && customCard3Desc !== undefined) ? customCard3Desc : t('shipowners.service3Desc');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -44,16 +53,14 @@ export const ShipownerServices = ({
   };
 
   return (
-    <section id="shipowners" style={{ padding: '5rem 0', background: 'var(--bg-deep)', borderTop: '1px solid var(--border-color)' }}>
+    <section id="shipowners" style={{ padding: '5rem 0', background: 'var(--bg-deep)' }}>
       <div className="container">
         
-        <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 3.5rem' }}>
-          <span className="badge badge-blue" style={{ marginBottom: '0.6rem' }}>CREW MANAGEMENT & MANNING</span>
-          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>
-            {customTitle !== undefined ? customTitle : t('shipowners.title')}
-          </h2>
+        <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3.5rem' }}>
+          <span className="badge badge-blue" style={{ marginBottom: '0.6rem' }}>FOR SHIPOWNERS & OPERATORS</span>
+          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{displayTitle}</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            {customSubtitle !== undefined ? customSubtitle : t('shipowners.subtitle')}
+            {displaySubtitle}
           </p>
         </div>
 
@@ -72,10 +79,10 @@ export const ShipownerServices = ({
               </div>
               {/* Row 2: Title */}
               <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
-                {customCard1Title !== undefined ? customCard1Title : t('shipowners.service1Title')}
+                {c1Title}
               </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {customCard1Desc !== undefined ? customCard1Desc : t('shipowners.service1Desc')}
+                {c1Desc}
               </p>
             </div>
           </div>
@@ -93,10 +100,10 @@ export const ShipownerServices = ({
               </div>
               {/* Row 2: Title */}
               <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
-                {customCard2Title !== undefined ? customCard2Title : t('shipowners.service2Title')}
+                {c2Title}
               </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {customCard2Desc !== undefined ? customCard2Desc : t('shipowners.service2Desc')}
+                {c2Desc}
               </p>
             </div>
           </div>
@@ -114,10 +121,10 @@ export const ShipownerServices = ({
               </div>
               {/* Row 2: Title */}
               <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
-                {customCard3Title !== undefined ? customCard3Title : t('shipowners.service3Title')}
+                {c3Title}
               </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {customCard3Desc !== undefined ? customCard3Desc : t('shipowners.service3Desc')}
+                {c3Desc}
               </p>
             </div>
           </div>

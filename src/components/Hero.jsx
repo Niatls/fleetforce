@@ -66,7 +66,7 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
             boxShadow: '0 4px 15px rgba(0, 139, 255, 0.15)'
           }}>
             <ShieldCheck size={16} />
-            <span>{customBadge ? customBadge : t('hero.badge')}</span>
+            <span>{(lang === 'ru' && customBadge) ? customBadge : t('hero.badge')}</span>
           </div>
 
           {/* Main Headline */}
@@ -77,7 +77,7 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
             marginBottom: '1.2rem',
             letterSpacing: '-0.03em'
           }}>
-            {customTitle ? customTitle : (
+            {(lang === 'ru' && customTitle) ? customTitle : (
               <>
                 {t('hero.titleLine1')}{' '}
                 <span style={{
@@ -97,7 +97,7 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
             marginBottom: '2.5rem',
             lineHeight: 1.6
           }}>
-            {customSubtitle ? customSubtitle : t('hero.subtitle')}
+            {(lang === 'ru' && customSubtitle) ? customSubtitle : t('hero.subtitle')}
           </p>
 
           {/* Quick Apply CTA */}

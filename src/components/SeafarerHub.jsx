@@ -5,9 +5,12 @@ import { Download, FileCheck, Award, TrendingUp, HelpCircle, FileText } from 'lu
 import { INITIAL_HUB_BLOCKS } from '../data/initialData';
 
 export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, renderBlockItem, customTitle, customSubtitle }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const rawList = hubBlocks && hubBlocks.length > 0 ? hubBlocks : INITIAL_HUB_BLOCKS;
   const blocksList = renderBlockItem ? rawList : rawList.filter(b => b.active !== false && !b.hidden);
+
+  const displayTitle = (lang === 'ru' && customTitle) ? customTitle : t('seafarersHub.title');
+  const displaySubtitle = (lang === 'ru' && customSubtitle) ? customSubtitle : t('seafarersHub.subtitle');
 
   const handleDownloadBlock = (block) => {
     if (block && block.fileData) {
@@ -65,9 +68,9 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
       <div className="container">
         <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3.5rem' }}>
           <span className="badge badge-emerald" style={{ marginBottom: '0.6rem' }}>FOR SEAFARERS / МОРЯКАМ</span>
-          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{customTitle || t('seafarersHub.title')}</h2>
+          <h2 style={{ fontSize: '2.4rem', marginBottom: '0.6rem' }}>{displayTitle}</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            {customSubtitle || t('seafarersHub.subtitle')}
+            {displaySubtitle}
           </p>
         </div>
 

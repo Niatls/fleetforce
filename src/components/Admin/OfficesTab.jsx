@@ -79,6 +79,12 @@ export const OfficesTab = ({
                   <span style={{ color: 'var(--color-accent)', flexShrink: 0 }}>📍</span>
                   <span>{off.address}</span>
                 </div>
+                {off.hours && (
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <span style={{ color: 'var(--color-gold)', flexShrink: 0 }}>🕒</span>
+                    <span style={{ color: 'var(--text-muted)' }}>{off.hours}</span>
+                  </div>
+                )}
                 {/* Phones list */}
                 {(() => {
                   const phones = Array.isArray(off.phones) && off.phones.length > 0

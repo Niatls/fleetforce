@@ -39,7 +39,7 @@ export const Footer = ({
               </span>
             </div>
             <p style={{ fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '1.2rem' }}>
-              {customBrandDesc !== undefined ? customBrandDesc : 'Объединенный портал морских крюинговых агентств (Legacy Marine • Top Crew • BGI • Good Crew).'}
+              {(lang === 'ru' && customBrandDesc !== undefined) ? customBrandDesc : 'Объединенный портал морских крюинговых агентств FleetForce Alliance.'}
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-emerald)', fontSize: '0.8rem', fontWeight: 600 }}>
               <ShieldCheck size={16} />
@@ -101,7 +101,7 @@ export const Footer = ({
           fontSize: '0.8rem'
         }}>
           <div>
-            {customCopyright !== undefined ? customCopyright : `© 2026 FleetForce Alliance. ${t('footer.rights')}`}
+            {(lang === 'ru' && customCopyright !== undefined) ? customCopyright : `© 2026 FleetForce Alliance. ${t('footer.rights')}`}
           </div>
           <div><a href="#hero">{t('footer.privacy')}</a></div>
         </div>
