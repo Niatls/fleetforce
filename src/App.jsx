@@ -140,7 +140,52 @@ function AppContent() {
   const [offices, setOffices] = useState(() => {
     try {
       const saved = localStorage.getItem('fleetforce_offices');
-      return saved ? JSON.parse(saved) : INITIAL_OFFICES;
+      let list = saved ? JSON.parse(saved) : INITIAL_OFFICES;
+      let updated = false;
+      list = list.map(off => {
+        const cityStr = String(off.city || '');
+        if (cityStr.includes('Санкт-Петербург') || off.id === 1) {
+          if (off.address !== 'г. Санкт-Петербург, пр. Стачек, д. 47А, офис 340-342' || off.email !== 'FleetForceLLC@yandex.ru' || off.phone) {
+            updated = true;
+            return {
+              ...off,
+              address: 'г. Санкт-Петербург, пр. Стачек, д. 47А, офис 340-342',
+              email: 'FleetForceLLC@yandex.ru',
+              emails: ['FleetForceLLC@yandex.ru'],
+              phone: '',
+              phones: []
+            };
+          }
+        } else if (cityStr.includes('Новороссийск') || off.id === 2) {
+          if (off.address !== 'г. Новороссийск, ул. Энгельса/Свободы/Конституции, д. 7, офис 37' || off.email !== 'FleetForceLLC@yandex.ru' || off.phone) {
+            updated = true;
+            return {
+              ...off,
+              address: 'г. Новороссийск, ул. Энгельса/Свободы/Конституции, д. 7, офис 37',
+              email: 'FleetForceLLC@yandex.ru',
+              emails: ['FleetForceLLC@yandex.ru'],
+              phone: '',
+              phones: []
+            };
+          }
+        } else {
+          if (off.email !== 'FleetForceLLC@yandex.ru' || off.phone) {
+            updated = true;
+            return {
+              ...off,
+              email: 'FleetForceLLC@yandex.ru',
+              emails: ['FleetForceLLC@yandex.ru'],
+              phone: '',
+              phones: []
+            };
+          }
+        }
+        return off;
+      });
+      if (updated) {
+        localStorage.setItem('fleetforce_offices', JSON.stringify(list));
+      }
+      return list;
     } catch (e) {
       return INITIAL_OFFICES;
     }

@@ -499,33 +499,41 @@ export const INITIAL_OFFICES = [
   {
     id: 1,
     city: 'Санкт-Петербург',
-    address: 'Санкт-Петербург, Набережная Реки Мойки 58, Офис 402',
-    phone: '+7 (812) 334-55-66',
-    email: 'spb@fleetforce-crewing.com',
+    address: 'г. Санкт-Петербург, пр. Стачек, д. 47А, офис 340-342',
+    phone: '',
+    phones: [],
+    email: 'FleetForceLLC@yandex.ru',
+    emails: ['FleetForceLLC@yandex.ru'],
     flag: '⚓ Главный Офис'
   },
   {
     id: 2,
     city: 'Новороссийск',
-    address: 'Новороссийск, ул. Набережная Адмирала Серебрякова 15',
-    phone: '+7 (8617) 60-77-88',
-    email: 'novoros@fleetforce-crewing.com',
+    address: 'г. Новороссийск, ул. Энгельса/Свободы/Конституции, д. 7, офис 37',
+    phone: '',
+    phones: [],
+    email: 'FleetForceLLC@yandex.ru',
+    emails: ['FleetForceLLC@yandex.ru'],
     flag: '🌊 Черноморский Филиал'
   },
   {
     id: 3,
     city: 'Калининград',
-    address: 'Калининград, Ленинский проспект 81, Офис 205',
-    phone: '+7 (4012) 99-11-22',
-    email: 'kaliningrad@fleetforce-crewing.com',
+    address: 'г. Калининград, Ленинский проспект 81, Офис 205',
+    phone: '',
+    phones: [],
+    email: 'FleetForceLLC@yandex.ru',
+    emails: ['FleetForceLLC@yandex.ru'],
     flag: '🇪🇺 Балтийский Офис'
   },
   {
     id: 4,
     city: 'Владивосток',
-    address: 'Владивосток, ул. Светланская 45',
-    phone: '+7 (4232) 41-33-44',
-    email: 'vladivostok@fleetforce-crewing.com',
+    address: 'г. Владивосток, ул. Светланская 45',
+    phone: '',
+    phones: [],
+    email: 'FleetForceLLC@yandex.ru',
+    emails: ['FleetForceLLC@yandex.ru'],
     flag: '🌏 Дальневосточный Офис'
   }
 ];
