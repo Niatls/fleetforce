@@ -512,12 +512,31 @@ const generatePdfBlob = async (cand) => {
     const pdfDoc = await PDFDocument.load(templateBytes);
     const form = pdfDoc.getForm();
 
+    // Transliterate Cyrillic characters to WinAnsi compatible Latin characters
+    const transliteratePdf = (str) => {
+      if (!str) return '';
+      const ruMap = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
+        'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+        'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts',
+        'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu',
+        'я': 'ya',
+        'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh',
+        'З': 'Z', 'И': 'I', 'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O',
+        'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts',
+        'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Shch', 'Ъ': '', 'Ы': 'Y', 'Ь': '', 'Э': 'E', 'Ю': 'Yu',
+        'Я': 'Ya'
+      };
+      let res = String(str).split('').map(c => ruMap[c] !== undefined ? ruMap[c] : c).join('');
+      return res.replace(/[^\x20-\x7E]/g, '');
+    };
+
     const setF = (fieldName, value) => {
       if (value === undefined || value === null || value === '') return;
       try {
         const field = form.getField(fieldName);
         if (!field) return;
-        const valStr = String(value).trim();
+        const valStr = transliteratePdf(String(value)).trim();
         if (field.constructor.name === 'PDFTextField') {
           field.setText(valStr);
         } else if (field.constructor.name === 'PDFDropdown') {
@@ -552,7 +571,7 @@ const generatePdfBlob = async (cand) => {
             else if (lowerVal.includes('oil') || lowerVal.includes('product')) matched = opts.find(o => o === 'OIL' || o === 'TANKER');
             else if (lowerVal.includes('bulk')) matched = opts.find(o => o === 'BULK CARRIER');
             else if (lowerVal.includes('lpg') || lowerVal.includes('lng') || lowerVal.includes('gas')) matched = opts.find(o => o === 'GAS' || o === 'LNG' || o === 'LPG');
-            else if (lowerVal.includes('russia')) matched = opts.find(o => o.toLowerCase().includes('rus'));
+            else if (lowerVal.includes('russia') || lowerVal.includes('rossiy')) matched = opts.find(o => o.toLowerCase().includes('rus'));
             else if (lowerVal.includes('marri') || lowerVal.includes('женат')) matched = opts.find(o => o.toLowerCase().includes('marr'));
           }
 
@@ -655,6 +674,8 @@ const generatePdfBlob = async (cand) => {
     });
 
     setF('APPLIED_DATE', new Date().toISOString().split('T')[0]);
+
+    try { form.flatten(); } catch(e) {}
 
     const filledPdfBytes = await pdfDoc.save();
     return filledPdfBytes;
