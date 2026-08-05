@@ -12,6 +12,7 @@ $distFiles = @('index.html', 'assets\index.js')
 $staticFiles = [ordered]@{
     '.htaccess'                    = "$baseDir\.htaccess"
     'Crew_Application_Form.pdf'    = "$baseDir\Crew_Application_Form.pdf"
+    'Application form.docx'        = "$baseDir\Application form.docx"
     'favicon.png'                  = "$baseDir\public\favicon.png"
     '_redirects'                   = "$baseDir\public\_redirects"
     'api\candidates.php'           = "$baseDir\api\candidates.php"

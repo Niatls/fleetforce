@@ -19,7 +19,7 @@ import { OfficeFormModal } from './OfficeFormModal';
 import { HubBlockFormModal } from './HubBlockFormModal';
 import { ShipownerRequestModal } from './ShipownerRequestModal';
 import { DocumentPreviewModal } from './DocumentPreviewModal';
-import { handleExportCSV, handleExportDoc } from './exportUtils';
+import { handleExportCSV, handleExportDoc, handleExportPdf } from './exportUtils';
 
 export const AdminDashboard = ({ 
   isOpen, 
@@ -448,6 +448,7 @@ export const AdminDashboard = ({
             onDeleteCandidate={onDeleteCandidate}
             onSelectCandidate={setSelectedCandidate}
             onExportDoc={handleExportDoc}
+            onExportPdf={handleExportPdf}
             onPreviewFile={(file) => openFilePreview(file, [])}
           />
         )}
@@ -503,6 +504,7 @@ export const AdminDashboard = ({
           candidate={selectedCandidate}
           onClose={() => setSelectedCandidate(null)}
           onExportDoc={handleExportDoc}
+          onExportPdf={handleExportPdf}
           onDeleteCandidate={onDeleteCandidate}
           onAdminFileUpload={handleAdminFileUpload}
           onAdminFileDelete={handleAdminFileDelete}

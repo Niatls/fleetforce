@@ -271,6 +271,23 @@ export const handleExportDoc = (cand) => {
   URL.revokeObjectURL(url);
 };
 
+export const handleExportPdf = async (cand) => {
+  if (!cand) return;
+  const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '');
+  const pdfBytes = await generatePdfBlob(cand);
+  if (!pdfBytes) {
+    alert('Не удалось сформировать заполненную PDF анкету.');
+    return;
+  }
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `FleetForce_Application_${cleanName}_${cand.id || 'FORM'}.pdf`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
 // Helper: generate DOC HTML content and return as blob
 const generateDocBlob = (cand) => {
   const htmlContent = buildApplicationFormHtml(cand);

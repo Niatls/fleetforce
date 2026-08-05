@@ -6,6 +6,7 @@ export const CandidateDossierModal = ({
   candidate,
   onClose,
   onExportDoc,
+  onExportPdf,
   onDeleteCandidate,
   onAdminFileUpload,
   onAdminFileDelete,
@@ -37,11 +38,14 @@ export const CandidateDossierModal = ({
             <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Seafarer Dossier - {candidate.id}</h3>
           </div>
           <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button onClick={() => onExportDoc(candidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-accent)', borderColor: 'rgba(0,139,255,0.4)', gap: '0.4rem' }}>
-              <FileText size={15} /> Export DOC (.doc)
+            <button onClick={() => onExportDoc && onExportDoc(candidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-accent)', borderColor: 'rgba(0,139,255,0.4)', gap: '0.4rem' }}>
+              <FileText size={15} /> Export DOC (.docx)
+            </button>
+            <button onClick={() => onExportPdf && onExportPdf(candidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-emerald)', borderColor: 'rgba(16,185,129,0.4)', gap: '0.4rem' }}>
+              <Download size={15} /> Export PDF (.pdf)
             </button>
             <button onClick={() => window.print()} className="btn btn-primary btn-sm" style={{ gap: '0.4rem' }}>
-              <Printer size={15} /> Print / Export PDF (.pdf)
+              <Printer size={15} /> Печать
             </button>
             {confirmDelete ? (
               <button 

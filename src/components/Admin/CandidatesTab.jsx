@@ -16,6 +16,7 @@ export const CandidatesTab = ({
   onDeleteCandidate,
   onSelectCandidate,
   onExportDoc,
+  onExportPdf,
 }) => {
   const { lang, t } = useLanguage();
   const [confirmDeleteId, setConfirmDeleteId] = React.useState(null);
@@ -142,17 +143,25 @@ export const CandidatesTab = ({
                       <Eye size={14} /> Анкета
                     </button>
                     <button 
-                      onClick={() => onExportDoc(cand)}
+                      onClick={() => onExportDoc && onExportDoc(cand)}
                       className="btn btn-secondary btn-sm"
                       style={{ color: 'var(--color-accent)', borderColor: 'rgba(0,139,255,0.3)', gap: '0.2rem' }}
-                      title="Скачать анкету в формате Word (.doc)"
+                      title="Скачать заполненную анкету в формате Word (.docx)"
                     >
                       <FileText size={14} /> DOC
                     </button>
                     <button 
+                      onClick={() => onExportPdf && onExportPdf(cand)}
+                      className="btn btn-secondary btn-sm"
+                      style={{ color: 'var(--color-emerald)', borderColor: 'rgba(16,185,129,0.3)', gap: '0.2rem' }}
+                      title="Скачать заполненную анкету в формате PDF (.pdf)"
+                    >
+                      <FileText size={14} /> PDF
+                    </button>
+                    <button 
                       onClick={() => handleDownloadAllFiles(cand)}
                       className="btn btn-primary btn-sm"
-                      title="Скачать ZIP-архив с анкетой (.doc) и всеми прикреплёнными документами"
+                      title="Скачать ZIP-архив с заполненными анкетами (.docx, .pdf) и всеми прикреплёнными документами"
                     >
                       <Archive size={14} /> Скачать всё
                     </button>

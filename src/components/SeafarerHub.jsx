@@ -16,32 +16,23 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
     if (block && block.fileData) {
       const a = document.createElement('a');
       a.href = block.fileData;
-      a.download = block.filename || 'Crew_Application_Form.pdf';
+      a.download = block.filename || 'Application form.docx';
       a.click();
       return;
     }
 
-    if (block?.filename?.match(/\.(doc|docx)$/i)) {
-      // Download blank DOC version of Crew_Application_Form
-      import('./Admin/exportUtils').then(({ handleExportDoc }) => {
-        handleExportDoc({
-          id: 'BLANK-FORM',
-          fullName: '',
-          appliedRank: '',
-          readyDate: '',
-          seaService: [],
-          certificates: [],
-          recordBooks: [],
-          employers: []
-        });
-      });
+    if (block?.filename?.match(/\.(doc|docx)$/i) || block?.id === 1 || String(block?.title).includes('DOC')) {
+      const a = document.createElement('a');
+      a.href = './Application form.docx';
+      a.download = 'Application form.docx';
+      a.click();
       return;
     }
 
     // Default: Download official Crew_Application_Form.pdf
     const a = document.createElement('a');
     a.href = './Crew_Application_Form.pdf';
-    a.download = block?.filename || 'Crew_Application_Form.pdf';
+    a.download = 'Crew_Application_Form.pdf';
     a.click();
   };
 
