@@ -168,6 +168,33 @@ function AppContent() {
     }
   });
 
+  const [offices, setOffices] = useState(() => {
+    try {
+      const saved = localStorage.getItem('fleetforce_offices');
+      return saved ? JSON.parse(saved) : INITIAL_OFFICES;
+    } catch (e) {
+      return INITIAL_OFFICES;
+    }
+  });
+
+  const [hubBlocks, setHubBlocks] = useState(() => {
+    try {
+      const saved = localStorage.getItem('fleetforce_hub_blocks');
+      return saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
+    } catch (e) {
+      return INITIAL_HUB_BLOCKS;
+    }
+  });
+
+  const [stats, setStats] = useState(() => {
+    try {
+      const saved = localStorage.getItem('fleetforce_stats');
+      return saved ? JSON.parse(saved) : INITIAL_STATS;
+    } catch (e) {
+      return INITIAL_STATS;
+    }
+  });
+
   const [sectionVisibility, setSectionVisibility] = useState(() => {
     try {
       const saved = localStorage.getItem('fleetforce_section_visibility');
@@ -310,6 +337,20 @@ function AppContent() {
       })
       .catch(() => {});
 
+    fetch('/api/config.php')
+      .then((res) => {
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && data.data) {
+          if (Array.isArray(data.data.offices)) setOffices(data.data.offices);
+          if (Array.isArray(data.data.hub_blocks)) setHubBlocks(data.data.hub_blocks);
+          if (Array.isArray(data.data.stats)) setStats(data.data.stats);
+        }
+      })
+      .catch(() => {});
+
     fetch('/api/shipowner-requests')
       .then((res) => {
         if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
@@ -317,13 +358,13 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          mergeApiIntoLocal(data.data, setShipownerRequests);
+          mergeApiIntoLocal(data.data, setShipownerRequests, 'id', 'request');
         }
       })
       .catch(() => {});
   }, []);
 
-  // Sync to local storage
+  // Sync to local storage and server
   useEffect(() => {
     localStorage.setItem('fleetforce_vacancies', JSON.stringify(vacancies));
   }, [vacancies]);
@@ -334,10 +375,20 @@ function AppContent() {
 
   useEffect(() => {
     localStorage.setItem('fleetforce_offices', JSON.stringify(offices));
+    fetch('/api/config.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ offices })
+    }).catch(() => {});
   }, [offices]);
 
   useEffect(() => {
     localStorage.setItem('fleetforce_hub_blocks', JSON.stringify(hubBlocks));
+    fetch('/api/config.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hub_blocks: hubBlocks })
+    }).catch(() => {});
   }, [hubBlocks]);
 
   useEffect(() => {

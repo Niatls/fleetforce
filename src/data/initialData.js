@@ -521,32 +521,6 @@ export const INITIAL_OFFICES = [
     emails: ['FleetForceLLC@yandex.ru'],
     flag: '🌊 Черноморский Филиал',
     flagEn: '🌊 Black Sea Branch'
-  },
-  {
-    id: 3,
-    city: 'Калининград',
-    cityEn: 'Kaliningrad',
-    address: 'г. Калининград, Ленинский проспект 81, Офис 205',
-    addressEn: '81 Leninskiy Ave, Office 205, Kaliningrad',
-    phone: '',
-    phones: [],
-    email: 'FleetForceLLC@yandex.ru',
-    emails: ['FleetForceLLC@yandex.ru'],
-    flag: '🇪🇺 Балтийский Офис',
-    flagEn: '🇪🇺 Baltic Office'
-  },
-  {
-    id: 4,
-    city: 'Владивосток',
-    cityEn: 'Vladivostok',
-    address: 'г. Владивосток, ул. Светланская 45',
-    addressEn: '45 Svetlanskaya St, Vladivostok',
-    phone: '',
-    phones: [],
-    email: 'FleetForceLLC@yandex.ru',
-    emails: ['FleetForceLLC@yandex.ru'],
-    flag: '🌏 Дальневосточный Офис',
-    flagEn: '🌏 Far East Office'
   }
 ];
 
@@ -579,16 +553,6 @@ export const INITIAL_HUB_BLOCKS = [
     actionType: 'wizard',
     iconType: 'FileCheck',
     color: 'emerald'
-  },
-  {
-    id: 4,
-    title: 'Подготовка к Marlins & CES тестам',
-    description: 'Официальное тестирование Marlins English Test и CES 6.0 в сертифицированных центрах СПб и Новороссийска.',
-    buttonText: 'Записаться на тест',
-    actionType: 'link',
-    linkUrl: 'tel:+78005553535',
-    iconType: 'Award',
-    color: 'danger'
   }
 ];
 
