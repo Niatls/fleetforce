@@ -8,7 +8,7 @@ export const Footer = ({
   customCertText,
   customCopyright
 }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   return (
     <footer style={{
