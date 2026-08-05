@@ -290,8 +290,10 @@ export const handleExportPdf = async (cand) => {
 // Helper: fill exact Application form.docx template file using JSZip
 const generateDocBlob = async (cand) => {
   try {
-    const resp = await fetch('./Application form.docx');
-    if (!resp.ok) throw new Error('Could not fetch template DOCX');
+    const baseUrl = window.location.href.split('#')[0].replace(/\/[^\/]*$/, '/');
+    const templateUrl = new URL('Application form.docx', baseUrl).href;
+    const resp = await fetch(templateUrl);
+    if (!resp.ok) throw new Error('Could not fetch template DOCX from ' + templateUrl);
     const templateBytes = await resp.arrayBuffer();
 
     const JSZip = window.JSZip;
@@ -506,8 +508,10 @@ const dataUrlToUint8Array = (dataUrl) => {
 // Generate PDF by directly populating fields of official Crew_Application_Form.pdf template!
 const generatePdfBlob = async (cand) => {
   try {
-    const resp = await fetch('./Crew_Application_Form.pdf');
-    if (!resp.ok) throw new Error('Could not fetch template PDF');
+    const baseUrl = window.location.href.split('#')[0].replace(/\/[^\/]*$/, '/');
+    const templateUrl = new URL('Crew_Application_Form.pdf', baseUrl).href;
+    const resp = await fetch(templateUrl);
+    if (!resp.ok) throw new Error('Could not fetch template PDF from ' + templateUrl);
     const templateBytes = await resp.arrayBuffer();
     const pdfDoc = await PDFDocument.load(templateBytes);
     const form = pdfDoc.getForm();
