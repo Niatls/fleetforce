@@ -381,7 +381,8 @@ export const INITIAL_VACANCIES = [
 ];
 
 export const INITIAL_CANDIDATES = [
-  {
+  // No demo candidates — data comes from server db.json
+  /*{
     id: "APP-2026-089",
     fullName: "Воронов Александр Сергеевич (Voronov Aleksandr)",
     dob: "1984-04-12",
@@ -476,51 +477,24 @@ export const INITIAL_CANDIDATES = [
         dateTo: "2025-09-01"
       }
     ],
-    attachedFiles: [
-      {
-        id: "f-104",
-        name: "ETO_Kovalev_Maritime_CV.docx",
-        size: "620 KB",
-        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        dataUrl: "data:text/plain;charset=utf-8,FleetForce%20Maritime%20CV%20-%20Kovalev%20Dmitriy%20(ETO)"
-      },
-      {
-        id: "f-105",
-        name: "High_Voltage_Certificate_STCW.jpg",
-        size: "1.1 MB",
-        type: "image/jpeg",
-        dataUrl: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect width='100%25' height='100%25' fill='%2309101d'/%3E%3Crect x='20' y='20' width='760' height='560' fill='none' stroke='%23eab308' stroke-width='4' rx='10'/%3E%3Ctext x='50%25' y='35%25' font-family='sans-serif' font-size='28' font-weight='bold' fill='%23eab308' text-anchor='middle'%3EHIGH VOLTAGE SAFETY CERTIFICATE%3C/text%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='20' fill='%23ffffff' text-anchor='middle'%3ESTCW III/6 HIGH VOLTAGE OPERATIONAL%3C/text%3E%3Ctext x='50%25' y='65%25' font-family='sans-serif' font-size='18' fill='%2394a3b8' text-anchor='middle'%3EHolder: Kovalev Dmitriy Igorevich%3C/text%3E%3C/svg%3E"
-      }
-    ]
+    attachedFiles: []
   }
+  */
 ];
 
 export const INITIAL_OFFICES = [
   {
     id: 1,
-    city: 'Санкт-Петербург',
-    cityEn: 'Saint Petersburg',
-    address: 'г. Санкт-Петербург, пр. Стачек, д. 47А, офис 340-342',
-    addressEn: '47A Stachek Ave, Office 340-342, Saint Petersburg',
+    city: 'Москва',
+    cityEn: 'Moscow',
+    address: 'г. Москва',
+    addressEn: 'Moscow, Russia',
     phone: '',
     phones: [],
     email: 'FleetForceLLC@yandex.ru',
     emails: ['FleetForceLLC@yandex.ru'],
     flag: '⚓ Главный Офис',
     flagEn: '⚓ Headquarters'
-  },
-  {
-    id: 2,
-    city: 'Новороссийск',
-    cityEn: 'Novorossiysk',
-    address: 'г. Новороссийск, ул. Энгельса/Свободы/Конституции, д. 7, офис 37',
-    addressEn: '7 Engelsa/Svobody/Konstitutsii St, Office 37, Novorossiysk',
-    phone: '',
-    phones: [],
-    email: 'FleetForceLLC@yandex.ru',
-    emails: ['FleetForceLLC@yandex.ru'],
-    flag: '🌊 Черноморский Филиал',
-    flagEn: '🌊 Black Sea Branch'
   }
 ];
 
@@ -564,24 +538,6 @@ export const INITIAL_STATS = [
 ];
 
 export const INITIAL_SHIPOWNER_REQUESTS = [
-  {
-    id: "REQ-2026-001",
-    companyName: "Stena Bulk Tanker Management",
-    contactName: "Captain Hans Nielsen (Crew Director)",
-    email: "h.nielsen@stenabulk.com",
-    phone: "+46 31 855 000",
-    details: "Требуется полное комплектование экипажа для 2 продуктовозов (Chemical/Product Tankers 47,000 DWT). Необходимы Master, Chief Officer, Chief Engineer и 2 ETO. Посадка в Роттердаме в августе 2026.",
-    status: "New",
-    createdAt: "2026-07-26T11:20:00Z"
-  },
-  {
-    id: "REQ-2026-002",
-    companyName: "Columbia Shipmanagement Ltd",
-    contactName: "Мария Соколова (Senior Manning Officer)",
-    email: "m.sokolova@csm-agency.com",
-    phone: "+357 25 843 100",
-    details: "Запрос расценки на подбор командного состава (Chief Engineer, 2nd Officer) для балкеров Capesize 180,000 DWT. Ставки окладов по соглашению ITF.",
-    status: "In Progress",
-    createdAt: "2026-07-25T16:45:00Z"
-  }
+  // No demo requests — data comes from server db.json
 ];
+
