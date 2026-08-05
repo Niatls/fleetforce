@@ -287,13 +287,27 @@ function get_database() {
                 $site_titles = json_decode($row['config_val'], true);
             }
 
+            if (is_array($offices)) {
+                $offices = array_values(array_filter($offices, function($o) {
+                    $c = mb_strtolower($o['city'] ?? '');
+                    return strpos($c, 'калининград') === false && strpos($c, 'владивосток') === false;
+                }));
+            }
+
+            if (is_array($hub_blocks)) {
+                $hub_blocks = array_values(array_filter($hub_blocks, function($b) {
+                    $t = mb_strtolower($b['title'] ?? '');
+                    return strpos($t, 'marlins') === false && strpos($t, 'ces') === false;
+                }));
+            }
+
             $defaultData = get_default_data();
             $result = [
                 'vacancies' => (empty($vacancies) && !has_table_records($pdo, 'vacancies')) ? $defaultData['vacancies'] : $vacancies,
                 'candidates' => (empty($candidates) && !has_table_records($pdo, 'candidates')) ? $defaultData['candidates'] : $candidates,
                 'shipowner_requests' => (empty($shipowner_requests) && !has_table_records($pdo, 'shipowner_requests')) ? $defaultData['shipowner_requests'] : $shipowner_requests,
-                'offices' => is_array($offices) ? $offices : $defaultData['offices'],
-                'hub_blocks' => is_array($hub_blocks) ? $hub_blocks : $defaultData['hub_blocks'],
+                'offices' => (!empty($offices) && is_array($offices)) ? $offices : $defaultData['offices'],
+                'hub_blocks' => (!empty($hub_blocks) && is_array($hub_blocks)) ? $hub_blocks : $defaultData['hub_blocks'],
                 'stats' => is_array($stats) ? $stats : ($defaultData['stats'] ?? []),
                 'site_titles' => is_array($site_titles) ? $site_titles : null
             ];

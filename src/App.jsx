@@ -378,40 +378,15 @@ function AppContent() {
       .catch(() => {});
   }, []);
 
-  // Sync to local storage and server
+  // Clear stale legacy localStorage overrides so MySQL DB on server is always 100% authoritative
   useEffect(() => {
-    localStorage.setItem('fleetforce_vacancies', JSON.stringify(vacancies));
-  }, [vacancies]);
-
-  useEffect(() => {
-    localStorage.setItem('fleetforce_candidates', JSON.stringify(candidates));
-  }, [candidates]);
-
-  useEffect(() => {
-    localStorage.setItem('fleetforce_offices', JSON.stringify(offices));
-    fetch('/api/config.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ offices })
-    }).catch(() => {});
-  }, [offices]);
-
-  useEffect(() => {
-    localStorage.setItem('fleetforce_hub_blocks', JSON.stringify(hubBlocks));
-    fetch('/api/config.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hub_blocks: hubBlocks })
-    }).catch(() => {});
-  }, [hubBlocks]);
-
-  useEffect(() => {
-    localStorage.setItem('fleetforce_stats', JSON.stringify(stats));
-  }, [stats]);
-
-  useEffect(() => {
-    localStorage.setItem('fleetforce_shipowner_requests', JSON.stringify(shipownerRequests));
-  }, [shipownerRequests]);
+    try {
+      localStorage.removeItem('fleetforce_offices');
+      localStorage.removeItem('fleetforce_hub_blocks');
+      localStorage.removeItem('fleetforce_stats');
+      localStorage.removeItem('fleetforce_vacancies');
+    } catch (e) {}
+  }, []);
 
   // Handlers
   const handleUpdateStats = (newStats) => {
