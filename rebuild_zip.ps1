@@ -24,6 +24,7 @@ $staticFiles = [ordered]@{
     'api\upload.php'               = "$baseDir\api\upload.php"
     'api\vacancies.php'            = "$baseDir\api\vacancies.php"
     'api\verify-code.php'          = "$baseDir\api\verify-code.php"
+    'api\data\db.json'             = "$baseDir\api\data\db.json"
 }
 
 # Удаляем старый архив

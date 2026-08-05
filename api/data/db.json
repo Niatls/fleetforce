@@ -1,0 +1,91 @@
+{
+  "vacancies": [
+    {
+      "id": 1,
+      "title": "Master / Captain",
+      "rank": "Master / Captain",
+      "vesselType": "Chemical / Product Tanker",
+      "dwt": "47,000 DWT (MAN B&W)",
+      "salary": "$14,500",
+      "contract": "4 months",
+      "joiningPort": "Rotterdam, Netherlands",
+      "joiningDate": "15.08.2026",
+      "urgent": true,
+      "active": true,
+      "requirements": [
+        "Minimum 2 contracts in rank on Chemical Tankers with FRAMO pumps",
+        "Valid Master Unlimited STCW II/2 Certificate & Flag Endorsements",
+        "Marlins English test > 85%"
+      ],
+      "responsibilities": "Overall command of vessel navigation, safety, crew operations and SIRE inspection readiness."
+    },
+    {
+      "id": 2,
+      "title": "Chief Engineer",
+      "rank": "Chief Engineer",
+      "vesselType": "Container Ship (5000+ TEU)",
+      "dwt": "65,000 DWT (WinGD Flex)",
+      "salary": "$13,800",
+      "contract": "4 months",
+      "joiningPort": "Singapore",
+      "joiningDate": "20.08.2026",
+      "urgent": false,
+      "active": true,
+      "requirements": [
+        "Experience with WinGD / RT-flex electronic engines",
+        "Chief Engineer Unlimited STCW III/2"
+      ],
+      "responsibilities": "Management of technical department, main engine, bunkering and dry-dock preparation."
+    }
+  ],
+  "candidates": [],
+  "shipowner_requests": [],
+  "offices": [
+    {
+      "id": 1,
+      "city": "Москва",
+      "cityEn": "Moscow",
+      "address": "г. Москва",
+      "addressEn": "Moscow, Russia",
+      "phone": "",
+      "phones": [],
+      "email": "FleetForceLLC@yandex.ru",
+      "emails": ["FleetForceLLC@yandex.ru"],
+      "flag": "⚓ Главный Офис",
+      "flagEn": "⚓ Headquarters"
+    }
+  ],
+  "hub_blocks": [
+    {
+      "id": 1,
+      "title": "FleetForce Standard Application (PDF)",
+      "description": "Официальный 5-страничный бланк морской анкеты FleetForce Crewing Alliance в формате PDF.",
+      "buttonText": "Скачать бланки анкеты Fleet Force (.PDF)",
+      "actionType": "download",
+      "filename": "Crew_Application_Form.pdf",
+      "iconType": "FileText",
+      "color": "blue"
+    },
+    {
+      "id": 2,
+      "title": "FleetForce CV Form (DOC)",
+      "description": "Редактируемый Word (.DOC) бланк морской анкеты с полной матрицей плавательского ценза Fleet Force.",
+      "buttonText": "Скачать анкету Fleet Force (.DOC)",
+      "actionType": "download",
+      "filename": "Crew_Application_Form.doc",
+      "iconType": "Download",
+      "color": "gold"
+    },
+    {
+      "id": 3,
+      "title": "Чек-лист документов для посадки",
+      "description": "Полный перечень рабочих дипломов, подтверждений, НБЖС и медицинских комиссий (Подплав / ОУК) для рейса.",
+      "buttonText": "Заполнить онлайн",
+      "actionType": "wizard",
+      "iconType": "FileCheck",
+      "color": "emerald"
+    }
+  ],
+  "stats": [],
+  "site_titles": null
+}
