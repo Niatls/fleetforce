@@ -131,7 +131,13 @@ export const translations = {
       service2Desc: "Содействие в оформлении флажных документов, визовой поддержке и логистике смены экипажей в любых портах мира.",
       service3Title: "Управление бюджетом crew-management",
       service3Desc: "Оптимизация расходов на смену команд, медицинское страхование и выплату заработной платы.",
-      requestBtn: "Запросить презентацию и расчет"
+      requestBtn: "Запросить презентацию и расчет",
+      formTitle: "Запросить расчет стоимости комплектования экипажа",
+      companyPlaceholder: "Название компании / Судовладельца",
+      contactPlaceholder: "Имя контактного лица",
+      emailPlaceholder: "Корпоративный Email",
+      phonePlaceholder: "Телефон для связи",
+      detailsPlaceholder: "Укажите тип судна, флот, необходимое количество экипажа..."
     },
     // Offices & Contacts
     offices: {
@@ -196,6 +202,9 @@ export const translations = {
     },
     // Footer
     footer: {
+      brandDesc: "Объединенный портал морских крюинговых агентств FleetForce Alliance.",
+      navTitle: "Навигация",
+      certTitle: "Сертификация",
       compliance: "Соответствует стандартам Конвенции КТМS 2006 (MLC 2006) и ISO 9001:2015.",
       rights: " Все права защищены. Объединенный портал крюинговых услуг FleetForce.",
       privacy: "Политика конфиденциальности"
@@ -333,7 +342,13 @@ export const translations = {
       service2Desc: "Flag state endorsements, visa processing, travel logistics, and smooth crew rotation in global ports.",
       service3Title: "Crew Management Budgeting",
       service3Desc: "Cost optimization for crew changes, P&I insurance cover, and international crew payroll processing.",
-      requestBtn: "Request Proposal & Rate Sheet"
+      requestBtn: "Request Proposal & Rate Sheet",
+      formTitle: "Request Crewing Proposal & Rate Sheet",
+      companyPlaceholder: "Company / Shipowner Name",
+      contactPlaceholder: "Contact Person Name",
+      emailPlaceholder: "Corporate Email",
+      phonePlaceholder: "Contact Phone Number",
+      detailsPlaceholder: "Specify vessel types, fleet size, required crew complement..."
     },
     // Offices & Contacts
     offices: {
@@ -398,6 +413,9 @@ export const translations = {
     },
     // Footer
     footer: {
+      brandDesc: "Unified portal of maritime crewing agencies FleetForce Alliance.",
+      navTitle: "Navigation",
+      certTitle: "Certification",
       compliance: "Compliant with Maritime Labour Convention 2006 (MLC 2006) & ISO 9001:2015 standards.",
       rights: " All rights reserved. FleetForce International Crewing Alliance.",
       privacy: "Privacy Policy & GDPR"

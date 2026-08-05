@@ -134,7 +134,7 @@ export const ShipownerServices = ({
         {/* Shipowner Request Form */}
         <div className="glass-card" style={{ padding: '2.5rem', maxWidth: '800px', margin: '0 auto', background: 'var(--bg-surface-elevated)' }}>
           <h3 style={{ fontSize: '1.5rem', marginBottom: '1.2rem', textAlign: 'center', color: '#FFFFFF' }}>
-            Запросить расчет стоимости комплектования экипажа
+            {t('shipowners.formTitle')}
           </h3>
 
           {submitted ? (
@@ -142,12 +142,16 @@ export const ShipownerServices = ({
               <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(16,185,129,0.2)', color: 'var(--color-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
                 <CheckCircle size={32} />
               </div>
-              <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', marginBottom: '0.5rem' }}>Заявка на расчет успешно отправлена!</h4>
+              <h4 style={{ fontSize: '1.3rem', color: '#FFFFFF', marginBottom: '0.5rem' }}>
+                {lang === 'en' ? 'Crew Inquiry Submitted Successfully!' : 'Заявка на расчет успешно отправлена!'}
+              </h4>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1.2rem' }}>
-                Наш отдел по работе с судовладельцами FleetForce обработает запрос и свяжется с вами в течение 1 часа.
+                {lang === 'en' 
+                  ? 'Our FleetForce crew management department will process your request and contact you within 1 hour.' 
+                  : 'Наш отдел по работе с судовладельцами FleetForce обработает запрос и свяжется с вами в течение 1 часа.'}
               </p>
               <button onClick={() => setSubmitted(false)} className="btn btn-secondary btn-sm">
-                Отправить еще один запрос
+                {lang === 'en' ? 'Submit Another Request' : 'Отправить еще один запрос'}
               </button>
             </div>
           ) : (
@@ -155,7 +159,7 @@ export const ShipownerServices = ({
               <input 
                 type="text" 
                 required 
-                placeholder="Название компании / Судовладельца" 
+                placeholder={t('shipowners.companyPlaceholder')}
                 className="form-input"
                 value={formData.companyName}
                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
@@ -163,7 +167,7 @@ export const ShipownerServices = ({
               <input 
                 type="text" 
                 required 
-                placeholder="Имя контактного лица" 
+                placeholder={t('shipowners.contactPlaceholder')}
                 className="form-input"
                 value={formData.contactName}
                 onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
@@ -171,7 +175,7 @@ export const ShipownerServices = ({
               <input 
                 type="email" 
                 required 
-                placeholder="Корпоративный Email" 
+                placeholder={t('shipowners.emailPlaceholder')}
                 className="form-input"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -179,13 +183,13 @@ export const ShipownerServices = ({
               <input 
                 type="tel" 
                 required 
-                placeholder="Телефон для связи" 
+                placeholder={t('shipowners.phonePlaceholder')}
                 className="form-input"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
               <textarea 
-                placeholder="Укажите тип судна, флот, необходимое количество экипажа..." 
+                placeholder={t('shipowners.detailsPlaceholder')}
                 className="form-textarea" 
                 style={{ gridColumn: '1 / -1', height: '100px' }}
                 value={formData.details}

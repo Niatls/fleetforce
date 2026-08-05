@@ -63,6 +63,33 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
     return <div style={style}><FileText size={26} /></div>;
   };
 
+  const getBlockTitle = (block) => {
+    if (lang !== 'en') return block.title;
+    if (block.titleEn) return block.titleEn;
+    if (block.id === 1 || String(block.title).includes('PDF')) return 'Fleet Force Standard Application (PDF)';
+    if (block.id === 2 || String(block.title).includes('DOC')) return 'Fleet Force CV Form (DOC)';
+    if (block.id === 3 || String(block.title).includes('Чек-лист')) return 'Embarkation Document Checklist & Online Application';
+    return block.title;
+  };
+
+  const getBlockDesc = (block) => {
+    if (lang !== 'en') return block.description;
+    if (block.descriptionEn) return block.descriptionEn;
+    if (block.id === 1 || String(block.title).includes('PDF')) return 'Official 5-page maritime application form of FleetForce Crewing Alliance in PDF format for offline completion.';
+    if (block.id === 2 || String(block.title).includes('DOC')) return 'Editable Word (.DOC) seafarer application form with full sea service experience matrix.';
+    if (block.id === 3 || String(block.title).includes('Чек-лист')) return 'Complete checklist of CoC, STCW certificates, medical exams, and online application wizard.';
+    return block.description;
+  };
+
+  const getBlockBtn = (block) => {
+    if (lang !== 'en') return block.buttonText;
+    if (block.buttonTextEn) return block.buttonTextEn;
+    if (block.actionType === 'wizard') return 'Apply Online';
+    if (block.id === 1) return 'Download Fleet Force Form (.DOCX)';
+    if (block.id === 2) return 'Download Fleet Force Form (.PDF)';
+    return block.buttonText || 'Download Form';
+  };
+
   return (
     <section id="seafarers" style={{ padding: '5rem 0', background: 'var(--bg-surface)' }}>
       <div className="container">
@@ -88,23 +115,23 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
                   </div>
 
                   {/* Row 2: Title */}
-                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem', color: '#FFFFFF' }}>{block.title}</h3>
+                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem', color: '#FFFFFF' }}>{getBlockTitle(block)}</h3>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                    {block.description}
+                    {getBlockDesc(block)}
                   </p>
                 </div>
 
                 {block.actionType === 'wizard' ? (
                   <button onClick={onOpenWizard} className="btn btn-primary" style={{ width: '100%' }}>
-                    {block.buttonText || 'Заполнить онлайн'}
+                    {getBlockBtn(block)}
                   </button>
                 ) : block.actionType === 'link' ? (
                   <a href={block.linkUrl || 'tel:+78005553535'} className="btn btn-secondary" style={{ width: '100%' }}>
-                    {block.buttonText || 'Подробнее'}
+                    {getBlockBtn(block)}
                   </a>
                 ) : (
                   <button onClick={() => handleDownloadBlock(block)} className="btn btn-secondary" style={{ width: '100%' }}>
-                    <Download size={16} /> {block.buttonText || t('seafarersHub.downloadBgiForm')}
+                    <Download size={16} /> {getBlockBtn(block)}
                   </button>
                 )}
               </div>

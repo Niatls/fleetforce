@@ -13,6 +13,36 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
   const displaySubtitle = (lang === 'ru' && customSubtitle) ? customSubtitle : t('offices.subtitle');
   const displayHours = (lang === 'ru' && customHours) ? customHours : t('offices.hours');
 
+  const getFlag = (off) => {
+    if (lang !== 'en') return off.flag;
+    if (off.flagEn) return off.flagEn;
+    if (String(off.flag).includes('Главный')) return '⚓ Headquarters';
+    if (String(off.flag).includes('Черноморский')) return '🌊 Black Sea Branch';
+    if (String(off.flag).includes('Балтийский')) return '🇪🇺 Baltic Office';
+    if (String(off.flag).includes('Дальневосточный')) return '🌏 Far East Office';
+    return off.flag;
+  };
+
+  const getCity = (off) => {
+    if (lang !== 'en') return off.city;
+    if (off.cityEn) return off.cityEn;
+    if (String(off.city).includes('Санкт-Петербург')) return 'Saint Petersburg';
+    if (String(off.city).includes('Новороссийск')) return 'Novorossiysk';
+    if (String(off.city).includes('Калининград')) return 'Kaliningrad';
+    if (String(off.city).includes('Владивосток')) return 'Vladivostok';
+    return off.city;
+  };
+
+  const getAddress = (off) => {
+    if (lang !== 'en') return off.address;
+    if (off.addressEn) return off.addressEn;
+    if (String(off.address).includes('Стачек')) return '47A Stachek Ave, Office 340-342, Saint Petersburg';
+    if (String(off.address).includes('Энгельса')) return '7 Engelsa/Svobody/Konstitutsii St, Office 37, Novorossiysk';
+    if (String(off.address).includes('Ленинский')) return '81 Leninskiy Ave, Office 205, Kaliningrad';
+    if (String(off.address).includes('Светланская')) return '45 Svetlanskaya St, Vladivostok';
+    return off.address;
+  };
+
   return (
     <section id="offices" style={{ padding: '5rem 0', background: 'var(--bg-surface)' }}>
       <div className="container">
@@ -32,19 +62,19 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', gap: '0.6rem' }}>
                     <span className="badge badge-blue" style={{ borderRadius: '6px', fontSize: '0.78rem', padding: '0.35rem 0.65rem', display: 'inline-block', maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: 1.3 }}>
-                      {off.flag}
+                      {getFlag(off)}
                     </span>
                     <Clock size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                   </div>
 
                   <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#FFFFFF' }}>
-                    {off.city}
+                    {getCity(off)}
                   </h3>
 
                   <div style={{ display: 'grid', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                     <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
                       <MapPin size={16} color="var(--color-accent)" style={{ marginTop: '3px', flexShrink: 0 }} />
-                      <span>{off.address}</span>
+                      <span>{getAddress(off)}</span>
                     </div>
 
                     {/* Individual Office Working Hours */}

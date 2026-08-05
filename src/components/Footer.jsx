@@ -39,7 +39,7 @@ export const Footer = ({
               </span>
             </div>
             <p style={{ fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '1.2rem' }}>
-              {(lang === 'ru' && customBrandDesc !== undefined) ? customBrandDesc : 'Объединенный портал морских крюинговых агентств FleetForce Alliance.'}
+              {(lang === 'ru' && customBrandDesc !== undefined) ? customBrandDesc : t('footer.brandDesc')}
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-emerald)', fontSize: '0.8rem', fontWeight: 600 }}>
               <ShieldCheck size={16} />
@@ -49,20 +49,20 @@ export const Footer = ({
 
           {/* Col 2: Navigation */}
           <div>
-            <h4 style={{ color: '#FFFFFF', marginBottom: '1rem', fontSize: '1rem' }}>Навигация</h4>
+            <h4 style={{ color: '#FFFFFF', marginBottom: '1rem', fontSize: '1rem' }}>{t('footer.navTitle')}</h4>
             <ul style={{ listStyle: 'none', display: 'grid', gap: '0.6rem' }}>
-              <li><a href="#vacancies">Вакансии для моряков</a></li>
-              <li><a href="#seafarers">Анкета и центр загрузок</a></li>
-              <li><a href="#shipowners">Услуги судовладельцам</a></li>
-              <li><a href="#offices">Контакты офисов</a></li>
+              <li><a href="#vacancies">{t('nav.vacancies')}</a></li>
+              <li><a href="#seafarers">{t('nav.application')}</a></li>
+              <li><a href="#shipowners">{t('nav.shipowners')}</a></li>
+              <li><a href="#offices">{t('nav.offices')}</a></li>
             </ul>
           </div>
 
           {/* Col 3: Compliance & Legal */}
           <div>
-            <h4 style={{ color: '#FFFFFF', marginBottom: '1rem', fontSize: '1rem' }}>Сертификация</h4>
+            <h4 style={{ color: '#FFFFFF', marginBottom: '1rem', fontSize: '1rem' }}>{t('footer.certTitle')}</h4>
             <p style={{ fontSize: '0.82rem', lineHeight: 1.6, marginBottom: '1rem' }}>
-              {customCertText !== undefined ? customCertText : t('footer.compliance')}
+              {(lang === 'ru' && customCertText !== undefined) ? customCertText : t('footer.compliance')}
             </p>
             <a 
               href="#/admin"

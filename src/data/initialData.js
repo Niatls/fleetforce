@@ -499,42 +499,54 @@ export const INITIAL_OFFICES = [
   {
     id: 1,
     city: 'Санкт-Петербург',
+    cityEn: 'Saint Petersburg',
     address: 'г. Санкт-Петербург, пр. Стачек, д. 47А, офис 340-342',
+    addressEn: '47A Stachek Ave, Office 340-342, Saint Petersburg',
     phone: '',
     phones: [],
     email: 'FleetForceLLC@yandex.ru',
     emails: ['FleetForceLLC@yandex.ru'],
-    flag: '⚓ Главный Офис'
+    flag: '⚓ Главный Офис',
+    flagEn: '⚓ Headquarters'
   },
   {
     id: 2,
     city: 'Новороссийск',
+    cityEn: 'Novorossiysk',
     address: 'г. Новороссийск, ул. Энгельса/Свободы/Конституции, д. 7, офис 37',
+    addressEn: '7 Engelsa/Svobody/Konstitutsii St, Office 37, Novorossiysk',
     phone: '',
     phones: [],
     email: 'FleetForceLLC@yandex.ru',
     emails: ['FleetForceLLC@yandex.ru'],
-    flag: '🌊 Черноморский Филиал'
+    flag: '🌊 Черноморский Филиал',
+    flagEn: '🌊 Black Sea Branch'
   },
   {
     id: 3,
     city: 'Калининград',
+    cityEn: 'Kaliningrad',
     address: 'г. Калининград, Ленинский проспект 81, Офис 205',
+    addressEn: '81 Leninskiy Ave, Office 205, Kaliningrad',
     phone: '',
     phones: [],
     email: 'FleetForceLLC@yandex.ru',
     emails: ['FleetForceLLC@yandex.ru'],
-    flag: '🇪🇺 Балтийский Офис'
+    flag: '🇪🇺 Балтийский Офис',
+    flagEn: '🇪🇺 Baltic Office'
   },
   {
     id: 4,
     city: 'Владивосток',
+    cityEn: 'Vladivostok',
     address: 'г. Владивосток, ул. Светланская 45',
+    addressEn: '45 Svetlanskaya St, Vladivostok',
     phone: '',
     phones: [],
     email: 'FleetForceLLC@yandex.ru',
     emails: ['FleetForceLLC@yandex.ru'],
-    flag: '🌏 Дальневосточный Офис'
+    flag: '🌏 Дальневосточный Офис',
+    flagEn: '🌏 Far East Office'
   }
 ];
 
