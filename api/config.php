@@ -76,6 +76,14 @@ function init_mysql_tables($pdo) {
             config_key VARCHAR(100) PRIMARY KEY,
             config_val LONGTEXT
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        // Seed initial data if database tables are brand new and empty
+        $stmt = $pdo->query("SELECT COUNT(*) as cnt FROM vacancies");
+        $row = $stmt->fetch();
+        if (!$row || intval($row['cnt']) === 0) {
+            $defaultData = get_default_data();
+            save_database($defaultData);
+        }
     } catch (Exception $e) {}
 }
 
