@@ -489,7 +489,7 @@ const generatePdfBlob = async (cand) => {
     setF('APPLIED_DATE', new Date().toISOString().split('T')[0]);
 
     const filledPdfBytes = await pdfDoc.save();
-    return filledPdfBytes.buffer;
+    return filledPdfBytes;
   } catch (e) {
     console.error('Error generating PDF from template:', e);
     return null;
