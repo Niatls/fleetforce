@@ -258,15 +258,14 @@ const buildApplicationFormHtml = (cand) => {
   `;
 };
 
-export const handleExportDoc = (cand) => {
+export const handleExportDoc = async (cand) => {
   if (!cand) return;
   const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '');
-  const htmlContent = buildApplicationFormHtml(cand);
-  const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+  const blob = await generateDocBlob(cand);
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `FleetForce_Application_${cleanName}_${cand.id || 'FORM'}.doc`;
+  a.download = `FleetForce_Application_${cleanName}_${cand.id || 'FORM'}.docx`;
   a.click();
   URL.revokeObjectURL(url);
 };
@@ -288,10 +287,82 @@ export const handleExportPdf = async (cand) => {
   URL.revokeObjectURL(url);
 };
 
-// Helper: generate DOC HTML content and return as blob
-const generateDocBlob = (cand) => {
-  const htmlContent = buildApplicationFormHtml(cand);
-  return new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+// Helper: fill exact Application form.docx template file using JSZip
+const generateDocBlob = async (cand) => {
+  try {
+    const resp = await fetch('./Application form.docx');
+    if (!resp.ok) throw new Error('Could not fetch template DOCX');
+    const templateBytes = await resp.arrayBuffer();
+
+    const JSZip = window.JSZip;
+    if (!JSZip) throw new Error('JSZip not loaded');
+
+    const zip = await JSZip.loadAsync(templateBytes);
+    let xml = await zip.file('word/document.xml').async('text');
+
+    const fillLabel = (label, val) => {
+      if (!val) return;
+      const escapedVal = String(val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const idx = xml.indexOf(label);
+      if (idx !== -1) {
+        const tcEnd = xml.indexOf('</w:tc>', idx);
+        if (tcEnd !== -1) {
+          const nextTcStart = xml.indexOf('<w:tc', tcEnd);
+          const nextTcEnd = xml.indexOf('</w:tc>', nextTcStart);
+          if (nextTcStart !== -1 && nextTcEnd !== -1) {
+            const innerTc = xml.substring(nextTcStart, nextTcEnd + 7);
+            const fontMatch = innerTc.match(/<w:rPr>.*?<\/w:rPr>/s);
+            const rPr = fontMatch ? fontMatch[0] : '<w:rPr><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>';
+            const tcPrMatch = innerTc.match(/<w:tcPr>.*?<\/w:tcPr>/s);
+            const tcPr = tcPrMatch ? tcPrMatch[0] : '';
+            const newValXml = `<w:tc>${tcPr}<w:p><w:r>${rPr}<w:t>${escapedVal}</w:t></w:r></w:p></w:tc>`;
+            xml = xml.substring(0, nextTcStart) + newValXml + xml.substring(nextTcEnd + 7);
+          }
+        }
+      }
+    };
+
+    fillLabel('Positions applied for:', cand.appliedRank);
+    fillLabel('Date of readiness', cand.readyDate);
+    fillLabel('Surname:', cand.surname || cand.fullName?.split(' ')[0]);
+    fillLabel('Name:', cand.name || cand.fullName?.split(' ').slice(1).join(' '));
+    fillLabel('Father’s name:', cand.fatherName);
+    fillLabel('Mother’s name:', cand.motherName);
+    fillLabel('Date of birth:', cand.dob);
+    fillLabel('Nationality:', cand.nationality || cand.citizenship);
+    fillLabel('Place of birth:', cand.placeOfBirth);
+    fillLabel('Marital status:', cand.maritalStatus);
+    fillLabel('N of children under 18:', cand.childrenUnder18);
+    fillLabel('Home Address:', cand.address || cand.homeAddress);
+    fillLabel('Contact Phone:', cand.phone);
+    fillLabel('E-mail:', cand.email);
+    fillLabel('Skype', cand.skypeTelegram);
+    fillLabel('Next of kin:', cand.kinName || cand.kin?.name);
+    fillLabel('Relation:', cand.kinRelation || cand.kin?.relation);
+    fillLabel('Next of kin’s address:', cand.kinAddress || cand.kin?.address);
+    fillLabel('Next of kin’s phone', cand.kinPhone || cand.kin?.phone);
+    fillLabel('Height (cm):', cand.height);
+    fillLabel('Weight (kg):', cand.weight);
+    fillLabel('Size of Overall (EUR):', cand.overallSize);
+    fillLabel('Shoes (EUR):', cand.shoeSize);
+    fillLabel('Eyes Colour:', cand.eyesColour);
+    fillLabel('Hair Colour:', cand.hairColour);
+
+    fillLabel('Name of maritime college or academy', cand.collegeName);
+    fillLabel('From', cand.collegeFrom);
+    fillLabel('Till', cand.collegeTill);
+
+    fillLabel('TRAVEL PASSPORT:', cand.passportNo || cand.passport?.no);
+    fillLabel('SEAMAN’S BOOK:', cand.seamanBookNo || cand.seamanBook?.no);
+
+    zip.file('word/document.xml', xml);
+    const blob = await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    return blob;
+  } catch (e) {
+    console.warn('DOCX template filling fallback to HTML doc:', e);
+    const htmlContent = buildApplicationFormHtml(cand);
+    return new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+  }
 };
 
 // Convert dataUrl to binary for inclusion in ZIP
@@ -437,10 +508,10 @@ export const handleDownloadAllFiles = async (cand) => {
   const zip = new JSZip();
   const folder = zip.folder(folderName);
 
-  // 1. Add DOC questionnaire
-  const docBlob = generateDocBlob(cand);
+  // 1. Add DOC questionnaire (filled template Application form.docx)
+  const docBlob = await generateDocBlob(cand);
   const docArrayBuffer = await docBlob.arrayBuffer();
-  folder.file(`Application_${cleanName}_${cand.id || 'FORM'}.doc`, docArrayBuffer);
+  folder.file(`Application_${cleanName}_${cand.id || 'FORM'}.docx`, docArrayBuffer);
 
   // 2. Add PDF questionnaire (async — direct template filling with pdf-lib)
   const pdfArrayBuffer = await generatePdfBlob(cand);
