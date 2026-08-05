@@ -1,5 +1,5 @@
 // Utility functions for exporting candidate dossiers to CSV, Word (.doc) and ZIP archives
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 
 export const handleExportCSV = (candidates = []) => {
   let csv = 'ID,Full Name,Rank,Status,Email,Phone,Marlins,Ready Date\n';
@@ -514,6 +514,8 @@ const generatePdfBlob = async (cand) => {
     if (!resp.ok) throw new Error('Could not fetch template PDF from ' + templateUrl);
     const templateBytes = await resp.arrayBuffer();
     const pdfDoc = await PDFDocument.load(templateBytes);
+    let font = null;
+    try { font = await pdfDoc.embedFont(StandardFonts.Helvetica); } catch(e) {}
     const form = pdfDoc.getForm();
 
     // Transliterate Cyrillic characters to WinAnsi compatible Latin characters
@@ -679,6 +681,7 @@ const generatePdfBlob = async (cand) => {
 
     setF('APPLIED_DATE', new Date().toISOString().split('T')[0]);
 
+    try { if (font) form.updateFieldAppearances(font); } catch(e) {}
     try { form.flatten(); } catch(e) {}
 
     const filledPdfBytes = await pdfDoc.save();
