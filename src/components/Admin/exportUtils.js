@@ -322,106 +322,104 @@ const generateDocBlob = async (cand) => {
       }
     };
 
-    const updateRowCells = (rowXml, cellValues) => {
-      const tcParts = rowXml.split(/(<w:tc[\s>])/);
-      let cellCount = 0;
-      for (let i = 0; i < tcParts.length; i++) {
-        if (tcParts[i].startsWith('<w:tc')) {
-          const tcEndIdx = tcParts[i + 1] ? tcParts[i + 1].indexOf('</w:tc>') : -1;
-          if (tcEndIdx !== -1 && cellValues[cellCount] !== undefined && cellValues[cellCount] !== null) {
-            const innerTc = tcParts[i + 1].substring(0, tcEndIdx);
-            const restTc = tcParts[i + 1].substring(tcEndIdx);
-            const tcPrMatch = innerTc.match(/<w:tcPr>.*?<\/w:tcPr>/s);
-            const fontMatch = innerTc.match(/<w:rPr>.*?<\/w:rPr>/s);
-            const tcPr = tcPrMatch ? tcPrMatch[0] : '';
-            const rPr = fontMatch ? fontMatch[0] : '<w:rPr><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>';
-            const escapedVal = String(cellValues[cellCount]).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            tcParts[i + 1] = `${tcPr}<w:p><w:r>${rPr}<w:t>${escapedVal}</w:t></w:r></w:p>${restTc}`;
-          }
-          cellCount++;
+    const setRowCellValues = (rowXml, cellMap) => {
+      const tcRegex = /<w:tc[\s>].*?<\/w:tc>/gs;
+      let cells = [];
+      let match;
+      while ((match = tcRegex.exec(rowXml)) !== null) {
+        cells.push({ xml: match[0], index: match.index, length: match[0].length });
+      }
+
+      let lastEnd = 0;
+      let result = '';
+
+      for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        result += rowXml.substring(lastEnd, cell.index);
+        lastEnd = cell.index + cell.length;
+
+        if (cellMap[i] !== undefined && cellMap[i] !== null && cellMap[i] !== '') {
+          const innerTc = cell.xml;
+          const tcPrMatch = innerTc.match(/<w:tcPr>.*?<\/w:tcPr>/s);
+          const fontMatch = innerTc.match(/<w:rPr>.*?<\/w:rPr>/s);
+          const tcPr = tcPrMatch ? tcPrMatch[0] : '';
+          const rPr = fontMatch ? fontMatch[0] : '<w:rPr><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>';
+          const escapedVal = String(cellMap[i]).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          result += `<w:tc>${tcPr}<w:p><w:r>${rPr}<w:t>${escapedVal}</w:t></w:r></w:p></w:tc>`;
+        } else {
+          result += cell.xml;
         }
       }
-      return tcParts.join('');
+      result += rowXml.substring(lastEnd);
+      return result;
     };
 
     const trRegex = /(<w:tr[\s>].*?<\/w:tr>)/gs;
     let trMatches = [];
     let match;
     while ((match = trRegex.exec(xml)) !== null) {
-      trMatches.push({ xml: match[0], index: match.index });
+      trMatches.push({ xml: match[0], index: match.index, text: match[0].replace(/<[^>]+>/g, '') });
     }
 
-    // Populate Row 0: Positions applied for & Date of readiness
+    // Row 0: Positions applied for & Date of readiness
     if (trMatches[0]) {
-      const r0 = updateRowCells(trMatches[0].xml, { 1: cand.appliedRank, 3: cand.readyDate });
-      xml = xml.replace(trMatches[0].xml, r0);
+      const updated = setRowCellValues(trMatches[0].xml, { 1: cand.appliedRank, 4: cand.readyDate });
+      xml = xml.replace(trMatches[0].xml, updated);
     }
 
-    // Populate Personal Details
-    fillLabel('Surname:', cand.surname || cand.fullName?.split(' ')[0]);
-    fillLabel('Name:', cand.name || cand.fullName?.split(' ').slice(1).join(' '));
-    fillLabel('Father’s name:', cand.fatherName);
-    fillLabel('Mother’s name:', cand.motherName);
-    fillLabel('Date of birth:', cand.dob);
-    fillLabel('Nationality:', cand.nationality || cand.citizenship);
-    fillLabel('Place of birth:', cand.placeOfBirth);
-    fillLabel('Marital status:', cand.maritalStatus);
-    fillLabel('N of children under 18:', cand.childrenUnder18);
-    fillLabel('Home Address:', cand.address || cand.homeAddress);
-    fillLabel('Contact Phone:', cand.phone);
-    fillLabel('E-mail:', cand.email);
-    fillLabel('Skype', cand.skypeTelegram);
-    fillLabel('Next of kin:', cand.kinName || cand.kin?.name);
-    fillLabel('Relation:', cand.kinRelation || cand.kin?.relation);
-    fillLabel('Next of kin’s address:', cand.kinAddress || cand.kin?.address);
-    fillLabel('Next of kin’s phone', cand.kinPhone || cand.kin?.phone);
-    fillLabel('Height (cm):', cand.height);
-    fillLabel('Weight (kg):', cand.weight);
-    fillLabel('Size of Overall (EUR):', cand.overallSize);
-    fillLabel('Shoes (EUR):', cand.shoeSize);
-    fillLabel('Eyes Colour:', cand.eyesColour);
-    fillLabel('Hair Colour:', cand.hairColour);
+    // Personal Details (Rows 1 to 11 & Education)
+    const labelRowMap = [
+      { label: 'Surname:', map: { 1: cand.surname || cand.fullName?.split(' ')[0], 3: cand.name || cand.fullName?.split(' ').slice(1).join(' ') } },
+      { label: 'Father’s name:', map: { 1: cand.fatherName, 3: cand.motherName } },
+      { label: 'Date of birth:', map: { 1: cand.dob, 3: cand.nationality || cand.citizenship } },
+      { label: 'Place of birth:', map: { 1: cand.placeOfBirth, 3: cand.maritalStatus } },
+      { label: 'N of children under 18:', map: { 1: cand.childrenUnder18 } },
+      { label: 'Home Address:', map: { 1: cand.address || cand.homeAddress, 3: cand.phone } },
+      { label: 'E-mail:', map: { 1: cand.email, 5: cand.skypeTelegram } },
+      { label: 'Next of kin:', map: { 1: cand.kinName || cand.kin?.name, 3: cand.kinRelation || cand.kin?.relation } },
+      { label: 'Next of kin’s address:', map: { 1: cand.kinAddress || cand.kin?.address, 5: cand.kinPhone || cand.kin?.phone } },
+      { label: 'Height (cm):', map: { 1: cand.height, 3: cand.weight, 5: cand.overallSize, 7: cand.shoeSize } },
+      { label: 'Eyes Colour:', map: { 1: cand.eyesColour, 3: cand.hairColour } },
+      { label: 'Name of maritime college or academy', map: { 1: cand.collegeName, 3: cand.collegeFrom } },
+      { label: 'Department', map: { 3: cand.collegeTill } }
+    ];
 
-    fillLabel('Name of maritime college or academy', cand.collegeName);
-    fillLabel('From', cand.collegeFrom);
-    fillLabel('Till', cand.collegeTill);
+    labelRowMap.forEach(lr => {
+      trMatches.forEach(tr => {
+        if (tr.text.includes(lr.label)) {
+          const updated = setRowCellValues(tr.xml, lr.map);
+          xml = xml.replace(tr.xml, updated);
+        }
+      });
+    });
 
     // Populate Passports table rows
-    trMatches.forEach((m) => {
-      const txt = m.xml.replace(/<[^>]+>/g, '');
-      if (txt.includes('TRAVEL PASSPORT:')) {
-        const updated = updateRowCells(m.xml, { 1: cand.passportNo || cand.passport?.no, 2: cand.passportIssued || cand.passport?.issued, 3: cand.passportExpiry || cand.passport?.expiry, 4: cand.passportPlace || cand.passport?.place });
-        xml = xml.replace(m.xml, updated);
-      } else if (txt.includes('SEAMAN’S BOOK:')) {
-        const updated = updateRowCells(m.xml, { 1: cand.seamanBookNo || cand.seamanBook?.no, 2: cand.seamanBookIssued || cand.seamanBook?.issued, 3: cand.seamanBookExpiry || cand.seamanBook?.expiry, 4: cand.seamanBookPlace || cand.seamanBook?.place });
-        xml = xml.replace(m.xml, updated);
+    trMatches.forEach((tr) => {
+      if (tr.text.includes('TRAVEL PASSPORT:')) {
+        const updated = setRowCellValues(tr.xml, { 1: cand.passportNo || cand.passport?.no, 2: cand.passportIssued || cand.passport?.issued, 3: cand.passportExpiry || cand.passport?.expiry, 4: cand.passportPlace || cand.passport?.place });
+        xml = xml.replace(tr.xml, updated);
+      } else if (tr.text.includes('SEAMAN’S BOOK:')) {
+        const updated = setRowCellValues(tr.xml, { 1: cand.seamanBookNo || cand.seamanBook?.no, 2: cand.seamanBookIssued || cand.seamanBook?.issued, 3: cand.seamanBookExpiry || cand.seamanBook?.expiry, 4: cand.seamanBookPlace || cand.seamanBook?.place });
+        xml = xml.replace(tr.xml, updated);
       }
     });
 
     // Populate Certificate of Competency CoC #1
-    trMatches.forEach((m, idx) => {
-      const txt = m.xml.replace(/<[^>]+>/g, '');
-      if (txt.includes('CERTIFICATE OF COMPETENCY # 1') && trMatches[idx + 2]) {
+    trMatches.forEach((tr, idx) => {
+      if (tr.text.includes('CERTIFICATE OF COMPETENCY # 1') && trMatches[idx + 2]) {
         const coc1 = (cand.certificates && cand.certificates[0]) || {};
-        const rowVal = updateRowCells(trMatches[idx + 2].xml, { 0: coc1.certName || coc1.certNo, 1: coc1.certNo, 2: coc1.certIssued, 3: coc1.certValid, 4: coc1.rankCapacity });
-        xml = xml.replace(trMatches[idx + 2].xml, rowVal);
+        const updated = setRowCellValues(trMatches[idx + 2].xml, { 0: coc1.certName || coc1.certNo, 1: coc1.certNo, 2: coc1.certIssued, 3: coc1.certValid, 4: coc1.rankCapacity });
+        xml = xml.replace(trMatches[idx + 2].xml, updated);
       }
     });
 
     // Populate Sea Service table rows
-    let seaServiceHeaderIdx = -1;
-    trMatches.forEach((m, idx) => {
-      const txt = m.xml.replace(/<[^>]+>/g, '');
-      if (txt.includes('PREVIOUS SEA SERVICE')) {
-        seaServiceHeaderIdx = idx;
-      }
-    });
-
-    if (seaServiceHeaderIdx !== -1 && cand.seaService && cand.seaService.length > 0) {
+    let seaHeaderIdx = trMatches.findIndex(tr => tr.text.includes('PREVIOUS SEA SERVICE'));
+    if (seaHeaderIdx !== -1 && cand.seaService && cand.seaService.length > 0) {
       cand.seaService.forEach((s, sIdx) => {
-        const targetTr = trMatches[seaServiceHeaderIdx + 2 + sIdx];
+        const targetTr = trMatches[seaHeaderIdx + 2 + sIdx];
         if (targetTr) {
-          const updated = updateRowCells(targetTr.xml, {
+          const updated = setRowCellValues(targetTr.xml, {
             0: s.dateFrom, 1: s.dateTo, 2: s.rankHeld, 3: s.salary,
             4: s.vesselName, 5: s.shipowner, 6: s.vesselType, 7: s.engineType,
             8: s.buildYear, 9: s.dwtGrt, 10: s.engineBhp, 11: s.flag, 12: s.manningCompany
@@ -432,19 +430,12 @@ const generateDocBlob = async (cand) => {
     }
 
     // Populate Employers table rows
-    let empHeaderIdx = -1;
-    trMatches.forEach((m, idx) => {
-      const txt = m.xml.replace(/<[^>]+>/g, '');
-      if (txt.includes('BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS')) {
-        empHeaderIdx = idx;
-      }
-    });
-
+    let empHeaderIdx = trMatches.findIndex(tr => tr.text.includes('BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS'));
     if (empHeaderIdx !== -1 && cand.employers && cand.employers.length > 0) {
       cand.employers.forEach((e, eIdx) => {
         const targetTr = trMatches[empHeaderIdx + 2 + eIdx];
         if (targetTr) {
-          const updated = updateRowCells(targetTr.xml, {
+          const updated = setRowCellValues(targetTr.xml, {
             0: e.company, 1: e.personInCharge, 2: e.contactDetails
           });
           xml = xml.replace(targetTr.xml, updated);
