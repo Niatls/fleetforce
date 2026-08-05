@@ -262,7 +262,7 @@ export const AdminDashboard = ({
       <header style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
           <button onClick={onBackToSite || onClose} className="btn btn-secondary btn-sm" style={{ gap: '0.4rem', color: 'var(--text-muted)', border: '1px solid var(--border-color)' }}>
-            <ArrowLeft size={16} /> {t('admin.backToSite')}
+            <ArrowLeft size={16} /> {t('admin.backToSite') === 'admin.backToSite' ? '← Вернуться на сайт' : t('admin.backToSite')}
           </button>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
@@ -302,7 +302,7 @@ export const AdminDashboard = ({
           </button>
           
           <button onClick={onClose} className="btn btn-secondary btn-sm" style={{ gap: '0.4rem', color: 'var(--color-danger)', borderColor: 'rgba(239,68,68,0.3)' }}>
-            <LogOut size={15} /> {t('admin.exitBtn')}
+            <LogOut size={15} /> {t('admin.exitBtn') === 'admin.exitBtn' ? 'Выйти из системы' : t('admin.exitBtn')}
           </button>
         </div>
       </header>
