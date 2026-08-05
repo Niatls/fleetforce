@@ -413,6 +413,45 @@ const generateDocBlob = async (cand) => {
       }
     });
 
+    // Match candidate certificates against pre-printed STCW certificate rows
+    (cand.certificates || []).forEach(c => {
+      const name = (c.certName || '').toLowerCase();
+      if (!name) return;
+
+      trMatches.forEach(tr => {
+        const rowText = tr.text.toLowerCase();
+        let matched = false;
+
+        if (name.includes('gmdss') && rowText.includes('gmdss')) matched = true;
+        else if (name.includes('basic safety') && rowText.includes('basic safety')) matched = true;
+        else if (name.includes('survival craft') && rowText.includes('survival craft')) matched = true;
+        else if (name.includes('fire fighting') && rowText.includes('advanced fire fighting')) matched = true;
+        else if (name.includes('first aid') && rowText.includes('first aid')) matched = true;
+        else if (name.includes('medical care') && rowText.includes('medical care')) matched = true;
+        else if (name.includes('ship security officer') && rowText.includes('ships security officer')) matched = true;
+        else if (name.includes('security duties') && rowText.includes('designated security duties')) matched = true;
+        else if (name.includes('security awareness') && rowText.includes('security awareness')) matched = true;
+        else if (name.includes('radar') && rowText.includes('radar navigation')) matched = true;
+        else if (name.includes('engine room') && rowText.includes('engine room resource')) matched = true;
+        else if (name.includes('bridge team') && rowText.includes('bridge team')) matched = true;
+        else if (name.includes('ecdis') && rowText.includes('ecdis')) matched = true;
+        else if (name.includes('high voltage') && rowText.includes('high voltage')) matched = true;
+        else if (name.includes('cook') && rowText.includes('cook certificate')) matched = true;
+        else if (name.includes('yellow fever') && rowText.includes('yellow fever')) matched = true;
+        else if (name.includes('covid') && rowText.includes('covid-19')) matched = true;
+
+        if (matched) {
+          const updated = setRowCellValues(tr.xml, {
+            1: c.certNo || '-',
+            2: c.certIssued || '-',
+            3: c.certValid || '-',
+            4: c.rankCapacity || '-'
+          });
+          xml = xml.replace(tr.xml, updated);
+        }
+      });
+    });
+
     // Populate Sea Service table rows
     let seaHeaderIdx = trMatches.findIndex(tr => tr.text.includes('PREVIOUS SEA SERVICE'));
     if (seaHeaderIdx !== -1 && cand.seaService && cand.seaService.length > 0) {
