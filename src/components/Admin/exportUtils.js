@@ -386,15 +386,56 @@ const generatePdfBlob = async (cand) => {
     const form = pdfDoc.getForm();
 
     const setF = (fieldName, value) => {
-      if (!value) return;
+      if (value === undefined || value === null || value === '') return;
       try {
         const field = form.getField(fieldName);
         if (!field) return;
-        const valStr = String(value);
+        const valStr = String(value).trim();
         if (field.constructor.name === 'PDFTextField') {
           field.setText(valStr);
         } else if (field.constructor.name === 'PDFDropdown') {
-          try { field.select(valStr); } catch (e) {}
+          const opts = field.getOptions() || [];
+          if (!opts.length) return;
+          if (opts.includes(valStr)) {
+            field.select(valStr);
+            return;
+          }
+          const lowerVal = valStr.toLowerCase();
+          let matched = null;
+          if (lowerVal.includes('master') || lowerVal.includes('captain')) matched = opts.find(o => o === '#MST' || o === 'MAST' || o === 'MASTER');
+          else if (lowerVal.includes('chief engineer')) matched = opts.find(o => o === '#CE' || o === 'CE');
+          else if (lowerVal.includes('chief officer') || lowerVal.includes('1st mate')) matched = opts.find(o => o === '#CO' || o === 'CO');
+          else if (lowerVal.includes('2nd engineer')) matched = opts.find(o => o === '#2E' || o === '2E');
+          else if (lowerVal.includes('2nd officer') || lowerVal.includes('2nd mate')) matched = opts.find(o => o === '#2O' || o === '2O');
+          else if (lowerVal.includes('3rd engineer')) matched = opts.find(o => o === '#3E' || o === '3E');
+          else if (lowerVal.includes('3rd officer') || lowerVal.includes('3rd mate')) matched = opts.find(o => o === '#3O' || o === '3O');
+          else if (lowerVal.includes('4th engineer')) matched = opts.find(o => o === '#4E' || o === '4E');
+          else if (lowerVal.includes('electrical engineer') || lowerVal.includes('eto')) matched = opts.find(o => o === '#EE' || o === 'ETO');
+          else if (lowerVal.includes('bosun')) matched = opts.find(o => o === '#BSN' || o === 'BOSUN');
+          else if (lowerVal.includes('ab') || lowerVal.includes('able')) matched = opts.find(o => o === '#AB' || o === 'AB');
+          else if (lowerVal.includes('os') || lowerVal.includes('ordinary')) matched = opts.find(o => o === '#OS' || o === 'OS');
+          else if (lowerVal.includes('cook')) matched = opts.find(o => o === '#COOK' || o === 'COOK');
+          else if (lowerVal.includes('fitter')) matched = opts.find(o => o === '#FTR' || o === 'FITTER');
+          else if (lowerVal.includes('wiper')) matched = opts.find(o => o === '#WIPER' || o === 'WIPER');
+          else if (lowerVal.includes('oiler')) matched = opts.find(o => o === 'OIL');
+
+          if (!matched) {
+            if (lowerVal.includes('container')) matched = opts.find(o => o === 'CONTAINER');
+            else if (lowerVal.includes('chemical')) matched = opts.find(o => o === 'CHEMICAL' || o === 'OIL AND CHEM');
+            else if (lowerVal.includes('oil') || lowerVal.includes('product')) matched = opts.find(o => o === 'OIL' || o === 'TANKER');
+            else if (lowerVal.includes('bulk')) matched = opts.find(o => o === 'BULK CARRIER');
+            else if (lowerVal.includes('lpg') || lowerVal.includes('lng') || lowerVal.includes('gas')) matched = opts.find(o => o === 'GAS' || o === 'LNG' || o === 'LPG');
+            else if (lowerVal.includes('russia')) matched = opts.find(o => o.toLowerCase().includes('rus'));
+            else if (lowerVal.includes('marri') || lowerVal.includes('женат')) matched = opts.find(o => o.toLowerCase().includes('marr'));
+          }
+
+          if (!matched) {
+            matched = opts.find(o => o.toLowerCase() === lowerVal || lowerVal.includes(o.toLowerCase()) || o.toLowerCase().includes(lowerVal));
+          }
+
+          if (matched) {
+            field.select(matched);
+          }
         }
       } catch(e) {}
     };
