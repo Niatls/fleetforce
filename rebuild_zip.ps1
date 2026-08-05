@@ -48,15 +48,11 @@ foreach ($entry in $staticFiles.Keys) {
 }
 
 # Добавляем свежие файлы из dist с префиксом
-foreach ($rel in $distFiles) {
-    $src = "$distDir\$rel"
+Get-ChildItem -Path $distDir -Recurse -File | ForEach-Object {
+    $rel = $_.FullName.Substring($distDir.Length + 1)
     $entryName = ($prefix + $rel).Replace('\', '/')
-    if (Test-Path $src) {
-        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $src, $entryName, 'Optimal') | Out-Null
-        Write-Host "Added from dist: $entryName"
-    } else {
-        Write-Host "SKIP (dist not found): $entryName"
-    }
+    [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, $entryName, 'Optimal') | Out-Null
+    Write-Host "Added from dist: $entryName"
 }
 
 $zip.Dispose()

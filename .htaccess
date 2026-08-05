@@ -25,6 +25,13 @@
 
 # Cache-Control headers for static assets
 <IfModule mod_headers.c>
+  # Never cache index.html so updates load immediately without Ctrl+F5
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </FilesMatch>
+
   <FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
     Header set Cache-Control "max-age=31536000, public"
   </FilesMatch>
