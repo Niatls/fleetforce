@@ -107,15 +107,14 @@ function AppContent() {
     navigateToAdmin();
   };
 
-  // Data State with LocalStorage Persistence Fallback
-  const [vacancies, setVacancies] = useState(() => {
+  const getDeletedVacancyIds = () => {
     try {
-      const saved = localStorage.getItem('fleetforce_vacancies');
-      return saved ? JSON.parse(saved) : INITIAL_VACANCIES;
+      const arr = JSON.parse(localStorage.getItem('fleetforce_deleted_vacancy_ids') || '[]');
+      return new Set(arr.map((id) => String(id || '').trim().toLowerCase()));
     } catch (e) {
-      return INITIAL_VACANCIES;
+      return new Set();
     }
-  });
+  };
 
   const getDeletedCandidateIds = () => {
     try {
@@ -125,6 +124,27 @@ function AppContent() {
       return new Set();
     }
   };
+
+  const getDeletedRequestIds = () => {
+    try {
+      const arr = JSON.parse(localStorage.getItem('fleetforce_deleted_request_ids') || '[]');
+      return new Set(arr.map((id) => String(id || '').trim().toLowerCase()));
+    } catch (e) {
+      return new Set();
+    }
+  };
+
+  // Data State with LocalStorage Persistence Fallback
+  const [vacancies, setVacancies] = useState(() => {
+    try {
+      const deletedIds = getDeletedVacancyIds();
+      const saved = localStorage.getItem('fleetforce_vacancies');
+      const list = saved ? JSON.parse(saved) : INITIAL_VACANCIES;
+      return list.filter((v) => !deletedIds.has(String(v.id || '').trim().toLowerCase()));
+    } catch (e) {
+      return INITIAL_VACANCIES;
+    }
+  });
 
   const [candidates, setCandidates] = useState(() => {
     try {
@@ -137,101 +157,12 @@ function AppContent() {
     }
   });
 
-  const [offices, setOffices] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fleetforce_offices');
-      let list = saved ? JSON.parse(saved) : INITIAL_OFFICES;
-      let updated = false;
-      list = list.map(off => {
-        const cityStr = String(off.city || '');
-        if (cityStr.includes('Санкт-Петербург') || off.id === 1) {
-          if (off.address !== 'г. Санкт-Петербург, пр. Стачек, д. 47А, офис 340-342' || off.email !== 'FleetForceLLC@yandex.ru' || off.phone) {
-            updated = true;
-            return {
-              ...off,
-              address: 'г. Санкт-Петербург, пр. Стачек, д. 47А, офис 340-342',
-              email: 'FleetForceLLC@yandex.ru',
-              emails: ['FleetForceLLC@yandex.ru'],
-              phone: '',
-              phones: []
-            };
-          }
-        } else if (cityStr.includes('Новороссийск') || off.id === 2) {
-          if (off.address !== 'г. Новороссийск, ул. Энгельса/Свободы/Конституции, д. 7, офис 37' || off.email !== 'FleetForceLLC@yandex.ru' || off.phone) {
-            updated = true;
-            return {
-              ...off,
-              address: 'г. Новороссийск, ул. Энгельса/Свободы/Конституции, д. 7, офис 37',
-              email: 'FleetForceLLC@yandex.ru',
-              emails: ['FleetForceLLC@yandex.ru'],
-              phone: '',
-              phones: []
-            };
-          }
-        } else {
-          if (off.email !== 'FleetForceLLC@yandex.ru' || off.phone) {
-            updated = true;
-            return {
-              ...off,
-              email: 'FleetForceLLC@yandex.ru',
-              emails: ['FleetForceLLC@yandex.ru'],
-              phone: '',
-              phones: []
-            };
-          }
-        }
-        return off;
-      });
-      if (updated) {
-        localStorage.setItem('fleetforce_offices', JSON.stringify(list));
-      }
-      return list;
-    } catch (e) {
-      return INITIAL_OFFICES;
-    }
-  });
-
-  const [hubBlocks, setHubBlocks] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fleetforce_hub_blocks');
-      let blocks = saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
-      // Migration: clean up any old BGI / Legacy Marine text
-      let hasOldText = false;
-      const cleanBlocks = blocks.map(b => {
-        let title = b.title || '';
-        let description = b.description || '';
-        let buttonText = b.buttonText || '';
-        if (/BGI|Legacy Marine/i.test(title) || /BGI|Legacy Marine/i.test(description) || /BGI|Legacy Marine/i.test(buttonText)) {
-          hasOldText = true;
-          title = title.replace(/BGI|Legacy Marine/gi, 'Fleet Force');
-          description = description.replace(/BGI|Legacy Marine/gi, 'Fleet Force');
-          buttonText = buttonText.replace(/BGI|Legacy Marine|FLEET FORCE/gi, 'Fleet Force');
-          return { ...b, title, description, buttonText };
-        }
-        return b;
-      });
-      if (hasOldText) {
-        localStorage.setItem('fleetforce_hub_blocks', JSON.stringify(cleanBlocks));
-      }
-      return cleanBlocks;
-    } catch (e) {
-      return INITIAL_HUB_BLOCKS;
-    }
-  });
-
-  const [stats, setStats] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fleetforce_stats');
-      return saved ? JSON.parse(saved) : INITIAL_STATS;
-    } catch (e) {
-      return INITIAL_STATS;
-    }
-  });
-
   const [shipownerRequests, setShipownerRequests] = useState(() => {
     try {
+      const deletedIds = getDeletedRequestIds();
       const saved = localStorage.getItem('fleetforce_shipowner_requests');
-      return saved ? JSON.parse(saved) : INITIAL_SHIPOWNER_REQUESTS;
+      const list = saved ? JSON.parse(saved) : INITIAL_SHIPOWNER_REQUESTS;
+      return list.filter((r) => !deletedIds.has(String(r.id || '').trim().toLowerCase()));
     } catch (e) {
       return INITIAL_SHIPOWNER_REQUESTS;
     }
@@ -302,12 +233,12 @@ function AppContent() {
   useEffect(() => {
     // Helper: merge API data into local state, but LOCAL records always take priority
     // Deleted IDs are never re-added.
-    const mergeApiIntoLocal = (apiItems, setFn, keyField = 'id', isCandidates = false) => {
-      const deletedIds = isCandidates ? getDeletedCandidateIds() : new Set();
+    const mergeApiIntoLocal = (apiItems, setFn, keyField = 'id', type = 'vacancy') => {
+      const deletedIds = type === 'vacancy' ? getDeletedVacancyIds() : (type === 'request' ? getDeletedRequestIds() : (type === 'candidate' ? getDeletedCandidateIds() : new Set()));
       setFn((prev) => {
-        const localIds = new Set(prev.map((item) => String(item[keyField])));
+        const localIds = new Set(prev.map((item) => String(item[keyField] || '').trim().toLowerCase()));
         const newFromApi = apiItems.filter((item) => {
-          const itemKey = String(item[keyField]);
+          const itemKey = String(item[keyField] || '').trim().toLowerCase();
           if (deletedIds.has(itemKey)) return false;
           return !localIds.has(itemKey);
         });
@@ -322,7 +253,7 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data?.length) {
-          mergeApiIntoLocal(data.data, setVacancies);
+          mergeApiIntoLocal(data.data, setVacancies, 'id', 'vacancy');
         }
       })
       .catch(() => {});
@@ -445,9 +376,29 @@ function AppContent() {
   };
 
   const handleDeleteShipownerRequest = (id) => {
-    setShipownerRequests((prev) => prev.filter((r) => r.id !== id));
+    const cleanId = String(id || '').trim();
+    if (!cleanId) return;
+    const cleanIdLower = cleanId.toLowerCase();
 
-    fetch(`/api/shipowner-requests/${id}`, { method: 'DELETE' }).catch(() => {});
+    try {
+      const deletedIds = JSON.parse(localStorage.getItem('fleetforce_deleted_request_ids') || '[]');
+      const exists = deletedIds.some(x => String(x || '').trim().toLowerCase() === cleanIdLower);
+      if (!exists) {
+        deletedIds.push(cleanId);
+        localStorage.setItem('fleetforce_deleted_request_ids', JSON.stringify(deletedIds));
+      }
+    } catch (e) {}
+
+    setShipownerRequests((prev) => {
+      const updated = prev.filter((r) => String(r.id || '').trim().toLowerCase() !== cleanIdLower);
+      try {
+        localStorage.setItem('fleetforce_shipowner_requests', JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
+
+    fetch(`/api/shipowner-requests.php?id=${encodeURIComponent(cleanId)}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/shipowner-requests/${encodeURIComponent(cleanId)}`, { method: 'DELETE' }).catch(() => {});
   };
   const handleOpenWizard = (rank = '', vesselType = '') => {
     setWizardParams({ rank, vesselType });
@@ -560,9 +511,29 @@ function AppContent() {
   };
 
   const handleDeleteVacancy = (id) => {
-    setVacancies((prev) => prev.filter((v) => v.id !== id));
+    const cleanId = String(id || '').trim();
+    if (!cleanId) return;
+    const cleanIdLower = cleanId.toLowerCase();
 
-    fetch(`/api/vacancies/${id}`, { method: 'DELETE' }).catch(() => {});
+    try {
+      const deletedIds = JSON.parse(localStorage.getItem('fleetforce_deleted_vacancy_ids') || '[]');
+      const exists = deletedIds.some(x => String(x || '').trim().toLowerCase() === cleanIdLower);
+      if (!exists) {
+        deletedIds.push(cleanId);
+        localStorage.setItem('fleetforce_deleted_vacancy_ids', JSON.stringify(deletedIds));
+      }
+    } catch (e) {}
+
+    setVacancies((prev) => {
+      const updated = prev.filter((v) => String(v.id || '').trim().toLowerCase() !== cleanIdLower);
+      try {
+        localStorage.setItem('fleetforce_vacancies', JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
+
+    fetch(`/api/vacancies.php?id=${encodeURIComponent(cleanId)}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/vacancies/${encodeURIComponent(cleanId)}`, { method: 'DELETE' }).catch(() => {});
   };
 
   // Office Handlers

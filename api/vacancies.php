@@ -55,12 +55,25 @@ if ($method === 'PUT') {
 }
 
 if ($method === 'DELETE') {
-    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    $db['vacancies'] = array_values(array_filter($db['vacancies'], function($v) use ($id) {
-        return $v['id'] != $id;
-    }));
-    save_database($db);
-    echo json_encode(['success' => true]);
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $id = isset($_GET['id']) ? $_GET['id'] : (isset($input['id']) ? $input['id'] : '');
+    if (!$id && isset($_SERVER['REQUEST_URI'])) {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $parts = explode('/', trim($path, '/'));
+        $last = end($parts);
+        if ($last && $last !== 'vacancies.php' && $last !== 'vacancies') {
+            $id = urldecode($last);
+        }
+    }
+    if ($id) {
+        $db['vacancies'] = array_values(array_filter($db['vacancies'], function($v) use ($id) {
+            return isset($v['id']) && (string)$v['id'] !== (string)$id;
+        }));
+        save_database($db);
+        echo json_encode(['success' => true]);
+        exit();
+    }
+    echo json_encode(['success' => true, 'message' => 'No vacancy ID provided']);
     exit();
 }
 
