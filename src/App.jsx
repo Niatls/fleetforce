@@ -347,6 +347,20 @@ function AppContent() {
           if (Array.isArray(data.data.offices)) setOffices(data.data.offices);
           if (Array.isArray(data.data.hub_blocks)) setHubBlocks(data.data.hub_blocks);
           if (Array.isArray(data.data.stats)) setStats(data.data.stats);
+          if (data.data.site_titles) {
+            const st = data.data.site_titles;
+            if (st.heroBadge) setHeroBadge(st.heroBadge);
+            if (st.heroTitle) setHeroTitle(st.heroTitle);
+            if (st.heroSubtitle) setHeroSubtitle(st.heroSubtitle);
+            if (st.vacanciesTitle) setVacanciesTitle(st.vacanciesTitle);
+            if (st.vacanciesSubtitle) setVacanciesSubtitle(st.vacanciesSubtitle);
+            if (st.hubTitle) setHubTitle(st.hubTitle);
+            if (st.hubSubtitle) setHubSubtitle(st.hubSubtitle);
+            if (st.officesTitle) setOfficesTitle(st.officesTitle);
+            if (st.officesSubtitle) setOfficesSubtitle(st.officesSubtitle);
+            if (st.shipownerTitle) setShipownerTitle(st.shipownerTitle);
+            if (st.shipownerSubtitle) setShipownerSubtitle(st.shipownerSubtitle);
+          }
         }
       })
       .catch(() => {});
@@ -675,6 +689,31 @@ function AppContent() {
     if (publishedData.footerBrandDesc !== undefined) setFooterBrandDesc(publishedData.footerBrandDesc);
     if (publishedData.footerCertText !== undefined) setFooterCertText(publishedData.footerCertText);
     if (publishedData.footerCopyright !== undefined) setFooterCopyright(publishedData.footerCopyright);
+
+    // Persist full published state to MySQL Database via /api/config.php
+    fetch('/api/config.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        offices: publishedData.offices || offices,
+        hub_blocks: publishedData.hubBlocks || hubBlocks,
+        vacancies: publishedData.vacancies || vacancies,
+        stats: publishedData.stats || stats,
+        site_titles: {
+          heroBadge: publishedData.heroBadge ?? heroBadge,
+          heroTitle: publishedData.heroTitle ?? heroTitle,
+          heroSubtitle: publishedData.heroSubtitle ?? heroSubtitle,
+          vacanciesTitle: publishedData.vacanciesTitle ?? vacanciesTitle,
+          vacanciesSubtitle: publishedData.vacanciesSubtitle ?? vacanciesSubtitle,
+          hubTitle: publishedData.hubTitle ?? hubTitle,
+          hubSubtitle: publishedData.hubSubtitle ?? hubSubtitle,
+          officesTitle: publishedData.officesTitle ?? officesTitle,
+          officesSubtitle: publishedData.officesSubtitle ?? officesSubtitle,
+          shipownerTitle: publishedData.shipownerTitle ?? shipownerTitle,
+          shipownerSubtitle: publishedData.shipownerSubtitle ?? shipownerSubtitle,
+        }
+      })
+    }).catch(() => {});
   };
 
   // Standalone Admin Page View

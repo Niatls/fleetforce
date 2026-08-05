@@ -279,6 +279,14 @@ function get_database() {
                 $stats = json_decode($row['config_val'], true);
             }
 
+            $site_titles = null;
+            $stmt = $pdo->prepare("SELECT config_val FROM site_config WHERE config_key = 'site_titles'");
+            $stmt->execute();
+            $row = $stmt->fetch();
+            if ($row && !empty($row['config_val'])) {
+                $site_titles = json_decode($row['config_val'], true);
+            }
+
             $defaultData = get_default_data();
             $result = [
                 'vacancies' => (empty($vacancies) && !has_table_records($pdo, 'vacancies')) ? $defaultData['vacancies'] : $vacancies,
@@ -286,7 +294,8 @@ function get_database() {
                 'shipowner_requests' => (empty($shipowner_requests) && !has_table_records($pdo, 'shipowner_requests')) ? $defaultData['shipowner_requests'] : $shipowner_requests,
                 'offices' => is_array($offices) ? $offices : $defaultData['offices'],
                 'hub_blocks' => is_array($hub_blocks) ? $hub_blocks : $defaultData['hub_blocks'],
-                'stats' => is_array($stats) ? $stats : ($defaultData['stats'] ?? [])
+                'stats' => is_array($stats) ? $stats : ($defaultData['stats'] ?? []),
+                'site_titles' => is_array($site_titles) ? $site_titles : null
             ];
 
             return $result;
@@ -378,6 +387,11 @@ function save_database($data) {
             if (isset($data['stats'])) {
                 $stmt = $pdo->prepare("REPLACE INTO site_config (config_key, config_val) VALUES ('stats', ?)");
                 $stmt->execute([json_encode($data['stats'], JSON_UNESCAPED_UNICODE)]);
+            }
+
+            if (isset($data['site_titles'])) {
+                $stmt = $pdo->prepare("REPLACE INTO site_config (config_key, config_val) VALUES ('site_titles', ?)");
+                $stmt->execute([json_encode($data['site_titles'], JSON_UNESCAPED_UNICODE)]);
             }
         } catch (Exception $e) {}
     }
