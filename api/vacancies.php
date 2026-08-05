@@ -66,6 +66,13 @@ if ($method === 'DELETE') {
         }
     }
     if ($id) {
+        $pdo = get_pdo();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("DELETE FROM vacancies WHERE id = ?");
+                $stmt->execute([(string)$id]);
+            } catch(Exception $e) {}
+        }
         $db['vacancies'] = array_values(array_filter($db['vacancies'], function($v) use ($id) {
             return isset($v['id']) && (string)$v['id'] !== (string)$id;
         }));

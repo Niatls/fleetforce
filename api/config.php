@@ -1,5 +1,5 @@
 <?php
-// FleetForce PHP Backend Config & DB Manager for Reg.ru Host-A
+// FleetForce PHP Backend Config & MySQL Manager for Reg.ru
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
@@ -10,24 +10,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'u3590013_default');
+define('DB_USER', 'u3590013_default');
+define('DB_PASS', 'GZqooM9Yl9L3GSI7');
 define('DB_FILE', __DIR__ . '/data/fleetforce_db.json');
 
-function get_database() {
-    $dir = dirname(DB_FILE);
-    if (!file_exists($dir)) {
-        mkdir($dir, 0755, true);
+function get_pdo() {
+    static $pdo = null;
+    if ($pdo !== null) return $pdo;
+    try {
+        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+        init_mysql_tables($pdo);
+        return $pdo;
+    } catch (Exception $e) {
+        return null;
     }
-    
-    if (file_exists(DB_FILE)) {
-        $json = file_get_contents(DB_FILE);
-        $data = json_decode($json, true);
-        if (is_array($data)) {
-            return $data;
-        }
+}
+
+function init_mysql_tables($pdo) {
+    static $initialized = false;
+    if ($initialized) return;
+    $initialized = true;
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS vacancies (
+            id VARCHAR(100) PRIMARY KEY,
+            title VARCHAR(255),
+            rank_title VARCHAR(255),
+            vesselType VARCHAR(255),
+            dwt VARCHAR(255),
+            salary VARCHAR(255),
+            contract VARCHAR(255),
+            joiningPort VARCHAR(255),
+            joiningDate VARCHAR(255),
+            urgent TINYINT(1) DEFAULT 0,
+            active TINYINT(1) DEFAULT 1,
+            requirements LONGTEXT,
+            responsibilities TEXT,
+            data_json LONGTEXT
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS candidates (
+            id VARCHAR(100) PRIMARY KEY,
+            fullName VARCHAR(255),
+            appliedRank VARCHAR(255),
+            status VARCHAR(100) DEFAULT 'New',
+            submittedAt VARCHAR(100),
+            data_json LONGTEXT
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS shipowner_requests (
+            id VARCHAR(100) PRIMARY KEY,
+            companyName VARCHAR(255),
+            status VARCHAR(100) DEFAULT 'New',
+            createdAt VARCHAR(100),
+            data_json LONGTEXT
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS site_config (
+            config_key VARCHAR(100) PRIMARY KEY,
+            config_val LONGTEXT
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    } catch (Exception $e) {}
+}
+
+function has_table_records($pdo, $table) {
+    try {
+        $stmt = $pdo->query("SELECT COUNT(*) as cnt FROM `$table`");
+        $row = $stmt->fetch();
+        return ($row && intval($row['cnt']) > 0);
+    } catch(Exception $e) {
+        return false;
     }
-    
-    // Default initial data structure
-    $defaultData = [
+}
+
+function get_default_data() {
+    return [
         "vacancies" => [
             [
                 "id" => 1,
@@ -159,16 +222,168 @@ function get_database() {
             ]
         ]
     ];
+}
 
+function get_database() {
+    $pdo = get_pdo();
+    if ($pdo) {
+        try {
+            $vacancies = [];
+            $stmt = $pdo->query("SELECT data_json FROM vacancies");
+            while ($row = $stmt->fetch()) {
+                if (!empty($row['data_json'])) {
+                    $item = json_decode($row['data_json'], true);
+                    if ($item) $vacancies[] = $item;
+                }
+            }
+
+            $candidates = [];
+            $stmt = $pdo->query("SELECT data_json FROM candidates");
+            while ($row = $stmt->fetch()) {
+                if (!empty($row['data_json'])) {
+                    $item = json_decode($row['data_json'], true);
+                    if ($item) $candidates[] = $item;
+                }
+            }
+
+            $shipowner_requests = [];
+            $stmt = $pdo->query("SELECT data_json FROM shipowner_requests");
+            while ($row = $stmt->fetch()) {
+                if (!empty($row['data_json'])) {
+                    $item = json_decode($row['data_json'], true);
+                    if ($item) $shipowner_requests[] = $item;
+                }
+            }
+
+            $offices = null;
+            $stmt = $pdo->prepare("SELECT config_val FROM site_config WHERE config_key = 'offices'");
+            $stmt->execute();
+            $row = $stmt->fetch();
+            if ($row && !empty($row['config_val'])) {
+                $offices = json_decode($row['config_val'], true);
+            }
+
+            $hub_blocks = null;
+            $stmt = $pdo->prepare("SELECT config_val FROM site_config WHERE config_key = 'hub_blocks'");
+            $stmt->execute();
+            $row = $stmt->fetch();
+            if ($row && !empty($row['config_val'])) {
+                $hub_blocks = json_decode($row['config_val'], true);
+            }
+
+            $stats = null;
+            $stmt = $pdo->prepare("SELECT config_val FROM site_config WHERE config_key = 'stats'");
+            $stmt->execute();
+            $row = $stmt->fetch();
+            if ($row && !empty($row['config_val'])) {
+                $stats = json_decode($row['config_val'], true);
+            }
+
+            $defaultData = get_default_data();
+            $result = [
+                'vacancies' => (empty($vacancies) && !has_table_records($pdo, 'vacancies')) ? $defaultData['vacancies'] : $vacancies,
+                'candidates' => (empty($candidates) && !has_table_records($pdo, 'candidates')) ? $defaultData['candidates'] : $candidates,
+                'shipowner_requests' => (empty($shipowner_requests) && !has_table_records($pdo, 'shipowner_requests')) ? $defaultData['shipowner_requests'] : $shipowner_requests,
+                'offices' => is_array($offices) ? $offices : $defaultData['offices'],
+                'hub_blocks' => is_array($hub_blocks) ? $hub_blocks : $defaultData['hub_blocks'],
+                'stats' => is_array($stats) ? $stats : ($defaultData['stats'] ?? [])
+            ];
+
+            return $result;
+        } catch (Exception $e) {}
+    }
+
+    $dir = dirname(DB_FILE);
+    if (!file_exists($dir)) mkdir($dir, 0755, true);
+    if (file_exists(DB_FILE)) {
+        $json = file_get_contents(DB_FILE);
+        $data = json_decode($json, true);
+        if (is_array($data)) return $data;
+    }
+    
+    $defaultData = get_default_data();
     save_database($defaultData);
     return $defaultData;
 }
 
 function save_database($data) {
-    $dir = dirname(DB_FILE);
-    if (!file_exists($dir)) {
-        mkdir($dir, 0755, true);
+    $pdo = get_pdo();
+    if ($pdo && is_array($data)) {
+        try {
+            if (isset($data['vacancies']) && is_array($data['vacancies'])) {
+                $pdo->exec("TRUNCATE TABLE vacancies");
+                $stmt = $pdo->prepare("INSERT INTO vacancies (id, title, rank_title, vesselType, dwt, salary, contract, joiningPort, joiningDate, urgent, active, requirements, responsibilities, data_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                foreach ($data['vacancies'] as $v) {
+                    $vId = (string)($v['id'] ?? time());
+                    $stmt->execute([
+                        $vId,
+                        $v['title'] ?? '',
+                        $v['rank'] ?? '',
+                        $v['vesselType'] ?? '',
+                        $v['dwt'] ?? '',
+                        $v['salary'] ?? '',
+                        $v['contract'] ?? '',
+                        $v['joiningPort'] ?? '',
+                        $v['joiningDate'] ?? '',
+                        !empty($v['urgent']) ? 1 : 0,
+                        !empty($v['active']) ? 1 : 0,
+                        json_encode($v['requirements'] ?? []),
+                        $v['responsibilities'] ?? '',
+                        json_encode($v, JSON_UNESCAPED_UNICODE)
+                    ]);
+                }
+            }
+
+            if (isset($data['candidates']) && is_array($data['candidates'])) {
+                $pdo->exec("TRUNCATE TABLE candidates");
+                $stmt = $pdo->prepare("INSERT INTO candidates (id, fullName, appliedRank, status, submittedAt, data_json) VALUES (?, ?, ?, ?, ?, ?)");
+                foreach ($data['candidates'] as $c) {
+                    $cId = (string)($c['id'] ?? ('APP-' . time()));
+                    $stmt->execute([
+                        $cId,
+                        $c['fullName'] ?? '',
+                        $c['appliedRank'] ?? '',
+                        $c['status'] ?? 'New',
+                        $c['submittedAt'] ?? date('c'),
+                        json_encode($c, JSON_UNESCAPED_UNICODE)
+                    ]);
+                }
+            }
+
+            if (isset($data['shipowner_requests']) && is_array($data['shipowner_requests'])) {
+                $pdo->exec("TRUNCATE TABLE shipowner_requests");
+                $stmt = $pdo->prepare("INSERT INTO shipowner_requests (id, companyName, status, createdAt, data_json) VALUES (?, ?, ?, ?, ?)");
+                foreach ($data['shipowner_requests'] as $r) {
+                    $rId = (string)($r['id'] ?? ('REQ-' . time()));
+                    $stmt->execute([
+                        $rId,
+                        $r['companyName'] ?? '',
+                        $r['status'] ?? 'New',
+                        $r['createdAt'] ?? date('c'),
+                        json_encode($r, JSON_UNESCAPED_UNICODE)
+                    ]);
+                }
+            }
+
+            if (isset($data['offices'])) {
+                $stmt = $pdo->prepare("REPLACE INTO site_config (config_key, config_val) VALUES ('offices', ?)");
+                $stmt->execute([json_encode($data['offices'], JSON_UNESCAPED_UNICODE)]);
+            }
+
+            if (isset($data['hub_blocks'])) {
+                $stmt = $pdo->prepare("REPLACE INTO site_config (config_key, config_val) VALUES ('hub_blocks', ?)");
+                $stmt->execute([json_encode($data['hub_blocks'], JSON_UNESCAPED_UNICODE)]);
+            }
+
+            if (isset($data['stats'])) {
+                $stmt = $pdo->prepare("REPLACE INTO site_config (config_key, config_val) VALUES ('stats', ?)");
+                $stmt->execute([json_encode($data['stats'], JSON_UNESCAPED_UNICODE)]);
+            }
+        } catch (Exception $e) {}
     }
+
+    $dir = dirname(DB_FILE);
+    if (!file_exists($dir)) mkdir($dir, 0755, true);
     file_put_contents(DB_FILE, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 }
 

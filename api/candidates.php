@@ -56,11 +56,18 @@ if ($method === 'DELETE') {
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $parts = explode('/', trim($path, '/'));
         $last = end($parts);
-        if ($last && $last !== 'candidates.php') {
+        if ($last && $last !== 'candidates.php' && $last !== 'candidates') {
             $id = urldecode($last);
         }
     }
     if ($id) {
+        $pdo = get_pdo();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("DELETE FROM candidates WHERE id = ?");
+                $stmt->execute([(string)$id]);
+            } catch(Exception $e) {}
+        }
         $db['candidates'] = array_values(array_filter($db['candidates'], function($c) use ($id) {
             return isset($c['id']) && (string)$c['id'] !== (string)$id;
         }));

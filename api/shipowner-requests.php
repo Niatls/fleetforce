@@ -66,6 +66,13 @@ if ($method === 'DELETE') {
         }
     }
     if ($id) {
+        $pdo = get_pdo();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("DELETE FROM shipowner_requests WHERE id = ?");
+                $stmt->execute([(string)$id]);
+            } catch(Exception $e) {}
+        }
         $db['shipowner_requests'] = array_values(array_filter($db['shipowner_requests'], function($r) use ($id) {
             return isset($r['id']) && (string)$r['id'] !== (string)$id;
         }));
