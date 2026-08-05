@@ -301,7 +301,7 @@ const generateDocBlob = async (cand) => {
     let xml = await zip.file('word/document.xml').async('text');
 
     const fillLabel = (label, val) => {
-      if (!val) return;
+      if (val === undefined || val === null || val === '') return;
       const escapedVal = String(val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       const idx = xml.indexOf(label);
       if (idx !== -1) {
@@ -322,8 +322,42 @@ const generateDocBlob = async (cand) => {
       }
     };
 
-    fillLabel('Positions applied for:', cand.appliedRank);
-    fillLabel('Date of readiness', cand.readyDate);
+    const updateRowCells = (rowXml, cellValues) => {
+      const tcParts = rowXml.split(/(<w:tc[\s>])/);
+      let cellCount = 0;
+      for (let i = 0; i < tcParts.length; i++) {
+        if (tcParts[i].startsWith('<w:tc')) {
+          const tcEndIdx = tcParts[i + 1] ? tcParts[i + 1].indexOf('</w:tc>') : -1;
+          if (tcEndIdx !== -1 && cellValues[cellCount] !== undefined && cellValues[cellCount] !== null) {
+            const innerTc = tcParts[i + 1].substring(0, tcEndIdx);
+            const restTc = tcParts[i + 1].substring(tcEndIdx);
+            const tcPrMatch = innerTc.match(/<w:tcPr>.*?<\/w:tcPr>/s);
+            const fontMatch = innerTc.match(/<w:rPr>.*?<\/w:rPr>/s);
+            const tcPr = tcPrMatch ? tcPrMatch[0] : '';
+            const rPr = fontMatch ? fontMatch[0] : '<w:rPr><w:b/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>';
+            const escapedVal = String(cellValues[cellCount]).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            tcParts[i + 1] = `${tcPr}<w:p><w:r>${rPr}<w:t>${escapedVal}</w:t></w:r></w:p>${restTc}`;
+          }
+          cellCount++;
+        }
+      }
+      return tcParts.join('');
+    };
+
+    const trRegex = /(<w:tr[\s>].*?<\/w:tr>)/gs;
+    let trMatches = [];
+    let match;
+    while ((match = trRegex.exec(xml)) !== null) {
+      trMatches.push({ xml: match[0], index: match.index });
+    }
+
+    // Populate Row 0: Positions applied for & Date of readiness
+    if (trMatches[0]) {
+      const r0 = updateRowCells(trMatches[0].xml, { 1: cand.appliedRank, 3: cand.readyDate });
+      xml = xml.replace(trMatches[0].xml, r0);
+    }
+
+    // Populate Personal Details
     fillLabel('Surname:', cand.surname || cand.fullName?.split(' ')[0]);
     fillLabel('Name:', cand.name || cand.fullName?.split(' ').slice(1).join(' '));
     fillLabel('Father’s name:', cand.fatherName);
@@ -352,8 +386,71 @@ const generateDocBlob = async (cand) => {
     fillLabel('From', cand.collegeFrom);
     fillLabel('Till', cand.collegeTill);
 
-    fillLabel('TRAVEL PASSPORT:', cand.passportNo || cand.passport?.no);
-    fillLabel('SEAMAN’S BOOK:', cand.seamanBookNo || cand.seamanBook?.no);
+    // Populate Passports table rows
+    trMatches.forEach((m) => {
+      const txt = m.xml.replace(/<[^>]+>/g, '');
+      if (txt.includes('TRAVEL PASSPORT:')) {
+        const updated = updateRowCells(m.xml, { 1: cand.passportNo || cand.passport?.no, 2: cand.passportIssued || cand.passport?.issued, 3: cand.passportExpiry || cand.passport?.expiry, 4: cand.passportPlace || cand.passport?.place });
+        xml = xml.replace(m.xml, updated);
+      } else if (txt.includes('SEAMAN’S BOOK:')) {
+        const updated = updateRowCells(m.xml, { 1: cand.seamanBookNo || cand.seamanBook?.no, 2: cand.seamanBookIssued || cand.seamanBook?.issued, 3: cand.seamanBookExpiry || cand.seamanBook?.expiry, 4: cand.seamanBookPlace || cand.seamanBook?.place });
+        xml = xml.replace(m.xml, updated);
+      }
+    });
+
+    // Populate Certificate of Competency CoC #1
+    trMatches.forEach((m, idx) => {
+      const txt = m.xml.replace(/<[^>]+>/g, '');
+      if (txt.includes('CERTIFICATE OF COMPETENCY # 1') && trMatches[idx + 2]) {
+        const coc1 = (cand.certificates && cand.certificates[0]) || {};
+        const rowVal = updateRowCells(trMatches[idx + 2].xml, { 0: coc1.certName || coc1.certNo, 1: coc1.certNo, 2: coc1.certIssued, 3: coc1.certValid, 4: coc1.rankCapacity });
+        xml = xml.replace(trMatches[idx + 2].xml, rowVal);
+      }
+    });
+
+    // Populate Sea Service table rows
+    let seaServiceHeaderIdx = -1;
+    trMatches.forEach((m, idx) => {
+      const txt = m.xml.replace(/<[^>]+>/g, '');
+      if (txt.includes('PREVIOUS SEA SERVICE')) {
+        seaServiceHeaderIdx = idx;
+      }
+    });
+
+    if (seaServiceHeaderIdx !== -1 && cand.seaService && cand.seaService.length > 0) {
+      cand.seaService.forEach((s, sIdx) => {
+        const targetTr = trMatches[seaServiceHeaderIdx + 2 + sIdx];
+        if (targetTr) {
+          const updated = updateRowCells(targetTr.xml, {
+            0: s.dateFrom, 1: s.dateTo, 2: s.rankHeld, 3: s.salary,
+            4: s.vesselName, 5: s.shipowner, 6: s.vesselType, 7: s.engineType,
+            8: s.buildYear, 9: s.dwtGrt, 10: s.engineBhp, 11: s.flag, 12: s.manningCompany
+          });
+          xml = xml.replace(targetTr.xml, updated);
+        }
+      });
+    }
+
+    // Populate Employers table rows
+    let empHeaderIdx = -1;
+    trMatches.forEach((m, idx) => {
+      const txt = m.xml.replace(/<[^>]+>/g, '');
+      if (txt.includes('BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS')) {
+        empHeaderIdx = idx;
+      }
+    });
+
+    if (empHeaderIdx !== -1 && cand.employers && cand.employers.length > 0) {
+      cand.employers.forEach((e, eIdx) => {
+        const targetTr = trMatches[empHeaderIdx + 2 + eIdx];
+        if (targetTr) {
+          const updated = updateRowCells(targetTr.xml, {
+            0: e.company, 1: e.personInCharge, 2: e.contactDetails
+          });
+          xml = xml.replace(targetTr.xml, updated);
+        }
+      });
+    }
 
     zip.file('word/document.xml', xml);
     const blob = await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
