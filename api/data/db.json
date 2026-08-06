@@ -87,5 +87,12 @@
     }
   ],
   "stats": [],
-  "site_titles": null
+  "site_titles": null,
+  "section_visibility": {
+    "hero": true,
+    "vacancies": true,
+    "hub": true,
+    "shipowners": true,
+    "offices": true
+  }
 }
