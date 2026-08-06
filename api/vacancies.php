@@ -34,11 +34,11 @@ if ($method === 'POST') {
 
 if ($method === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true) ?? [];
-    $id = isset($_GET['id']) ? intval($_GET['id']) : (isset($input['id']) ? intval($input['id']) : 0);
+    $id = isset($_GET['id']) ? trim((string)$_GET['id']) : (isset($input['id']) ? trim((string)$input['id']) : '');
 
     $found = false;
     foreach ($db['vacancies'] as &$vac) {
-        if ($vac['id'] == $id) {
+        if (isset($vac['id']) && (string)$vac['id'] === (string)$id) {
             $vac = array_merge($vac, $input);
             $found = true;
             break;
