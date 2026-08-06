@@ -357,43 +357,7 @@ export const AdminDashboard = ({
           </button>
         </div>
 
-        {/* Section Visibility Toggles Header Bar */}
-        <div className="glass-card" style={{ padding: '1rem 1.4rem', marginBottom: '1.8rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <Settings size={18} color="var(--color-accent)" />
-            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF' }}>Управление видимостью блоков на Главном Сайте:</span>
-          </div>
 
-          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
-            {[
-              { key: 'hero', label: 'Цифры (Hero)' },
-              { key: 'vacancies', label: 'Вакансии' },
-              { key: 'hub', label: 'Морякам' },
-              { key: 'shipowners', label: 'Судовладельцам' },
-              { key: 'offices', label: 'Контакты' }
-            ].map((sec) => {
-              const isVisible = sectionVisibility[sec.key] !== false;
-              return (
-                <button
-                  key={sec.key}
-                  onClick={() => onToggleSectionVisibility && onToggleSectionVisibility(sec.key)}
-                  className="btn btn-sm"
-                  style={{
-                    fontSize: '0.78rem',
-                    padding: '0.35rem 0.7rem',
-                    background: isVisible ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
-                    border: `1px solid ${isVisible ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`,
-                    color: isVisible ? 'var(--color-emerald)' : 'var(--color-danger)',
-                    gap: '0.3rem'
-                  }}
-                >
-                  {isVisible ? <Eye size={13} /> : <EyeOff size={13} />}
-                  {sec.label}: {isVisible ? 'Вкл' : 'Выкл'}
-                </button>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Tab Navigation */}
         <div style={{ display: 'flex', gap: '0.6rem', borderBottom: '1px solid var(--border-color)', marginBottom: '1.8rem', overflowX: 'auto', paddingBottom: '0.2rem' }}>
