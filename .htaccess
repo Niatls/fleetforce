@@ -6,12 +6,6 @@
   RewriteEngine On
   RewriteBase /
 
-  # Handle API requests (Pass to Node.js backend if reverse proxied, or leave as is)
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_URI} ^/api/(.*)$
-  RewriteRule ^api/(.*)$ http://127.0.0.1:5000/api/$1 [P,L]
-
   # Direct all non-file non-directory requests to index.html for React SPA Routing
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
@@ -23,13 +17,13 @@
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
 </IfModule>
 
-# Cache-Control headers for static assets
+# Cache-Control headers to prevent caching of dynamic assets and HTML
 <IfModule mod_headers.c>
-  # Never cache index.html so updates load immediately without Ctrl+F5
-  <FilesMatch "index\.html$">
-    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  # Never cache HTML, PHP, or JSON so updates load immediately across all browsers
+  <FilesMatch "\.(html|htm|php|json)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
     Header set Pragma "no-cache"
-    Header set Expires 0
+    Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
   </FilesMatch>
 
   <FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
