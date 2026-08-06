@@ -21,7 +21,17 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
       return;
     }
 
-    if (block?.filename?.match(/\.(doc|docx)$/i) || block?.id === 1 || String(block?.title).includes('DOC')) {
+    // Block 1 = PDF application form
+    if (block?.id === 1 || block?.filename?.match(/\.pdf$/i) || String(block?.title).toLowerCase().includes('pdf')) {
+      const a = document.createElement('a');
+      a.href = './Crew_Application_Form.pdf';
+      a.download = 'Crew_Application_Form.pdf';
+      a.click();
+      return;
+    }
+
+    // Block 2 = DOC application form
+    if (block?.id === 2 || block?.filename?.match(/\.(doc|docx)$/i) || String(block?.title).toLowerCase().includes('doc')) {
       const a = document.createElement('a');
       a.href = './Application form.docx';
       a.download = 'Application form.docx';
@@ -29,7 +39,7 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
       return;
     }
 
-    // Default: Download official Crew_Application_Form.pdf
+    // Default: PDF
     const a = document.createElement('a');
     a.href = './Crew_Application_Form.pdf';
     a.download = 'Crew_Application_Form.pdf';
@@ -76,8 +86,8 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
     if (lang !== 'en') return block.buttonText;
     if (block.buttonTextEn) return block.buttonTextEn;
     if (block.actionType === 'wizard') return 'Apply Online';
-    if (block.id === 1) return 'Download Fleet Force Form (.DOCX)';
-    if (block.id === 2) return 'Download Fleet Force Form (.PDF)';
+    if (block.id === 1 || block?.filename?.match(/\.pdf$/i) || String(block?.title).toLowerCase().includes('pdf')) return 'Download Fleet Force Form (.PDF)';
+    if (block.id === 2 || block?.filename?.match(/\.(doc|docx)$/i) || String(block?.title).toLowerCase().includes('doc')) return 'Download Fleet Force Form (.DOC)';
     return block.buttonText || 'Download Form';
   };
 
