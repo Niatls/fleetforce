@@ -485,10 +485,10 @@ export const INITIAL_CANDIDATES = [
 export const INITIAL_OFFICES = [
   {
     id: 1,
-    city: 'Москва',
-    cityEn: 'Moscow',
-    address: 'г. Москва',
-    addressEn: 'Moscow, Russia',
+    city: 'Санкт-Петербург',
+    cityEn: 'Saint Petersburg',
+    address: 'г. Санкт-Петербург, вн. тер. г. муниципальный округ Нарвский Округ, пр-кт Стачек, д. 47, литера А, помещ. 2НС, офис 340-342',
+    addressEn: '47 Litera A Stachek Ave, Room 2NS, Office 340-342, Saint Petersburg',
     phone: '',
     phones: [],
     email: 'FleetForceLLC@yandex.ru',

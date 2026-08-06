@@ -36,7 +36,7 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
   const getAddress = (off) => {
     if (lang !== 'en') return off.address;
     if (off.addressEn) return off.addressEn;
-    if (String(off.address).includes('Стачек')) return '47A Stachek Ave, Office 340-342, Saint Petersburg';
+    if (String(off.address).includes('Стачек')) return '47 Litera A Stachek Ave, Room 2NS, Office 340-342, Saint Petersburg';
     if (String(off.address).includes('Энгельса')) return '7 Engelsa/Svobody/Konstitutsii St, Office 37, Novorossiysk';
     if (String(off.address).includes('Ленинский')) return '81 Leninskiy Ave, Office 205, Kaliningrad';
     if (String(off.address).includes('Светланская')) return '45 Svetlanskaya St, Vladivostok';
