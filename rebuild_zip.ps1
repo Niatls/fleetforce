@@ -25,6 +25,7 @@ $staticFiles = [ordered]@{
     'api\vacancies.php'            = "$baseDir\api\vacancies.php"
     'api\verify-code.php'          = "$baseDir\api\verify-code.php"
     'api\data\db.json'             = "$baseDir\api\data\db.json"
+    'fleetforce_schema.sql'        = "$baseDir\fleetforce_schema.sql"
 }
 
 # Удаляем старый архив

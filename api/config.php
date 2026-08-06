@@ -49,32 +49,62 @@ function write_json_db($data) {
 function get_pdo() {
     static $pdo = null;
     if ($pdo !== null) return $pdo;
-    try {
-        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
-        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
-        // Ensure candidate & request tables exist
-        $pdo->exec("CREATE TABLE IF NOT EXISTS candidates (
-            id VARCHAR(100) PRIMARY KEY,
-            fullName VARCHAR(255),
-            appliedRank VARCHAR(255),
-            status VARCHAR(100) DEFAULT 'New',
-            submittedAt VARCHAR(100),
-            data_json LONGTEXT
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-        $pdo->exec("CREATE TABLE IF NOT EXISTS shipowner_requests (
-            id VARCHAR(100) PRIMARY KEY,
-            companyName VARCHAR(255),
-            status VARCHAR(100) DEFAULT 'New',
-            createdAt VARCHAR(100),
-            data_json LONGTEXT
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-        return $pdo;
-    } catch (Exception $e) {
-        return null;
+
+    $hosts = [DB_HOST, '127.0.0.1'];
+    foreach ($hosts as $h) {
+        try {
+            $dsn = "mysql:host=" . $h . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+            $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+
+            // Auto create all 4 tables if they don't exist yet
+            $pdo->exec("CREATE TABLE IF NOT EXISTS candidates (
+                id VARCHAR(100) PRIMARY KEY,
+                fullName VARCHAR(255),
+                appliedRank VARCHAR(255),
+                status VARCHAR(100) DEFAULT 'New',
+                submittedAt VARCHAR(100),
+                data_json LONGTEXT
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+            $pdo->exec("CREATE TABLE IF NOT EXISTS shipowner_requests (
+                id VARCHAR(100) PRIMARY KEY,
+                companyName VARCHAR(255),
+                status VARCHAR(100) DEFAULT 'New',
+                createdAt VARCHAR(100),
+                data_json LONGTEXT
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+            $pdo->exec("CREATE TABLE IF NOT EXISTS vacancies (
+                id VARCHAR(100) PRIMARY KEY,
+                title VARCHAR(255),
+                rank_title VARCHAR(255),
+                vesselType VARCHAR(255),
+                dwt VARCHAR(255),
+                salary VARCHAR(255),
+                contract VARCHAR(255),
+                joiningPort VARCHAR(255),
+                joiningDate VARCHAR(255),
+                urgent TINYINT(1) DEFAULT 0,
+                active TINYINT(1) DEFAULT 1,
+                requirements LONGTEXT,
+                responsibilities TEXT,
+                data_json LONGTEXT
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+            $pdo->exec("CREATE TABLE IF NOT EXISTS site_config (
+                config_key VARCHAR(100) PRIMARY KEY,
+                config_val LONGTEXT
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+            return $pdo;
+        } catch (Exception $e) {
+            continue;
+        }
     }
+    return null;
 }
 
 // ─── Main getter ──────────────────────────────────────────────────────────────
