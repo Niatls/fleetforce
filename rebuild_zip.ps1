@@ -19,11 +19,9 @@ $staticFiles = [ordered]@{
     'api\config.php'               = "$baseDir\api\config.php"
     'api\index.js'                 = "$baseDir\api\index.js"
     'api\index.php'                = "$baseDir\api\index.php"
-    'api\send-code.php'            = "$baseDir\api\send-code.php"
     'api\shipowner-requests.php'   = "$baseDir\api\shipowner-requests.php"
     'api\upload.php'               = "$baseDir\api\upload.php"
     'api\vacancies.php'            = "$baseDir\api\vacancies.php"
-    'api\verify-code.php'          = "$baseDir\api\verify-code.php"
     'api\data\db.json'             = "$baseDir\api\data\db.json"
     'fleetforce_schema.sql'        = "$baseDir\fleetforce_schema.sql"
 }
