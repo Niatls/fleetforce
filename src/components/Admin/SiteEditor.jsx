@@ -441,7 +441,19 @@ export const SiteEditor = ({
         />
 
         {/* 1. HERO SECTION */}
-        {draftSectionVisibility.hero !== false && (
+        {draftSectionVisibility.hero === false ? (
+          !previewMode && (
+            <div style={{ margin: '1rem 2rem 2rem', padding: '1.2rem 2rem', background: 'rgba(239, 68, 68, 0.08)', border: '1px dashed rgba(239, 68, 68, 0.4)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#FFFFFF' }}>
+                <EyeOff size={20} color="var(--color-danger)" />
+                <span><strong>Секция «Hero (Главный баннер)» сейчас скрыта</strong> и не отображается на сайте.</span>
+              </div>
+              <button onClick={() => handleToggleSection('hero')} className="btn btn-primary btn-sm">
+                <Eye size={14} /> Включить и показать секцию Hero
+              </button>
+            </div>
+          )
+        ) : (
           <section style={{ position: 'relative' }}>
             {!previewMode && (
               <div style={{ position: 'absolute', top: '15px', left: '20px', zIndex: 40 }}>
@@ -511,7 +523,19 @@ export const SiteEditor = ({
         )}
 
         {/* 2. VACANCIES SECTION */}
-        {draftSectionVisibility.vacancies !== false && (
+        {draftSectionVisibility.vacancies === false ? (
+          !previewMode && (
+            <div style={{ margin: '2rem', padding: '1.2rem 2rem', background: 'rgba(239, 68, 68, 0.08)', border: '1px dashed rgba(239, 68, 68, 0.4)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#FFFFFF' }}>
+                <EyeOff size={20} color="var(--color-danger)" />
+                <span><strong>Секция «ВАКАНСИИ» сейчас скрыта</strong> и не отображается на сайте.</span>
+              </div>
+              <button onClick={() => handleToggleSection('vacancies')} className="btn btn-primary btn-sm">
+                <Eye size={14} /> Включить и показать вакансии
+              </button>
+            </div>
+          )
+        ) : (
           <section style={{ position: 'relative', marginTop: '2rem' }}>
             {!previewMode && (
               <div style={{ padding: '0 2rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dashed var(--color-accent)', paddingBottom: '0.8rem' }}>
@@ -571,7 +595,19 @@ export const SiteEditor = ({
         )}
 
         {/* 3. SEAFARER HUB SECTION */}
-        {draftSectionVisibility.hub !== false && (
+        {draftSectionVisibility.hub === false ? (
+          !previewMode && (
+            <div style={{ margin: '2rem', padding: '1.2rem 2rem', background: 'rgba(239, 68, 68, 0.08)', border: '1px dashed rgba(239, 68, 68, 0.4)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#FFFFFF' }}>
+                <EyeOff size={20} color="var(--color-danger)" />
+                <span><strong>Секция «МО РЯКАМ / HUB» сейчас скрыта</strong> и не отображается на сайте.</span>
+              </div>
+              <button onClick={() => handleToggleSection('hub')} className="btn btn-primary btn-sm">
+                <Eye size={14} /> Включить и показать Hub
+              </button>
+            </div>
+          )
+        ) : (
           <section style={{ position: 'relative', marginTop: '3rem' }}>
             {!previewMode && (
               <div style={{ padding: '0 2rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dashed var(--color-accent)', paddingBottom: '0.8rem' }}>
@@ -631,7 +667,19 @@ export const SiteEditor = ({
         )}
 
         {/* 4. SHIPOWNER SERVICES SECTION */}
-        {draftSectionVisibility.shipowners !== false && (
+        {draftSectionVisibility.shipowners === false ? (
+          !previewMode && (
+            <div style={{ margin: '2rem', padding: '1.2rem 2rem', background: 'rgba(239, 68, 68, 0.08)', border: '1px dashed rgba(239, 68, 68, 0.4)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#FFFFFF' }}>
+                <EyeOff size={20} color="var(--color-danger)" />
+                <span><strong>Секция «СУДОВЛАДЕЛЬЦАМ» сейчас скрыта</strong> и не отображается на сайте.</span>
+              </div>
+              <button onClick={() => handleToggleSection('shipowners')} className="btn btn-primary btn-sm">
+                <Eye size={14} /> Включить и показать секцию Судовладельцам
+              </button>
+            </div>
+          )
+        ) : (
           <section style={{ position: 'relative', marginTop: '3rem' }}>
             {!previewMode && (
               <div style={{ padding: '0 2rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dashed var(--color-accent)', paddingBottom: '0.8rem' }}>
@@ -726,7 +774,19 @@ export const SiteEditor = ({
         )}
 
         {/* 5. OFFICES & CONTACTS SECTION */}
-        {draftSectionVisibility.offices !== false && (
+        {draftSectionVisibility.offices === false ? (
+          !previewMode && (
+            <div style={{ margin: '2rem', padding: '1.2rem 2rem', background: 'rgba(239, 68, 68, 0.08)', border: '1px dashed rgba(239, 68, 68, 0.4)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#FFFFFF' }}>
+                <EyeOff size={20} color="var(--color-danger)" />
+                <span><strong>Секция «ФИЛИАЛЫ И КОНТАКТЫ» сейчас скрыта</strong> и не отображается на сайте.</span>
+              </div>
+              <button onClick={() => handleToggleSection('offices')} className="btn btn-primary btn-sm">
+                <Eye size={14} /> Включить и показать филиалы
+              </button>
+            </div>
+          )
+        ) : (
           <section style={{ position: 'relative', marginTop: '3rem' }}>
             {!previewMode && (
               <div style={{ padding: '0 2rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dashed var(--color-accent)', paddingBottom: '0.8rem' }}>

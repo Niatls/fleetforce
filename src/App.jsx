@@ -347,6 +347,9 @@ function AppContent() {
           if (Array.isArray(data.data.offices)) setOffices(data.data.offices);
           if (Array.isArray(data.data.hub_blocks)) setHubBlocks(data.data.hub_blocks);
           if (Array.isArray(data.data.stats)) setStats(data.data.stats);
+          if (data.data.section_visibility && typeof data.data.section_visibility === 'object') {
+            setSectionVisibility(data.data.section_visibility);
+          }
           if (data.data.site_titles) {
             const st = data.data.site_titles;
             if (st.heroBadge) setHeroBadge(st.heroBadge);
@@ -674,6 +677,7 @@ function AppContent() {
         hub_blocks: publishedData.hubBlocks || hubBlocks,
         vacancies: publishedData.vacancies || vacancies,
         stats: publishedData.stats || stats,
+        section_visibility: publishedData.sectionVisibility || sectionVisibility,
         site_titles: {
           heroBadge: publishedData.heroBadge ?? heroBadge,
           heroTitle: publishedData.heroTitle ?? heroTitle,

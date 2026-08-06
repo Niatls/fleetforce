@@ -202,7 +202,7 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) 
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         if (!empty($input)) {
             // Merge top-level keys into DB JSON (never override dynamic candidates/requests from MySQL)
-            foreach (['offices','hub_blocks','vacancies','stats','site_titles'] as $key) {
+            foreach (['offices','hub_blocks','vacancies','stats','site_titles','section_visibility'] as $key) {
                 if (array_key_exists($key, $input)) {
                     $db[$key] = $input[$key];
                 }
