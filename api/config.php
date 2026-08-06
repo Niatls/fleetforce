@@ -147,6 +147,16 @@ function get_database() {
                     }
                 }
             }
+
+            // Read site_config table overrides if present in MySQL
+            $configRows = $pdo->query("SELECT config_key, config_val FROM site_config")->fetchAll();
+            foreach ($configRows as $cr) {
+                $k = $cr['config_key'];
+                $val = json_decode($cr['config_val'], true);
+                if ($val !== null) {
+                    $db[$k] = $val;
+                }
+            }
         } catch (Exception $e) {}
     }
 
@@ -185,6 +195,14 @@ function save_database($data) {
                         $r['createdAt'] ?? date('c'),
                         json_encode($r, JSON_UNESCAPED_UNICODE)
                     ]);
+                }
+            }
+
+            // Sync site_config keys into MySQL table
+            $stmtConfig = $pdo->prepare("REPLACE INTO site_config (config_key, config_val) VALUES (?, ?)");
+            foreach (['offices', 'hub_blocks', 'vacancies', 'stats', 'site_titles', 'section_visibility'] as $k) {
+                if (isset($data[$k])) {
+                    $stmtConfig->execute([$k, json_encode($data[$k], JSON_UNESCAPED_UNICODE)]);
                 }
             }
         } catch (Exception $e) {}
