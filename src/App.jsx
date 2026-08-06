@@ -344,6 +344,7 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && data.data) {
+          if (Array.isArray(data.data.vacancies)) setVacancies(data.data.vacancies);
           if (Array.isArray(data.data.offices)) setOffices(data.data.offices);
           if (Array.isArray(data.data.hub_blocks)) setHubBlocks(data.data.hub_blocks);
           if (Array.isArray(data.data.stats)) setStats(data.data.stats);
@@ -532,9 +533,17 @@ function AppContent() {
   };
 
   const handleAddVacancy = (newVac) => {
-    setVacancies((prev) => [newVac, ...prev]);
+    setVacancies((prev) => {
+      const updated = [newVac, ...prev];
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vacancies: updated })
+      }).catch(() => {});
+      return updated;
+    });
 
-    fetch('/api/vacancies', {
+    fetch('/api/vacancies.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newVac)
@@ -542,11 +551,17 @@ function AppContent() {
   };
 
   const handleUpdateVacancy = (updatedVac) => {
-    setVacancies((prev) =>
-      prev.map((v) => (v.id === updatedVac.id ? updatedVac : v))
-    );
+    setVacancies((prev) => {
+      const updated = prev.map((v) => (v.id === updatedVac.id ? updatedVac : v));
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vacancies: updated })
+      }).catch(() => {});
+      return updated;
+    });
 
-    fetch(`/api/vacancies/${updatedVac.id}`, {
+    fetch(`/api/vacancies.php?id=${updatedVac.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedVac)
@@ -556,75 +571,128 @@ function AppContent() {
   const handleDeleteVacancy = (id) => {
     const cleanId = String(id || '').trim();
     if (!cleanId) return;
-    const cleanIdLower = cleanId.toLowerCase();
-
-    try {
-      const deletedIds = JSON.parse(localStorage.getItem('fleetforce_deleted_vacancy_ids') || '[]');
-      const exists = deletedIds.some(x => String(x || '').trim().toLowerCase() === cleanIdLower);
-      if (!exists) {
-        deletedIds.push(cleanId);
-        localStorage.setItem('fleetforce_deleted_vacancy_ids', JSON.stringify(deletedIds));
-      }
-    } catch (e) {}
 
     setVacancies((prev) => {
-      const updated = prev.filter((v) => String(v.id || '').trim().toLowerCase() !== cleanIdLower);
-      try {
-        localStorage.setItem('fleetforce_vacancies', JSON.stringify(updated));
-      } catch (e) {}
+      const updated = prev.filter((v) => String(v.id || '').trim().toLowerCase() !== cleanId.toLowerCase());
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vacancies: updated })
+      }).catch(() => {});
       return updated;
     });
 
     fetch(`/api/vacancies.php?id=${encodeURIComponent(cleanId)}`, { method: 'DELETE' }).catch(() => {});
-    fetch(`/api/vacancies/${encodeURIComponent(cleanId)}`, { method: 'DELETE' }).catch(() => {});
   };
 
   // Office Handlers
   const handleAddOffice = (newOffice) => {
-    setOffices((prev) => [...prev, newOffice]);
+    setOffices((prev) => {
+      const updated = [...prev, newOffice];
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offices: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleUpdateOffice = (updatedOffice) => {
-    setOffices((prev) =>
-      prev.map((o) => (o.id === updatedOffice.id ? updatedOffice : o))
-    );
+    setOffices((prev) => {
+      const updated = prev.map((o) => (o.id === updatedOffice.id ? updatedOffice : o));
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offices: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleDeleteOffice = (id) => {
-    setOffices((prev) => prev.filter((o) => o.id !== id));
+    setOffices((prev) => {
+      const updated = prev.filter((o) => o.id !== id);
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offices: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   // Hub Block Handlers
   const handleAddHubBlock = (newBlock) => {
-    setHubBlocks((prev) => [...prev, newBlock]);
+    setHubBlocks((prev) => {
+      const updated = [...prev, newBlock];
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hub_blocks: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleUpdateHubBlock = (updatedBlock) => {
-    setHubBlocks((prev) =>
-      prev.map((b) => (b.id === updatedBlock.id ? updatedBlock : b))
-    );
+    setHubBlocks((prev) => {
+      const updated = prev.map((b) => (b.id === updatedBlock.id ? updatedBlock : b));
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hub_blocks: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleDeleteHubBlock = (id) => {
-    setHubBlocks((prev) => prev.filter((b) => b.id !== id));
+    setHubBlocks((prev) => {
+      const updated = prev.filter((b) => b.id !== id);
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hub_blocks: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleToggleVacancyActive = (id) => {
-    setVacancies((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, active: v.active === false ? true : false } : v))
-    );
+    setVacancies((prev) => {
+      const updated = prev.map((v) => (v.id === id ? { ...v, active: v.active === false ? true : false } : v));
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vacancies: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleToggleOfficeActive = (id) => {
-    setOffices((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, active: o.active === false ? true : false } : o))
-    );
+    setOffices((prev) => {
+      const updated = prev.map((o) => (o.id === id ? { ...o, active: o.active === false ? true : false } : o));
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offices: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleToggleHubBlockActive = (id) => {
-    setHubBlocks((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, active: b.active === false ? true : false } : b))
-    );
+    setHubBlocks((prev) => {
+      const updated = prev.map((b) => (b.id === id ? { ...b, active: b.active === false ? true : false } : b));
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hub_blocks: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleToggleSectionVisibility = (sectionKey) => {
