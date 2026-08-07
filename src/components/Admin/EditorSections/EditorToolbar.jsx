@@ -1,13 +1,11 @@
 import React from 'react';
-import { ArrowLeft, Edit3, Eye, CheckCircle2, Save } from 'lucide-react';
+import { ArrowLeft, Edit3, Eye, CheckCircle2 } from 'lucide-react';
 
 export const EditorToolbar = ({
   onClose,
-  hasChanges,
   autoSaveStatus,
   previewMode,
-  setPreviewMode,
-  onPublish
+  setPreviewMode
 }) => {
   return (
     <header
@@ -17,17 +15,18 @@ export const EditorToolbar = ({
         left: 0,
         right: 0,
         zIndex: 9990,
-        background: 'rgba(11, 19, 41, 0.95)',
+        background: 'var(--bg-card)',
         backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--color-accent)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderBottom: '1px solid var(--border-color)',
         padding: '0.75rem 1.5rem',
         display: 'flex',
-        justifyContent: 'space-between',
+        justify: 'space-between',
         alignItems: 'center',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
+        boxShadow: 'var(--shadow-subtle)'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', flexWrap: 'wrap' }}>
         <button
           onClick={onClose}
           className="btn btn-secondary btn-sm"
@@ -36,7 +35,7 @@ export const EditorToolbar = ({
           <ArrowLeft size={16} /> Выйти в Админку
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
           <span className="badge badge-gold" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <Edit3 size={14} /> ВИЗУАЛЬНЫЙ РЕДАКТОР САЙТА
           </span>
@@ -49,8 +48,8 @@ export const EditorToolbar = ({
         </div>
       </div>
 
-      {/* Center Toggle: Preview Mode */}
-      <div style={{ display: 'flex', background: 'rgba(255,255,255,0.08)', padding: '3px', borderRadius: '8px' }}>
+      {/* Mode Switcher Toggle: Edit vs Preview */}
+      <div style={{ display: 'flex', background: 'var(--bg-main)', border: '1px solid var(--border-color)', padding: '3px', borderRadius: '8px' }}>
         <button
           onClick={() => setPreviewMode(false)}
           style={{
@@ -61,11 +60,11 @@ export const EditorToolbar = ({
             fontWeight: 600,
             cursor: 'pointer',
             background: !previewMode ? 'var(--color-accent)' : 'transparent',
-            color: '#FFFFFF',
+            color: !previewMode ? '#FFFFFF' : 'var(--text-secondary)',
             display: 'flex',
             alignItems: 'center',
             gap: '0.4rem',
-            transition: 'all 0.2s'
+            transition: 'var(--transition-fast)'
           }}
         >
           <Edit3 size={14} /> Редактирование
@@ -80,26 +79,14 @@ export const EditorToolbar = ({
             fontWeight: 600,
             cursor: 'pointer',
             background: previewMode ? 'var(--color-emerald)' : 'transparent',
-            color: '#FFFFFF',
+            color: previewMode ? '#FFFFFF' : 'var(--text-secondary)',
             display: 'flex',
             alignItems: 'center',
             gap: '0.4rem',
-            transition: 'all 0.2s'
+            transition: 'var(--transition-fast)'
           }}
         >
           <Eye size={14} /> Предпросмотр сайтом
-        </button>
-      </div>
-
-      {/* Right Actions */}
-      <div style={{ display: 'flex', gap: '0.6rem' }}>
-        <button
-          onClick={onPublish}
-          className="btn btn-accent btn-md"
-          style={{ fontWeight: 700, gap: '0.5rem', boxShadow: '0 4px 15px rgba(245,158,11,0.4)' }}
-        >
-          <Save size={18} />
-          <span>🚀 Опубликовать на сайт</span>
         </button>
       </div>
     </header>

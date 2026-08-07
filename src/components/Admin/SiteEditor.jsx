@@ -415,21 +415,19 @@ export const SiteEditor = ({
   return (
     <div className="site-editor-root" style={{ background: 'var(--bg-main)', minHeight: '100vh', paddingBottom: '4rem' }}>
       
-      {/* 🚀 Top Control Toolbar (Fixed Subcomponent) */}
+      {/* Top Control Toolbar */}
       <EditorToolbar
         onClose={onClose}
-        hasChanges={hasChanges}
         autoSaveStatus="Автосохранение в базу данных активно"
         previewMode={previewMode}
         setPreviewMode={setPreviewMode}
-        onPublish={handlePublishAll}
       />
 
       {/* Editor Banner Notice */}
       {!previewMode && (
-        <div style={{ background: 'rgba(0, 139, 255, 0.15)', borderBottom: '1px solid rgba(0, 139, 255, 0.3)', padding: '0.6rem 1.5rem', fontSize: '0.85rem', color: '#38bdf8', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.8rem' }}>
+        <div style={{ background: 'var(--color-accent-light)', borderBottom: '1px solid var(--border-glow)', padding: '0.6rem 1.5rem', fontSize: '0.85rem', color: 'var(--color-accent)', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.8rem' }}>
           <Sparkles size={16} />
-          <span>Вы находитесь в режиме редактирования черновика. Нажимайте на текст для изменения, используйте кнопки ✏️ и 🗑️ на карточках. Готовые правки опубликуйте кнопкой сверху.</span>
+          <span>Вы находитесь в режиме редактирования. Нажимайте на текст для изменения или используйте кнопки ✏️, 👁️ и 🗑️ на карточках. Все правки сохраняются автоматически!</span>
         </div>
       )}
 
