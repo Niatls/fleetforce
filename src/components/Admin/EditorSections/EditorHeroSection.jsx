@@ -125,8 +125,11 @@ export const EditorHeroSection = ({
                     onClick={() => {
                       const newNum = prompt('Введите значение счётчика:', statItem.number);
                       if (newNum !== null) handleUpdateStatNum(idx, newNum);
-                      const newLabel = prompt('Введите подпись счётчика:', statItem.labelRu);
-                      if (newLabel !== null) handleUpdateStatLabel(idx, newLabel);
+                      const newLabelRu = prompt('Введите подпись счётчика (Русский):', statItem.labelRu);
+                      if (newLabelRu !== null) {
+                        const newLabelEn = prompt('Введите подпись счётчика (English):', statItem.labelEn || newLabelRu);
+                        handleUpdateStatLabel(idx, newLabelRu, newLabelEn || newLabelRu);
+                      }
                     }}
                     className="btn btn-secondary btn-sm"
                     style={{ padding: '0.2rem 0.45rem', fontSize: '0.75rem' }}

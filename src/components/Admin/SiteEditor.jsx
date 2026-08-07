@@ -359,10 +359,14 @@ export const SiteEditor = ({
     });
   };
 
-  const handleUpdateStatLabel = (index, newLabel) => {
+  const handleUpdateStatLabel = (index, newLabelRu, newLabelEn) => {
     setDraftStats(prev => {
       const updated = [...prev];
-      updated[index] = { ...updated[index], labelRu: newLabel, labelEn: newLabel };
+      updated[index] = {
+        ...updated[index],
+        labelRu: newLabelRu,
+        labelEn: newLabelEn || updated[index]?.labelEn || newLabelRu
+      };
       autoSave({ stats: updated });
       return updated;
     });
@@ -388,14 +392,15 @@ export const SiteEditor = ({
   const handleAddStat = () => {
     const num = prompt('Введите значение счётчика (например: 100+):', '100+');
     if (!num) return;
-    const label = prompt('Введите подпись счётчика (например: Успешных рейсов):', 'Новый показатель');
-    if (!label) return;
+    const labelRu = prompt('Введите подпись счётчика (Русский):', 'Новый показатель');
+    if (!labelRu) return;
+    const labelEn = prompt('Введите подпись счётчика (English):', labelRu);
 
     const newStat = {
       id: String(Date.now()),
       number: num,
-      labelRu: label,
-      labelEn: label,
+      labelRu: labelRu,
+      labelEn: labelEn || labelRu,
       color: 'blue',
       active: true
     };
