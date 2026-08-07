@@ -94,10 +94,10 @@ export const AdminDashboard = ({
 
   const handleSaveOffice = (savedOffice) => {
     const data = (savedOffice && typeof savedOffice === 'object' && savedOffice.city) ? savedOffice : officeForm;
-    if (editingOfficeId || data.id) {
-      if (onUpdateOffice) onUpdateOffice({ ...data, id: editingOfficeId || data.id });
+    if (editingOfficeId) {
+      if (onUpdateOffice) onUpdateOffice({ ...data, id: editingOfficeId });
     } else {
-      if (onAddOffice) onAddOffice({ ...data, id: Date.now() });
+      if (onAddOffice) onAddOffice({ ...data, id: data.id || Date.now() });
     }
     setShowOfficeModal(false);
   };
@@ -143,10 +143,10 @@ export const AdminDashboard = ({
 
   const handleSaveHub = (savedHub) => {
     const data = (savedHub && typeof savedHub === 'object' && savedHub.title) ? savedHub : hubForm;
-    if (editingHubId || data.id) {
-      if (onUpdateHubBlock) onUpdateHubBlock({ ...data, id: editingHubId || data.id });
+    if (editingHubId) {
+      if (onUpdateHubBlock) onUpdateHubBlock({ ...data, id: editingHubId });
     } else {
-      if (onAddHubBlock) onAddHubBlock({ ...data, id: Date.now() });
+      if (onAddHubBlock) onAddHubBlock({ ...data, id: data.id || Date.now() });
     }
     setShowHubModal(false);
   };
@@ -244,10 +244,10 @@ export const AdminDashboard = ({
 
   const handleSaveVacancy = (savedVacancy) => {
     const data = (savedVacancy && typeof savedVacancy === 'object' && (savedVacancy.title || savedVacancy.rank)) ? savedVacancy : vacancyForm;
-    if (editingVacancyId || data.id) {
-      if (onUpdateVacancy) onUpdateVacancy({ ...data, id: editingVacancyId || data.id });
+    if (editingVacancyId) {
+      if (onUpdateVacancy) onUpdateVacancy({ ...data, id: editingVacancyId });
     } else {
-      if (onAddVacancy) onAddVacancy({ ...data, id: Date.now() });
+      if (onAddVacancy) onAddVacancy({ ...data, id: data.id || Date.now() });
     }
     setEditingVacancyId(null);
     setShowVacancyModal(false);
