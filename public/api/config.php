@@ -1,5 +1,5 @@
 <?php
-// FleetForce PHP Backend Config & DB Manager for Reg.ru Host-A
+// FleetForce Backend — Unified SQLite Database Engine (fleetforce.db)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
@@ -10,105 +10,219 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-define('DB_FILE', __DIR__ . '/data/fleetforce_db.json');
+define('DB_SQLITE_FILE', __DIR__ . '/data/fleetforce.db');
+define('DB_JSON_FILE', __DIR__ . '/data/db.json');
 
-function get_database() {
-    $dir = dirname(DB_FILE);
-    if (!file_exists($dir)) {
-        mkdir($dir, 0755, true);
-    }
-    
-    if (file_exists(DB_FILE)) {
-        $json = file_get_contents(DB_FILE);
-        $data = json_decode($json, true);
-        if (is_array($data)) {
-            return $data;
-        }
-    }
-    
-    // Default initial data structure
-    $defaultData = [
-        "vacancies" => [
-            [
-                "id" => 1,
-                "title" => "Master / Captain",
-                "rank" => "Master / Captain",
-                "vesselType" => "Chemical / Product Tanker",
-                "dwt" => "47,000 DWT (MAN B&W)",
-                "salary" => "$14,500",
-                "contract" => "4 months",
-                "joiningPort" => "Rotterdam, Netherlands",
-                "joiningDate" => "15.08.2026",
-                "urgent" => true,
-                "active" => true,
-                "requirements" => [
-                    "Minimum 2 contracts in rank on Chemical Tankers with FRAMO pumps",
-                    "Valid Master Unlimited STCW II/2 Certificate & Flag Endorsements",
-                    "Marlins English test > 85%"
-                ],
-                "responsibilities" => "Overall command of vessel navigation, safety, crew operations and SIRE inspection readiness."
-            ],
-            [
-                "id" => 2,
-                "title" => "Chief Engineer",
-                "rank" => "Chief Engineer",
-                "vesselType" => "Container Ship (5000+ TEU)",
-                "dwt" => "65,000 DWT (WinGD Flex)",
-                "salary" => "$13,800",
-                "contract" => "4 months",
-                "joiningPort" => "Singapore",
-                "joiningDate" => "20.08.2026",
-                "urgent" => false,
-                "active" => true,
-                "requirements" => [
-                    "Experience with WinGD / RT-flex electronic engines",
-                    "Chief Engineer Unlimited STCW III/2"
-                ],
-                "responsibilities" => "Management of technical department, main engine, bunkering and dry-dock preparation."
-            ]
-        ],
-        "candidates" => [
-            [
-                "id" => "APP-2026-089",
-                "fullName" => "Воронов Александр Сергеевич (Voronov Aleksandr)",
-                "dob" => "1984-04-12",
-                "citizenship" => "Россия",
-                "phone" => "+7 (918) 456-78-90",
-                "email" => "voronov.capt@gmail.com",
-                "appliedRank" => "Master / Captain",
-                "alternativeRank" => "Chief Officer / 1st Mate",
-                "minSalary" => "14000",
-                "readyDate" => "2026-08-10",
-                "preferredVessels" => "Chemical / Product Tanker",
-                "status" => "Approved",
-                "marlinsScore" => "92%",
-                "englishLevel" => "Fluent / Advanced",
-                "notes" => "Отличные рекомендации от Stena Bulk. Готов к отправке в Нидерланды.",
-                "submittedAt" => "2026-07-24T14:30:00Z"
-            ]
-        ],
-        "shipowner_requests" => [
-            [
-                "id" => "REQ-2026-001",
-                "companyName" => "Stena Bulk Tanker Management",
-                "contactName" => "Captain Hans Nielsen (Crew Director)",
-                "email" => "h.nielsen@stenabulk.com",
-                "phone" => "+46 31 855 000",
-                "details" => "Требуется полное комплектование экипажа для 2 продуктовозов (Chemical/Product Tankers 47,000 DWT).",
-                "status" => "New",
-                "createdAt" => "2026-07-26T11:20:00Z"
-            ]
-        ]
-    ];
+// ─── SQLite PDO Singleton & Auto-Initializer ──────────────────────────────────
+function get_pdo() {
+    static $pdo = null;
+    if ($pdo !== null) return $pdo;
 
-    save_database($defaultData);
-    return $defaultData;
+    $dir = dirname(DB_SQLITE_FILE);
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+
+    try {
+        $pdo = new PDO("sqlite:" . DB_SQLITE_FILE, null, null, [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+
+        // Auto-create single unified site_config table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS site_config (
+            config_key TEXT PRIMARY KEY,
+            config_val TEXT
+        )");
+
+        // Auto-create candidates table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS candidates (
+            id TEXT PRIMARY KEY,
+            fullName TEXT,
+            appliedRank TEXT,
+            status TEXT DEFAULT 'New',
+            submittedAt TEXT,
+            data_json TEXT
+        )");
+
+        // Auto-create shipowner_requests table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS shipowner_requests (
+            id TEXT PRIMARY KEY,
+            companyName TEXT,
+            status TEXT DEFAULT 'New',
+            createdAt TEXT,
+            data_json TEXT
+        )");
+
+        // Auto-create vacancies table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS vacancies (
+            id TEXT PRIMARY KEY,
+            title TEXT,
+            rank_title TEXT,
+            vesselType TEXT,
+            dwt TEXT,
+            salary TEXT,
+            contract TEXT,
+            joiningPort TEXT,
+            joiningDate TEXT,
+            urgent INTEGER DEFAULT 0,
+            active INTEGER DEFAULT 1,
+            data_json TEXT
+        )");
+
+        return $pdo;
+    } catch (Exception $e) {
+        return null;
+    }
 }
 
-function save_database($data) {
-    $dir = dirname(DB_FILE);
-    if (!file_exists($dir)) {
-        mkdir($dir, 0755, true);
+// ─── Fallback JSON helper ─────────────────────────────────────────────────────
+function read_json_db() {
+    if (file_exists(DB_JSON_FILE)) {
+        $json = file_get_contents(DB_JSON_FILE);
+        $data = json_decode($json, true);
+        if (is_array($data)) return $data;
     }
-    file_put_contents(DB_FILE, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    return [
+        'vacancies'          => [],
+        'candidates'         => [],
+        'shipowner_requests' => [],
+        'offices'            => [],
+        'hub_blocks'         => [],
+        'stats'              => [],
+        'site_titles'        => null,
+        'section_visibility' => ['hero'=>true, 'vacancies'=>true, 'hub'=>true, 'shipowners'=>true, 'offices'=>true]
+    ];
+}
+
+function write_json_db($data) {
+    $dir = dirname(DB_JSON_FILE);
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    @file_put_contents(DB_JSON_FILE, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+}
+
+// ─── Main Getter ──────────────────────────────────────────────────────────────
+function get_database() {
+    $db = read_json_db();
+    $pdo = get_pdo();
+
+    if ($pdo) {
+        try {
+            // Read site_config key-value pairs
+            $rows = $pdo->query("SELECT config_key, config_val FROM site_config")->fetchAll();
+            foreach ($rows as $r) {
+                $val = json_decode($r['config_val'], true);
+                if ($val !== null) {
+                    $db[$r['config_key']] = $val;
+                }
+            }
+
+            // Read candidates
+            $cRows = $pdo->query("SELECT data_json FROM candidates ORDER BY ROWID DESC")->fetchAll();
+            if (!empty($cRows)) {
+                $cList = [];
+                foreach ($cRows as $cr) {
+                    $item = json_decode($cr['data_json'], true);
+                    if ($item) $cList[] = $item;
+                }
+                if (!empty($cList)) $db['candidates'] = $cList;
+            }
+
+            // Read shipowner_requests
+            $rRows = $pdo->query("SELECT data_json FROM shipowner_requests ORDER BY ROWID DESC")->fetchAll();
+            if (!empty($rRows)) {
+                $rList = [];
+                foreach ($rRows as $rr) {
+                    $item = json_decode($rr['data_json'], true);
+                    if ($item) $rList[] = $item;
+                }
+                if (!empty($rList)) $db['shipowner_requests'] = $rList;
+            }
+        } catch (Exception $e) {}
+    }
+
+    return $db;
+}
+
+// ─── Main Saver ───────────────────────────────────────────────────────────────
+function save_database($data) {
+    write_json_db($data);
+    $pdo = get_pdo();
+
+    if ($pdo && is_array($data)) {
+        try {
+            if (method_exists($pdo, 'beginTransaction')) {
+                $pdo->beginTransaction();
+            }
+
+            if (isset($data['candidates']) && is_array($data['candidates'])) {
+                $pdo->exec("DELETE FROM candidates");
+                $stmt = $pdo->prepare("INSERT INTO candidates (id, fullName, appliedRank, status, submittedAt, data_json) VALUES (?,?,?,?,?,?)");
+                foreach ($data['candidates'] as $c) {
+                    $stmt->execute([
+                        (string)($c['id'] ?? ('APP-' . time())),
+                        $c['fullName'] ?? '',
+                        $c['appliedRank'] ?? '',
+                        $c['status'] ?? 'New',
+                        $c['submittedAt'] ?? date('c'),
+                        json_encode($c, JSON_UNESCAPED_UNICODE)
+                    ]);
+                }
+            }
+
+            if (isset($data['shipowner_requests']) && is_array($data['shipowner_requests'])) {
+                $pdo->exec("DELETE FROM shipowner_requests");
+                $stmt = $pdo->prepare("INSERT INTO shipowner_requests (id, companyName, status, createdAt, data_json) VALUES (?,?,?,?,?)");
+                foreach ($data['shipowner_requests'] as $r) {
+                    $stmt->execute([
+                        (string)($r['id'] ?? ('REQ-' . time())),
+                        $r['companyName'] ?? '',
+                        $r['status'] ?? 'New',
+                        $r['createdAt'] ?? date('c'),
+                        json_encode($r, JSON_UNESCAPED_UNICODE)
+                    ]);
+                }
+            }
+
+            $stmtConfig = $pdo->prepare("INSERT OR REPLACE INTO site_config (config_key, config_val) VALUES (?, ?)");
+            foreach (['offices', 'hub_blocks', 'vacancies', 'stats', 'site_titles', 'section_visibility'] as $k) {
+                if (isset($data[$k])) {
+                    $stmtConfig->execute([$k, json_encode($data[$k], JSON_UNESCAPED_UNICODE)]);
+                }
+            }
+
+            if (method_exists($pdo, 'inTransaction') && $pdo->inTransaction()) {
+                $pdo->commit();
+            }
+        } catch (Exception $e) {
+            if (method_exists($pdo, 'inTransaction') && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+        }
+    }
+}
+
+function get_pdo_for_delete() { return get_pdo(); }
+
+// ─── Endpoint: config.php ─────────────────────────────────────────────────────
+if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) === 'config.php') {
+    $db = get_database();
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $input = json_decode(file_get_contents('php://input'), true) ?? [];
+        if (!empty($input)) {
+            foreach (['offices','hub_blocks','vacancies','stats','site_titles','section_visibility'] as $key) {
+                if (array_key_exists($key, $input)) {
+                    $db[$key] = $input[$key];
+                }
+            }
+            if (array_key_exists('candidates', $input)) $db['candidates'] = $input['candidates'];
+            if (array_key_exists('shipowner_requests', $input)) $db['shipowner_requests'] = $input['shipowner_requests'];
+
+            save_database($db);
+            echo json_encode(['success' => true, 'data' => $db]);
+            exit();
+        }
+    }
+
+    echo json_encode(['success' => true, 'data' => $db]);
+    exit();
 }

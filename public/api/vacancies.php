@@ -26,19 +26,28 @@ if ($method === 'POST') {
         'responsibilities' => 'Standard duties'
     ], $input);
 
-    array_unshift($db['vacancies'], $newVac);
-    save_database($db);
+    $exists = false;
+    foreach ($db['vacancies'] as $v) {
+        if (isset($v['id']) && (string)$v['id'] === (string)$newVac['id']) {
+            $exists = true;
+            break;
+        }
+    }
+    if (!$exists) {
+        array_unshift($db['vacancies'], $newVac);
+        save_database($db);
+    }
     echo json_encode(['success' => true, 'data' => $newVac]);
     exit();
 }
 
 if ($method === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true) ?? [];
-    $id = isset($_GET['id']) ? intval($_GET['id']) : (isset($input['id']) ? intval($input['id']) : 0);
+    $id = isset($_GET['id']) ? trim((string)$_GET['id']) : (isset($input['id']) ? trim((string)$input['id']) : '');
 
     $found = false;
     foreach ($db['vacancies'] as &$vac) {
-        if ($vac['id'] == $id) {
+        if (isset($vac['id']) && (string)$vac['id'] === (string)$id) {
             $vac = array_merge($vac, $input);
             $found = true;
             break;
@@ -55,12 +64,32 @@ if ($method === 'PUT') {
 }
 
 if ($method === 'DELETE') {
-    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    $db['vacancies'] = array_values(array_filter($db['vacancies'], function($v) use ($id) {
-        return $v['id'] != $id;
-    }));
-    save_database($db);
-    echo json_encode(['success' => true]);
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $id = isset($_GET['id']) ? $_GET['id'] : (isset($input['id']) ? $input['id'] : '');
+    if (!$id && isset($_SERVER['REQUEST_URI'])) {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $parts = explode('/', trim($path, '/'));
+        $last = end($parts);
+        if ($last && $last !== 'vacancies.php' && $last !== 'vacancies') {
+            $id = urldecode($last);
+        }
+    }
+    if ($id) {
+        $pdo = get_pdo();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("DELETE FROM vacancies WHERE id = ?");
+                $stmt->execute([(string)$id]);
+            } catch(Exception $e) {}
+        }
+        $db['vacancies'] = array_values(array_filter($db['vacancies'], function($v) use ($id) {
+            return isset($v['id']) && (string)$v['id'] !== (string)$id;
+        }));
+        save_database($db);
+        echo json_encode(['success' => true]);
+        exit();
+    }
+    echo json_encode(['success' => true, 'message' => 'No vacancy ID provided']);
     exit();
 }
 

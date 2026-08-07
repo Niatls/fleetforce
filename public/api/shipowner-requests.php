@@ -55,12 +55,32 @@ if ($method === 'PUT') {
 }
 
 if ($method === 'DELETE') {
-    $id = isset($_GET['id']) ? $_GET['id'] : '';
-    $db['shipowner_requests'] = array_values(array_filter($db['shipowner_requests'], function($r) use ($id) {
-        return $r['id'] != $id;
-    }));
-    save_database($db);
-    echo json_encode(['success' => true]);
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $id = isset($_GET['id']) ? $_GET['id'] : (isset($input['id']) ? $input['id'] : '');
+    if (!$id && isset($_SERVER['REQUEST_URI'])) {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $parts = explode('/', trim($path, '/'));
+        $last = end($parts);
+        if ($last && $last !== 'shipowner-requests.php' && $last !== 'shipowner-requests') {
+            $id = urldecode($last);
+        }
+    }
+    if ($id) {
+        $pdo = get_pdo();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("DELETE FROM shipowner_requests WHERE id = ?");
+                $stmt->execute([(string)$id]);
+            } catch(Exception $e) {}
+        }
+        $db['shipowner_requests'] = array_values(array_filter($db['shipowner_requests'], function($r) use ($id) {
+            return isset($r['id']) && (string)$r['id'] !== (string)$id;
+        }));
+        save_database($db);
+        echo json_encode(['success' => true]);
+        exit();
+    }
+    echo json_encode(['success' => true, 'message' => 'No request ID provided']);
     exit();
 }
 
