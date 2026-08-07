@@ -840,6 +840,8 @@ function AppContent() {
           liveOfficesSubtitle={officesSubtitle}
           liveShipownerTitle={shipownerTitle}
           liveShipownerSubtitle={shipownerSubtitle}
+          currentTheme={currentTheme}
+          onThemeChange={handleThemeChange}
         />
       );
     }

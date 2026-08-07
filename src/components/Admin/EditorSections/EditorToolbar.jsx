@@ -1,11 +1,13 @@
 import React from 'react';
-import { ArrowLeft, Edit3, Eye, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Edit3, Eye, CheckCircle2, Palette } from 'lucide-react';
 
 export const EditorToolbar = ({
   onClose,
   autoSaveStatus,
   previewMode,
-  setPreviewMode
+  setPreviewMode,
+  currentTheme,
+  onThemeChange
 }) => {
   return (
     <header
@@ -23,7 +25,9 @@ export const EditorToolbar = ({
         display: 'flex',
         justify: 'space-between',
         alignItems: 'center',
-        boxShadow: 'var(--shadow-subtle)'
+        gap: '1rem',
+        boxShadow: 'var(--shadow-subtle)',
+        flexWrap: 'wrap'
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', flexWrap: 'wrap' }}>
@@ -48,46 +52,68 @@ export const EditorToolbar = ({
         </div>
       </div>
 
-      {/* Mode Switcher Toggle: Edit vs Preview */}
-      <div style={{ display: 'flex', background: 'var(--bg-main)', border: '1px solid var(--border-color)', padding: '3px', borderRadius: '8px' }}>
-        <button
-          onClick={() => setPreviewMode(false)}
-          style={{
-            padding: '0.35rem 0.9rem',
-            borderRadius: '6px',
-            border: 'none',
-            fontSize: '0.82rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            background: !previewMode ? 'var(--color-accent)' : 'transparent',
-            color: !previewMode ? '#FFFFFF' : 'var(--text-secondary)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            transition: 'var(--transition-fast)'
-          }}
-        >
-          <Edit3 size={14} /> Редактирование
-        </button>
-        <button
-          onClick={() => setPreviewMode(true)}
-          style={{
-            padding: '0.35rem 0.9rem',
-            borderRadius: '6px',
-            border: 'none',
-            fontSize: '0.82rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            background: previewMode ? 'var(--color-emerald)' : 'transparent',
-            color: previewMode ? '#FFFFFF' : 'var(--text-secondary)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            transition: 'var(--transition-fast)'
-          }}
-        >
-          <Eye size={14} /> Предпросмотр сайтом
-        </button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        {/* Theme Selector */}
+        {onThemeChange && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'var(--bg-main)', padding: '0.3rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+            <Palette size={14} color="var(--color-accent)" />
+            <select 
+              value={currentTheme || 'ocean-soft'}
+              onChange={(e) => onThemeChange(e.target.value)}
+              className="form-select"
+              style={{ padding: '0.2rem 0.4rem', fontSize: '0.78rem', background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}
+            >
+              <option value="ocean-soft" style={{ background: '#1e293b', color: '#fff' }}>🌊 Тихий Океан (Pacific Blue)</option>
+              <option value="light-daylight" style={{ background: '#ffffff', color: '#0f172a' }}>☀️ Дневной Порт (Light Daylight)</option>
+              <option value="deep-navy" style={{ background: '#0e1b33', color: '#fff' }}>⚓ Полуночный Флот (Midnight Navy)</option>
+              <option value="emerald-sea" style={{ background: '#0a3338', color: '#fff' }}>🐬 Изумрудный Бриз (Caribbean Teal)</option>
+              <option value="nordic-storm" style={{ background: '#172338', color: '#fff' }}>⚡ Северный Шторм (Nordic Steel)</option>
+              <option value="sunset-haven" style={{ background: '#1e1b3a', color: '#fff' }}>🌅 Морской Закат (Sunset Haven)</option>
+            </select>
+          </div>
+        )}
+
+        {/* Mode Switcher Toggle: Edit vs Preview */}
+        <div style={{ display: 'flex', background: 'var(--bg-main)', border: '1px solid var(--border-color)', padding: '3px', borderRadius: '8px' }}>
+          <button
+            onClick={() => setPreviewMode(false)}
+            style={{
+              padding: '0.35rem 0.9rem',
+              borderRadius: '6px',
+              border: 'none',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              background: !previewMode ? 'var(--color-accent)' : 'transparent',
+              color: !previewMode ? '#FFFFFF' : 'var(--text-secondary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              transition: 'var(--transition-fast)'
+            }}
+          >
+            <Edit3 size={14} /> Редактирование
+          </button>
+          <button
+            onClick={() => setPreviewMode(true)}
+            style={{
+              padding: '0.35rem 0.9rem',
+              borderRadius: '6px',
+              border: 'none',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              background: previewMode ? 'var(--color-emerald)' : 'transparent',
+              color: previewMode ? '#FFFFFF' : 'var(--text-secondary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              transition: 'var(--transition-fast)'
+            }}
+          >
+            <Eye size={14} /> Предпросмотр сайтом
+          </button>
+        </div>
       </div>
     </header>
   );

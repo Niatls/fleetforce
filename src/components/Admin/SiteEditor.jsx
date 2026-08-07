@@ -34,7 +34,9 @@ export const SiteEditor = ({
   liveOfficesTitle = '',
   liveOfficesSubtitle = '',
   liveShipownerTitle = '',
-  liveShipownerSubtitle = ''
+  liveShipownerSubtitle = '',
+  currentTheme,
+  onThemeChange
 }) => {
   const { lang, t } = useLanguage();
 
@@ -420,6 +422,8 @@ export const SiteEditor = ({
         autoSaveStatus="Автосохранение в базу данных активно"
         previewMode={previewMode}
         setPreviewMode={setPreviewMode}
+        currentTheme={currentTheme}
+        onThemeChange={onThemeChange}
       />
 
       {/* Editor Banner Notice */}
