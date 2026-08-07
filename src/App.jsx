@@ -315,22 +315,18 @@ function AppContent() {
       if (Array.isArray(data.hub_blocks) && data.hub_blocks.length > 0) {
         setHubBlocks(data.hub_blocks.filter(Boolean));
       }
-      if (Array.isArray(data.stats) && data.stats.length >= 4) {
-        setStats(data.stats.filter(Boolean).map(s => ({ ...s, active: true })));
-      } else {
-        setStats(INITIAL_STATS);
+      if (Array.isArray(data.stats) && data.stats.length > 0) {
+        setStats(data.stats.filter(Boolean));
       }
       if (data.section_visibility && typeof data.section_visibility === 'object') {
         const vis = data.section_visibility;
-        setSectionVisibility({
-          hero: vis.hero !== false,
-          vacancies: vis.vacancies !== false,
-          hub: vis.hub !== false,
-          shipowners: vis.shipowners !== false,
-          offices: vis.offices !== false
-        });
-      } else {
-        setSectionVisibility({ hero: true, vacancies: true, hub: true, shipowners: true, offices: true });
+        setSectionVisibility(prev => ({
+          hero: vis.hero !== undefined ? vis.hero : prev.hero,
+          vacancies: vis.vacancies !== undefined ? vis.vacancies : prev.vacancies,
+          hub: vis.hub !== undefined ? vis.hub : prev.hub,
+          shipowners: vis.shipowners !== undefined ? vis.shipowners : prev.shipowners,
+          offices: vis.offices !== undefined ? vis.offices : prev.offices
+        }));
       }
       if (data.site_titles) {
         const st = data.site_titles;
@@ -396,6 +392,11 @@ function AppContent() {
   // Handlers
   const handleUpdateStats = (newStats) => {
     setStats(newStats);
+    fetch('/api/config.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stats: newStats })
+    }).catch(() => {});
   };
 
   const handleAddShipownerRequest = (newReq) => {
@@ -697,10 +698,18 @@ function AppContent() {
   };
 
   const handleToggleSectionVisibility = (sectionKey) => {
-    setSectionVisibility((prev) => ({
-      ...prev,
-      [sectionKey]: !prev[sectionKey]
-    }));
+    setSectionVisibility((prev) => {
+      const updated = {
+        ...prev,
+        [sectionKey]: !prev[sectionKey]
+      };
+      fetch('/api/config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ section_visibility: updated })
+      }).catch(() => {});
+      return updated;
+    });
   };
 
   const handleLogoutAdmin = () => {
