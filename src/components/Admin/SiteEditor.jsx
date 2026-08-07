@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Sparkles } from 'lucide-react';
-import { Navbar } from '../Navbar';
 import { VacancyFormModal } from './VacancyFormModal';
 import { OfficeFormModal } from './OfficeFormModal';
 import { HubBlockFormModal } from './HubBlockFormModal';
@@ -433,14 +432,6 @@ export const SiteEditor = ({
 
       <div className={previewMode ? 'preview-active' : 'editor-active'}>
         
-        {/* TOP NAVBAR (Full Page Copy) */}
-        <Navbar 
-          onOpenWizard={() => {}} 
-          onOpenAdmin={() => {}} 
-          activeSection="hero" 
-          setActiveSection={() => {}} 
-        />
-
         {/* 1. HERO SECTION */}
         <EditorHeroSection
           previewMode={previewMode}
