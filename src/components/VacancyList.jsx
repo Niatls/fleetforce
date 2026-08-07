@@ -174,7 +174,7 @@ export const VacancyList = ({ vacancies = [], searchFilter, onApplyVacancy, rend
                     </div>
 
                     {/* Line 3: Title & Rank */}
-                    <h3 style={{ fontSize: '1.35rem', marginBottom: '0.4rem', color: '#FFFFFF', wordBreak: 'break-word' }}>
+                    <h3 style={{ fontSize: '1.35rem', marginBottom: '0.4rem', color: 'var(--text-primary)', wordBreak: 'break-word' }}>
                       {vac.title}
                     </h3>
                     <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>

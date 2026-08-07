@@ -12,7 +12,7 @@ export const Footer = ({
 
   return (
     <footer style={{
-      background: '#040810',
+      background: 'var(--bg-main)',
       borderTop: '1px solid var(--border-color)',
       padding: '4rem 0 2rem',
       color: 'var(--text-secondary)',
@@ -29,12 +29,12 @@ export const Footer = ({
                 height: '34px',
                 borderRadius: '8px',
                 overflow: 'hidden',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                border: '1px solid var(--border-color)',
                 boxShadow: '0 0 10px rgba(0, 139, 255, 0.3)'
               }}>
                 <img src="/favicon.png" alt="FleetForce Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
-              <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', fontWeight: 800, color: '#FFFFFF' }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                 Fleet<span style={{ color: 'var(--color-accent)' }}>Force</span>
               </span>
             </div>
@@ -49,7 +49,7 @@ export const Footer = ({
 
           {/* Col 2: Navigation */}
           <div>
-            <h4 style={{ color: '#FFFFFF', marginBottom: '1rem', fontSize: '1rem' }}>{t('footer.navTitle')}</h4>
+            <h4 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1rem' }}>{t('footer.navTitle')}</h4>
             <ul style={{ listStyle: 'none', display: 'grid', gap: '0.6rem' }}>
               <li><a href="#vacancies">{t('nav.vacancies')}</a></li>
               <li><a href="#seafarers">{t('nav.application')}</a></li>
@@ -60,7 +60,7 @@ export const Footer = ({
 
           {/* Col 3: Compliance & Legal */}
           <div>
-            <h4 style={{ color: '#FFFFFF', marginBottom: '1rem', fontSize: '1rem' }}>{t('footer.certTitle')}</h4>
+            <h4 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1rem' }}>{t('footer.certTitle')}</h4>
             <p style={{ fontSize: '0.82rem', lineHeight: 1.6, marginBottom: '1rem' }}>
               {(lang === 'ru' && customCertText !== undefined) ? customCertText : t('footer.compliance')}
             </p>

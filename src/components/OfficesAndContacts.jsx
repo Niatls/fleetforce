@@ -67,7 +67,7 @@ export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard
                     <Clock size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                   </div>
 
-                  <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#FFFFFF' }}>
+                  <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>
                     {getCity(off)}
                   </h3>
 

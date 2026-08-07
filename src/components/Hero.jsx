@@ -24,7 +24,7 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
     if (colorStr === 'emerald') return 'var(--color-emerald)';
     if (colorStr === 'gold') return 'var(--color-gold)';
     if (colorStr === 'danger') return 'var(--color-danger)';
-    if (colorStr === 'white') return '#FFFFFF';
+    if (colorStr === 'white') return 'var(--text-primary)';
     return 'var(--color-accent)';
   };
 
@@ -32,8 +32,8 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
     <section id="hero" style={{
       position: 'relative',
       padding: '5rem 0 4rem',
-      background: 'radial-gradient(ellipse at 50% 20%, rgba(0, 139, 255, 0.15) 0%, rgba(6, 13, 25, 1) 70%)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+      background: 'radial-gradient(ellipse at 50% 20%, var(--color-accent-light) 0%, var(--bg-main) 85%)',
+      borderBottom: '1px solid var(--border-color)',
       overflow: 'hidden'
     }}>
       {/* Background Decorative Mesh Shapes */}
@@ -43,7 +43,7 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
         right: '-5%',
         width: '500px',
         height: '500px',
-        background: 'radial-gradient(circle, rgba(0, 139, 255, 0.12) 0%, rgba(0,0,0,0) 70%)',
+        background: 'radial-gradient(circle, var(--color-accent-light) 0%, rgba(0,0,0,0) 70%)',
         filter: 'blur(60px)',
         pointerEvents: 'none'
       }} />
@@ -58,8 +58,8 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
             gap: '0.6rem',
             padding: '0.45rem 1.1rem',
             borderRadius: 'var(--radius-full)',
-            background: 'rgba(0, 139, 255, 0.1)',
-            border: '1px solid rgba(0, 139, 255, 0.25)',
+            background: 'var(--color-accent-light)',
+            border: '1px solid var(--border-glow)',
             color: 'var(--color-accent)',
             fontSize: '0.85rem',
             fontWeight: 600,
@@ -76,7 +76,8 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
             lineHeight: 1.15,
             fontWeight: 800,
             marginBottom: '1.2rem',
-            letterSpacing: '-0.03em'
+            letterSpacing: '-0.03em',
+            color: 'var(--text-primary)'
           }}>
             {(lang === 'ru' && customTitle) ? customTitle : (
               <>

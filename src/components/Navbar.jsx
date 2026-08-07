@@ -20,8 +20,9 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
       position: 'sticky',
       top: 0,
       zIndex: 900,
-      background: 'rgba(15, 23, 42, 0.9)',
+      background: 'var(--bg-card)',
       backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
       borderBottom: '1px solid var(--border-color)'
     }}>
       <div className="container" style={{
@@ -42,7 +43,7 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
             borderRadius: '12px',
             overflow: 'hidden',
             boxShadow: '0 0 20px rgba(2, 132, 199, 0.4)',
-            border: '1px solid rgba(255, 255, 255, 0.2)'
+            border: '1px solid var(--border-color)'
           }}>
             <img src="/favicon.png" alt="FleetForce Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
@@ -52,11 +53,9 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
               fontSize: '1.55rem',
               fontWeight: 800,
               letterSpacing: '-0.03em',
-              background: 'linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              color: 'var(--text-primary)'
             }}>
-              Fleet<span style={{ color: 'var(--color-accent)', WebkitTextFillColor: 'var(--color-accent)' }}>Force</span>
+              Fleet<span style={{ color: 'var(--color-accent)' }}>Force</span>
             </span>
             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.14em', fontWeight: 600 }}>
               Crewing Alliance

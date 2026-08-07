@@ -116,7 +116,7 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
                   </div>
 
                   {/* Row 2: Title */}
-                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem', color: '#FFFFFF' }}>{getBlockTitle(block)}</h3>
+                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.6rem', color: 'var(--text-primary)' }}>{getBlockTitle(block)}</h3>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
                     {getBlockDesc(block)}
                   </p>

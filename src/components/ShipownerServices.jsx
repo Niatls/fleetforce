@@ -78,7 +78,7 @@ export const ShipownerServices = ({
                 </div>
               </div>
               {/* Row 2: Title */}
-              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: 'var(--text-primary)' }}>
                 {c1Title}
               </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -99,7 +99,7 @@ export const ShipownerServices = ({
                 </div>
               </div>
               {/* Row 2: Title */}
-              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: 'var(--text-primary)' }}>
                 {c2Title}
               </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -120,7 +120,7 @@ export const ShipownerServices = ({
                 </div>
               </div>
               {/* Row 2: Title */}
-              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '0.8rem', color: 'var(--text-primary)' }}>
                 {c3Title}
               </h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
