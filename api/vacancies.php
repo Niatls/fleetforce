@@ -26,8 +26,17 @@ if ($method === 'POST') {
         'responsibilities' => 'Standard duties'
     ], $input);
 
-    array_unshift($db['vacancies'], $newVac);
-    save_database($db);
+    $exists = false;
+    foreach ($db['vacancies'] as $v) {
+        if (isset($v['id']) && (string)$v['id'] === (string)$newVac['id']) {
+            $exists = true;
+            break;
+        }
+    }
+    if (!$exists) {
+        array_unshift($db['vacancies'], $newVac);
+        save_database($db);
+    }
     echo json_encode(['success' => true, 'data' => $newVac]);
     exit();
 }
