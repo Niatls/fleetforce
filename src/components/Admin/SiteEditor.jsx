@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   ArrowLeft, Rocket, RefreshCw, Eye, EyeOff, Plus, CheckCircle2,
-  AlertCircle, Sparkles, Layout, Settings, Edit3, Layers, Anchor
+  AlertCircle, Sparkles, Layout, Settings, Edit3, Layers, Anchor, Trash2, Save
 } from 'lucide-react';
 
 import { Navbar } from '../Navbar';
