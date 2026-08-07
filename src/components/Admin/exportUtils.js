@@ -461,9 +461,9 @@ const generateDocBlob = async (cand) => {
         const targetTr = trMatches[seaHeaderIdx + 2 + sIdx];
         if (targetTr) {
           const updated = setRowCellValues(targetTr.xml, {
-            0: s.dateFrom, 1: s.dateTo, 2: s.rankHeld, 3: s.salary,
-            4: s.vesselName, 5: s.shipowner, 6: s.vesselType, 7: s.engineType,
-            8: s.buildYear, 9: s.dwtGrt, 10: s.engineBhp, 11: s.flag, 12: s.manningCompany
+            0: s.dateFrom || '-', 1: s.dateTo || '-', 2: s.rankHeld || '-', 3: s.salary || '-',
+            4: s.vesselName || '-', 5: s.shipowner || '-', 6: s.vesselType || '-', 7: s.engineType || '-',
+            8: s.buildYear || '-', 9: s.dwtGrt || '-', 10: s.engineBhp || '-', 11: s.flag || '-', 12: s.manningCompany || '-'
           });
           xml = xml.replace(targetTr.xml, updated);
         }
@@ -477,7 +477,7 @@ const generateDocBlob = async (cand) => {
         const targetTr = trMatches[empHeaderIdx + 2 + eIdx];
         if (targetTr) {
           const updated = setRowCellValues(targetTr.xml, {
-            0: e.company, 1: e.personInCharge, 2: e.contactDetails
+            0: e.company || '-', 1: e.personInCharge || '-', 2: e.contactDetails || '-'
           });
           xml = xml.replace(targetTr.xml, updated);
         }

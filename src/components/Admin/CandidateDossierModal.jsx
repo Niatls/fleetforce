@@ -222,13 +222,13 @@ export const CandidateDossierModal = ({
               <tbody>
                 {candidate.seaService?.map((s, idx) => (
                   <tr key={idx} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                    <td style={{ padding: '0.5rem', whiteSpace: 'nowrap' }}>{s.dateFrom} — {s.dateTo}</td>
-                    <td style={{ padding: '0.5rem', fontWeight: 700, color: 'var(--color-accent)' }}>{s.rankHeld}</td>
-                    <td style={{ padding: '0.5rem', fontWeight: 600 }}>{s.vesselName || 'N/A'}</td>
+                    <td style={{ padding: '0.5rem', whiteSpace: 'nowrap' }}>{(s.dateFrom || '-') + ' — ' + (s.dateTo || '-')}</td>
+                    <td style={{ padding: '0.5rem', fontWeight: 700, color: 'var(--color-accent)' }}>{s.rankHeld || '-'}</td>
+                    <td style={{ padding: '0.5rem', fontWeight: 600 }}>{s.vesselName || '-'}</td>
                     <td style={{ padding: '0.5rem' }}>{s.shipowner || '-'}</td>
-                    <td style={{ padding: '0.5rem' }}>{s.vesselType}</td>
-                    <td style={{ padding: '0.5rem' }}>{s.dwtGrt} / {s.engineBhp}</td>
-                    <td style={{ padding: '0.5rem' }}>{s.manningCompany}</td>
+                    <td style={{ padding: '0.5rem' }}>{s.vesselType || '-'}</td>
+                    <td style={{ padding: '0.5rem' }}>{(s.dwtGrt || '-') + ' / ' + (s.engineBhp || '-')}</td>
+                    <td style={{ padding: '0.5rem' }}>{s.manningCompany || '-'}</td>
                   </tr>
                 ))}
               </tbody>
