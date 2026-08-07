@@ -13,6 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 define('DB_SQLITE_FILE', __DIR__ . '/data/fleetforce.db');
 define('DB_JSON_FILE', __DIR__ . '/data/db.json');
 
+// Explicit SQLite Header Confirmation
+if (file_exists(DB_SQLITE_FILE)) {
+    header("X-Backend-Database: fleetforce.db (SQLite)");
+}
+
 // ─── SQLite PDO Singleton & Auto-Initializer ──────────────────────────────────
 function get_pdo() {
     static $pdo = null;
