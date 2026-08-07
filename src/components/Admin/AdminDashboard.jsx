@@ -52,21 +52,20 @@ export const AdminDashboard = ({
   onDeleteHubBlock,
   onUpdateStats,
   onUpdateShipownerRequestStatus,
-  onDeleteShipownerRequest
+  onDeleteShipownerRequest,
+  currentTheme: propTheme,
+  onThemeChange
 }) => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('candidates');
 
-  // Theme State
-  const [currentTheme, setCurrentTheme] = useState(() => {
-    return localStorage.getItem('fleetforce_theme') || 'ocean-soft';
-  });
+  const currentTheme = propTheme || localStorage.getItem('fleetforce_theme') || 'ocean-soft';
 
   const handleThemeChange = (newTheme) => {
-    setCurrentTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
     document.body.setAttribute('data-theme', newTheme);
     localStorage.setItem('fleetforce_theme', newTheme);
+    if (onThemeChange) onThemeChange(newTheme);
   };
 
   // Office Modal State

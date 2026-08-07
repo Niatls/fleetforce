@@ -199,6 +199,30 @@ function AppContent() {
   const [footerCertText, setFooterCertText] = useState(() => localStorage.getItem('fleetforce_footer_cert_text') || '');
   const [footerCopyright, setFooterCopyright] = useState(() => localStorage.getItem('fleetforce_footer_copyright') || '');
 
+  // Theme State synced with server database
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    return localStorage.getItem('fleetforce_theme') || 'ocean-soft';
+  });
+
+  const handleThemeChange = (newTheme) => {
+    if (!newTheme) return;
+    setCurrentTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('fleetforce_theme', newTheme);
+
+    fetch('/api/config.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ theme: newTheme })
+    }).catch(() => {});
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    document.body.setAttribute('data-theme', currentTheme);
+  }, [currentTheme]);
+
   useEffect(() => {
     localStorage.setItem('fleetforce_section_visibility', JSON.stringify(sectionVisibility));
   }, [sectionVisibility]);
@@ -337,10 +361,14 @@ function AppContent() {
         if (st.vacanciesSubtitle !== undefined) setVacanciesSubtitle(st.vacanciesSubtitle);
         if (st.hubTitle !== undefined) setHubTitle(st.hubTitle);
         if (st.hubSubtitle !== undefined) setHubSubtitle(st.hubSubtitle);
-        if (st.officesTitle !== undefined) setOfficesTitle(st.officesTitle);
-        if (st.officesSubtitle !== undefined) setOfficesSubtitle(st.officesSubtitle);
         if (st.shipownerTitle !== undefined) setShipownerTitle(st.shipownerTitle);
         if (st.shipownerSubtitle !== undefined) setShipownerSubtitle(st.shipownerSubtitle);
+      }
+      if (data.theme) {
+        setCurrentTheme(data.theme);
+        document.documentElement.setAttribute('data-theme', data.theme);
+        document.body.setAttribute('data-theme', data.theme);
+        localStorage.setItem('fleetforce_theme', data.theme);
       }
     };
 
@@ -849,6 +877,8 @@ function AppContent() {
         onUpdateStats={handleUpdateStats}
         onUpdateShipownerRequestStatus={handleUpdateShipownerRequestStatus}
         onDeleteShipownerRequest={handleDeleteShipownerRequest}
+        currentTheme={currentTheme}
+        onThemeChange={handleThemeChange}
       />
     );
   }

@@ -188,7 +188,7 @@ function save_database($data) {
             }
 
             $stmtConfig = $pdo->prepare("INSERT OR REPLACE INTO site_config (config_key, config_val) VALUES (?, ?)");
-            foreach (['offices', 'hub_blocks', 'vacancies', 'stats', 'site_titles', 'section_visibility', 'last_updated_at'] as $k) {
+            foreach (['offices', 'hub_blocks', 'vacancies', 'stats', 'site_titles', 'section_visibility', 'theme', 'last_updated_at'] as $k) {
                 if (isset($data[$k])) {
                     $stmtConfig->execute([$k, json_encode($data[$k], JSON_UNESCAPED_UNICODE)]);
                 }
