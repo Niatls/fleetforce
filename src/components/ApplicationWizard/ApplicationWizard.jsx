@@ -313,14 +313,14 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
             <Inp placeholder="e.g. Ivanov Alexander Sergeevich"
               value={fd.fullName} onChange={v => set('fullName', v)} required />
           </FG>
-          <FG label="Father's Name">
-            <Inp placeholder="Father's Name" value={fd.fatherName} onChange={v => set('fatherName', v)} />
+          <FG label="Date of Birth (Дата рождения) *">
+            <Inp type="date" value={fd.dob} onChange={v => set('dob', v)} required />
+          </FG>
+          <FG label="Patronymic (Отчество)">
+            <Inp placeholder="e.g. Sergeevich / Отчество" value={fd.fatherName} onChange={v => set('fatherName', v)} />
           </FG>
           <FG label="Mother's Name">
             <Inp placeholder="Mother's Name" value={fd.motherName} onChange={v => set('motherName', v)} />
-          </FG>
-          <FG label="Date of Birth">
-            <Inp type="date" value={fd.dob} onChange={v => set('dob', v)} />
           </FG>
           <FG label="Place of Birth">
             <Inp placeholder="City, Country of Birth" value={fd.placeOfBirth} onChange={v => set('placeOfBirth', v)} />
