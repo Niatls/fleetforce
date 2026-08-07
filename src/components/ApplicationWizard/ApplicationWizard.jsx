@@ -305,7 +305,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
             </Sel>
           </FG>
           <FG label="Готовность к выходу / Date of Readiness *">
-            <Inp type="date" value={fd.readyDate} onChange={v => set('readyDate', v)} required />
+            <Inp placeholder="DD.MM.YYYY (e.g. 15.08.2026)" value={fd.readyDate} onChange={v => set('readyDate', v)} required />
           </FG>
 
           <SectionTitle>Личные Данные (Personal Details)</SectionTitle>
@@ -320,7 +320,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
             <Inp placeholder="например: Елена" value={fd.motherName} onChange={v => set('motherName', v)} />
           </FG>
           <FG label="🎂 Дата рождения / Date of Birth *">
-            <Inp type="date" value={fd.dob} onChange={v => set('dob', v)} required />
+            <Inp placeholder="DD.MM.YYYY (e.g. 15.08.1985)" value={fd.dob} onChange={v => set('dob', v)} required />
           </FG>
           <FG label="Место рождения / Place of Birth">
             <Inp placeholder="например: г. Санкт-Петербург, Россия" value={fd.placeOfBirth} onChange={v => set('placeOfBirth', v)} />
@@ -448,16 +448,16 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
           <SectionTitle>Travel Passport</SectionTitle>
           <div style={grid()}>
             <FG label="Passport Number"><Inp placeholder="e.g. 75 1234567" value={fd.passportNo} onChange={v => set('passportNo', v)} /></FG>
-            <FG label="Issued Date"><Inp type="date" value={fd.passportIssued} onChange={v => set('passportIssued', v)} /></FG>
-            <FG label="Valid Until"><Inp type="date" value={fd.passportExpiry} onChange={v => set('passportExpiry', v)} /></FG>
+            <FG label="Issued Date"><Inp placeholder="DD.MM.YYYY" value={fd.passportIssued} onChange={v => set('passportIssued', v)} /></FG>
+            <FG label="Valid Until"><Inp placeholder="DD.MM.YYYY" value={fd.passportExpiry} onChange={v => set('passportExpiry', v)} /></FG>
             <FG label="Place of Issue"><Inp placeholder="e.g. FMS 78001" value={fd.passportPlace} onChange={v => set('passportPlace', v)} /></FG>
           </div>
 
           <SectionTitle>Seaman's Book / SID</SectionTitle>
           <div style={grid()}>
             <FG label="Seaman's Book Number"><Inp placeholder="e.g. AB 123456" value={fd.seamanBookNo} onChange={v => set('seamanBookNo', v)} /></FG>
-            <FG label="Issued Date"><Inp type="date" value={fd.seamanBookIssued} onChange={v => set('seamanBookIssued', v)} /></FG>
-            <FG label="Valid Until"><Inp type="date" value={fd.seamanBookExpiry} onChange={v => set('seamanBookExpiry', v)} /></FG>
+            <FG label="Issued Date"><Inp placeholder="DD.MM.YYYY" value={fd.seamanBookIssued} onChange={v => set('seamanBookIssued', v)} /></FG>
+            <FG label="Valid Until"><Inp placeholder="DD.MM.YYYY" value={fd.seamanBookExpiry} onChange={v => set('seamanBookExpiry', v)} /></FG>
             <FG label="Place of Issue"><Inp placeholder="e.g. Port of Saint Petersburg" value={fd.seamanBookPlace} onChange={v => set('seamanBookPlace', v)} /></FG>
           </div>
 
@@ -481,8 +481,8 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
               <div style={grid()}>
                 <FG label="Flag State"><Sel value={b.flag} onChange={v => setArr('recordBooks', i, 'flag', v)} options={FLAG_STATES} /></FG>
                 <FG label="Book Number"><Inp value={b.number} onChange={v => setArr('recordBooks', i, 'number', v)} /></FG>
-                <FG label="Issued Date"><Inp type="date" value={b.issuedDate} onChange={v => setArr('recordBooks', i, 'issuedDate', v)} /></FG>
-                <FG label="Valid Until"><Inp type="date" value={b.validUntil} onChange={v => setArr('recordBooks', i, 'validUntil', v)} /></FG>
+                <FG label="Issued Date"><Inp placeholder="DD.MM.YYYY" value={b.issuedDate} onChange={v => setArr('recordBooks', i, 'issuedDate', v)} /></FG>
+                <FG label="Valid Until"><Inp placeholder="DD.MM.YYYY" value={b.validUntil} onChange={v => setArr('recordBooks', i, 'validUntil', v)} /></FG>
                 <FG label="Place of Issue"><Inp value={b.place} onChange={v => setArr('recordBooks', i, 'place', v)} /></FG>
               </div>
             </div>
@@ -500,8 +500,8 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                   value={fd.cocName} onChange={v => set('cocName', v)} />
               </FG>
               <FG label="CoC Number"><Inp placeholder="e.g. COC-987654" value={fd.cocNo} onChange={v => set('cocNo', v)} /></FG>
-              <FG label="Issued Date"><Inp type="date" value={fd.cocIssued} onChange={v => set('cocIssued', v)} /></FG>
-              <FG label="Valid Until"><Inp type="date" value={fd.cocExpiry} onChange={v => set('cocExpiry', v)} /></FG>
+              <FG label="Issued Date"><Inp placeholder="DD.MM.YYYY" value={fd.cocIssued} onChange={v => set('cocIssued', v)} /></FG>
+              <FG label="Valid Until"><Inp placeholder="DD.MM.YYYY" value={fd.cocExpiry} onChange={v => set('cocExpiry', v)} /></FG>
               <FG label="Capacity / Rank"><Inp placeholder="e.g. Master / Chief Mate" value={fd.cocCapacity} onChange={v => set('cocCapacity', v)} /></FG>
             </div>
           </div>
@@ -528,8 +528,8 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                   <Inp placeholder="e.g. Basic Safety Training (STCW VI/1)" value={c.certName} onChange={v => setArr('certificates', i, 'certName', v)} />
                 </FG>
                 <FG label="Certificate No"><Inp value={c.certNo} onChange={v => setArr('certificates', i, 'certNo', v)} /></FG>
-                <FG label="Issued Date"><Inp type="date" value={c.certIssued} onChange={v => setArr('certificates', i, 'certIssued', v)} /></FG>
-                <FG label="Valid Until"><Inp type="date" value={c.certValid} onChange={v => setArr('certificates', i, 'certValid', v)} /></FG>
+                <FG label="Issued Date"><Inp placeholder="DD.MM.YYYY" value={c.certIssued} onChange={v => setArr('certificates', i, 'certIssued', v)} /></FG>
+                <FG label="Valid Until"><Inp placeholder="DD.MM.YYYY" value={c.certValid} onChange={v => setArr('certificates', i, 'certValid', v)} /></FG>
                 <FG label="Capacity / Limitation"><Inp value={c.rankCapacity} onChange={v => setArr('certificates', i, 'rankCapacity', v)} /></FG>
               </div>
             </div>
@@ -558,8 +558,8 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                 )}
               </div>
               <div style={grid('repeat(auto-fit, minmax(190px, 1fr))')}>
-                <FG label="From (Sign On)"><Inp type="date" value={s.dateFrom} onChange={v => setArr('seaService', i, 'dateFrom', v)} /></FG>
-                <FG label="To (Sign Off)"><Inp type="date" value={s.dateTo} onChange={v => setArr('seaService', i, 'dateTo', v)} /></FG>
+                <FG label="From (Sign On)"><Inp placeholder="DD.MM.YYYY" value={s.dateFrom} onChange={v => setArr('seaService', i, 'dateFrom', v)} /></FG>
+                <FG label="To (Sign Off)"><Inp placeholder="DD.MM.YYYY" value={s.dateTo} onChange={v => setArr('seaService', i, 'dateTo', v)} /></FG>
                 <FG label="Position Held">
                   <Sel value={s.rankHeld} onChange={v => setArr('seaService', i, 'rankHeld', v)}>
                     {MARITIME_RANKS.map(r => <option key={r} value={r}>{r}</option>)}
