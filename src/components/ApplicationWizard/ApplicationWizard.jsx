@@ -54,9 +54,9 @@ const Inp = ({ value, onChange, ...rest }) => (
 
 const Sel = ({ value, onChange, options, children, placeholder = '-- SELECT --', ...rest }) => (
   <select className="form-select" value={value || ''} onChange={e => onChange(e.target.value)} {...rest}>
+    {placeholder !== false && <option value="">{placeholder}</option>}
     {options ? (
       <>
-        {placeholder !== false && <option value="">{placeholder}</option>}
         {options.map(o => {
           const val = typeof o === 'object' ? o.value : o;
           const lbl = typeof o === 'object' ? o.label : o;
@@ -107,59 +107,52 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
   const [submitted, setSubmitted] = useState(false);
 
   const [fd, setFd] = useState({
-    appliedRank: initialRank || MARITIME_RANKS[0],
-    readyDate: new Date().toISOString().split('T')[0],
+    appliedRank: initialRank || '',
+    readyDate: '',
     fullName: '',
     fatherName: '',
     motherName: '',
     dob: '',
     placeOfBirth: '',
-    nationality: 'Russia',
-    maritalStatus: 'Single',
-    childrenUnder18: '0',
+    nationality: '',
+    maritalStatus: '',
+    childrenUnder18: '',
     phone: '',
     email: '',
     skypeTelegram: '',
     address: '',
     kinName: '',
-    kinRelation: KIN_RELATIONS[0],
+    kinRelation: '',
     kinPhone: '',
     kinAddress: '',
     height: '',
     weight: '',
-    overallSize: 'L / 50 EUR',
-    shoeSize: '42 EUR',
-    eyesColour: 'Brown',
-    hairColour: 'Dark',
+    overallSize: '',
+    shoeSize: '',
+    eyesColour: '',
+    hairColour: '',
 
-    alternativeRank: MARITIME_RANKS[1],
+    alternativeRank: '',
     minSalary: '',
-    preferredVessels: initialVesselType || VESSEL_TYPES[0],
-    contractDuration: '4 months',
-    englishLevel: 'Good / Upper-Intermediate',
+    preferredVessels: initialVesselType || '',
+    contractDuration: '',
+    englishLevel: '',
     marlinsScore: '',
     nearestAirport: '',
     collegeName: '',
     collegeFrom: '',
     collegeTill: '',
-    collegeDepartment: 'Nautical / Navigation',
+    collegeDepartment: '',
 
     passportNo: '', passportIssued: '', passportExpiry: '', passportPlace: '',
     seamanBookNo: '', seamanBookIssued: '', seamanBookExpiry: '', seamanBookPlace: '',
     recordBooks: [emptyRecordBook()],
 
-    cocName: 'Master Unlimited (STCW II/2)',
-    cocNo: '', cocIssued: '', cocExpiry: '', cocCapacity: 'Master',
-    certificates: [
-      { id: mkId(), certName: 'Basic Safety Training (BST / STCW VI/1)', certNo: '', certIssued: '', certValid: '', rankCapacity: 'STCW VI/1' },
-      { id: mkId(), certName: 'Proficiency in Survival Craft (PSCRB / STCW VI/2)', certNo: '', certIssued: '', certValid: '', rankCapacity: 'STCW VI/2' },
-      { id: mkId(), certName: 'Advanced Fire Fighting (AFF / STCW VI/3)', certNo: '', certIssued: '', certValid: '', rankCapacity: 'STCW VI/3' },
-      { id: mkId(), certName: 'Medical First Aid & Medical Care (STCW VI/4)', certNo: '', certIssued: '', certValid: '', rankCapacity: 'STCW VI/4' },
-      { id: mkId(), certName: 'GMDSS General Operator Certificate (GOC)', certNo: '', certIssued: '', certValid: '', rankCapacity: 'GOC' },
-      { id: mkId(), certName: 'ECDIS Generic & Type Specific Training', certNo: '', certIssued: '', certValid: '', rankCapacity: 'ECDIS' }
-    ],
+    cocName: '',
+    cocNo: '', cocIssued: '', cocExpiry: '', cocCapacity: '',
+    certificates: [emptyCertificate()],
 
-    seaService: [emptySeaService(initialRank || MARITIME_RANKS[0])],
+    seaService: [emptySeaService('')],
     employers: [emptyEmployer()],
     attachedFiles: [],
     consent: false,
