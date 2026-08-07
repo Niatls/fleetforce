@@ -8,7 +8,8 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
   const [selectedRank, setSelectedRank] = useState('');
   const [selectedVessel, setSelectedVessel] = useState('');
 
-  const statsList = stats && stats.length > 0 ? stats : INITIAL_STATS;
+  const rawStats = stats && stats.length > 0 ? stats : INITIAL_STATS;
+  const statsList = rawStats.length < 4 ? INITIAL_STATS : rawStats;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();

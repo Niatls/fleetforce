@@ -315,11 +315,22 @@ function AppContent() {
       if (Array.isArray(data.hub_blocks) && data.hub_blocks.length > 0) {
         setHubBlocks(data.hub_blocks.filter(Boolean));
       }
-      if (Array.isArray(data.stats) && data.stats.length > 0) {
-        setStats(data.stats.filter(Boolean));
+      if (Array.isArray(data.stats) && data.stats.length >= 4) {
+        setStats(data.stats.filter(Boolean).map(s => ({ ...s, active: true })));
+      } else {
+        setStats(INITIAL_STATS);
       }
       if (data.section_visibility && typeof data.section_visibility === 'object') {
-        setSectionVisibility(prev => ({ ...prev, ...data.section_visibility }));
+        const vis = data.section_visibility;
+        setSectionVisibility({
+          hero: vis.hero !== false,
+          vacancies: vis.vacancies !== false,
+          hub: vis.hub !== false,
+          shipowners: vis.shipowners !== false,
+          offices: vis.offices !== false
+        });
+      } else {
+        setSectionVisibility({ hero: true, vacancies: true, hub: true, shipowners: true, offices: true });
       }
       if (data.site_titles) {
         const st = data.site_titles;
