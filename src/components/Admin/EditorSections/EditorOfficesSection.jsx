@@ -86,6 +86,7 @@ export const EditorOfficesSection = ({
           ) : draftOfficesHours
         }
         renderOfficeCard={(off, defaultOfficeNode) => {
+          if (!off) return null;
           if (previewMode) return defaultOfficeNode;
           return (
             <EditOverlay

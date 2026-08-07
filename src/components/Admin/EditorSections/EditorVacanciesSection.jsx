@@ -75,6 +75,7 @@ export const EditorVacanciesSection = ({
           ) : draftVacanciesSubtitle
         }
         renderVacancyCard={(vac, defaultCardNode) => {
+          if (!vac) return null;
           if (previewMode) return defaultCardNode;
           return (
             <EditOverlay

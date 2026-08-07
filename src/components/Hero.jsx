@@ -126,6 +126,8 @@ export const Hero = ({ onSearch, onOpenWizard, stats = INITIAL_STATS, customBadg
             borderTop: '1px solid rgba(255, 255, 255, 0.08)'
           }}>
             {statsList.map((st, idx) => {
+              if (!st) return null;
+              if (!renderStatItem && st.active === false) return null;
               if (renderStatItem) {
                 const rendered = renderStatItem(st, idx);
                 if (rendered) return rendered;

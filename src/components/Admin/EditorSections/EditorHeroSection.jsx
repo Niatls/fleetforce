@@ -86,6 +86,7 @@ export const EditorHeroSection = ({
           ) : draftHeroSubtitle
         }
         renderStatItem={(statItem, idx) => {
+          if (!statItem) return null;
           if (previewMode) {
             if (statItem.active === false) return <div key={statItem.id || idx} style={{ display: 'none' }} />;
             return null;

@@ -20,6 +20,7 @@ export const VacancyList = ({ vacancies = [], searchFilter, onApplyVacancy, rend
 
   const filteredVacancies = useMemo(() => {
     return vacancies.filter((vac) => {
+      if (!vac) return false;
       if (!renderVacancyCard && vac.active === false) return false;
       if (selectedRank && vac.rank !== selectedRank) return false;
       if (selectedVessel && vac.vesselType !== selectedVessel) return false;

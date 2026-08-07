@@ -7,7 +7,7 @@ import { INITIAL_HUB_BLOCKS } from '../data/initialData';
 export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, renderBlockItem, customTitle, customSubtitle }) => {
   const { lang, t } = useLanguage();
   const rawList = hubBlocks && hubBlocks.length > 0 ? hubBlocks : INITIAL_HUB_BLOCKS;
-  const blocksList = renderBlockItem ? rawList : rawList.filter(b => b.active !== false && !b.hidden);
+  const blocksList = renderBlockItem ? rawList : rawList.filter(b => b && b.active !== false && !b.hidden);
 
   const displayTitle = (lang === 'ru' && customTitle) ? customTitle : t('seafarersHub.title');
   const displaySubtitle = (lang === 'ru' && customSubtitle) ? customSubtitle : t('seafarersHub.subtitle');

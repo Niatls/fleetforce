@@ -75,6 +75,7 @@ export const EditorHubSection = ({
           ) : draftHubSubtitle
         }
         renderBlockItem={(block, defaultBlockNode) => {
+          if (!block) return null;
           if (previewMode) return defaultBlockNode;
           return (
             <EditOverlay

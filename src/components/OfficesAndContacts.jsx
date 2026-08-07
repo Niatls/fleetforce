@@ -7,7 +7,7 @@ import { INITIAL_OFFICES } from '../data/initialData';
 export const OfficesAndContacts = ({ offices = INITIAL_OFFICES, renderOfficeCard, customTitle, customSubtitle, customHours, renderEditableHours }) => {
   const { lang, t } = useLanguage();
   const rawList = offices && offices.length > 0 ? offices : INITIAL_OFFICES;
-  const officesList = renderOfficeCard ? rawList : rawList.filter(o => o.active !== false && !o.hidden);
+  const officesList = renderOfficeCard ? rawList : rawList.filter(o => o && o.active !== false && !o.hidden);
 
   const displayTitle = (lang === 'ru' && customTitle) ? customTitle : t('offices.title');
   const displaySubtitle = (lang === 'ru' && customSubtitle) ? customSubtitle : t('offices.subtitle');
