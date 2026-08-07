@@ -238,6 +238,38 @@ export const SiteEditor = ({
     alert('🚀 Поздравляем! Все изменения из черновика успешно опубликованы на главном сайте!');
   };
 
+  // Auto-Save helper to immediately persist changes to SQLite DB
+  const autoSave = (updatedData = {}) => {
+    onPublish({
+      vacancies: updatedData.vacancies || draftVacancies,
+      offices: updatedData.offices || draftOffices,
+      hubBlocks: updatedData.hubBlocks || draftHubBlocks,
+      stats: updatedData.stats || draftStats,
+      sectionVisibility: updatedData.sectionVisibility || draftSectionVisibility,
+      heroBadge: updatedData.heroBadge ?? draftHeroBadge,
+      heroTitle: updatedData.heroTitle ?? draftHeroTitle,
+      heroSubtitle: updatedData.heroSubtitle ?? draftHeroSubtitle,
+      vacanciesTitle: updatedData.vacanciesTitle ?? draftVacanciesTitle,
+      vacanciesSubtitle: updatedData.vacanciesSubtitle ?? draftVacanciesSubtitle,
+      hubTitle: updatedData.hubTitle ?? draftHubTitle,
+      hubSubtitle: updatedData.hubSubtitle ?? draftHubSubtitle,
+      officesTitle: updatedData.officesTitle ?? draftOfficesTitle,
+      officesSubtitle: updatedData.officesSubtitle ?? draftOfficesSubtitle,
+      shipownerTitle: updatedData.shipownerTitle ?? draftShipownerTitle,
+      shipownerSubtitle: updatedData.shipownerSubtitle ?? draftShipownerSubtitle,
+      service1Title: updatedData.service1Title ?? draftService1Title,
+      service1Desc: updatedData.service1Desc ?? draftService1Desc,
+      service2Title: updatedData.service2Title ?? draftService2Title,
+      service2Desc: updatedData.service2Desc ?? draftService2Desc,
+      service3Title: updatedData.service3Title ?? draftService3Title,
+      service3Desc: updatedData.service3Desc ?? draftService3Desc,
+      footerBrandDesc: updatedData.footerBrandDesc ?? draftFooterBrandDesc,
+      footerCertText: updatedData.footerCertText ?? draftFooterCertText,
+      footerCopyright: updatedData.footerCopyright ?? draftFooterCopyright
+    });
+    setHasChanges(false);
+  };
+
   // --- Handlers for Vacancies ---
   const handleOpenAddVacancy = () => {
     setEditingVacancy(null);
@@ -248,21 +280,28 @@ export const SiteEditor = ({
     setVacancyModalOpen(true);
   };
   const handleSaveVacancyModal = (vacData) => {
-    if (editingVacancy) {
-      setDraftVacancies(prev => prev.map(v => v.id === vacData.id ? vacData : v));
-    } else {
-      setDraftVacancies(prev => [vacData, ...prev]);
-    }
-    markChanged();
+    const vacWithId = { ...vacData, id: vacData.id || Date.now() };
+    setDraftVacancies(prev => {
+      const isEdit = prev.some(v => v.id === vacWithId.id);
+      const updated = isEdit ? prev.map(v => v.id === vacWithId.id ? vacWithId : v) : [vacWithId, ...prev];
+      autoSave({ vacancies: updated });
+      return updated;
+    });
     setVacancyModalOpen(false);
   };
   const handleDeleteVacancy = (id) => {
-    setDraftVacancies(prev => prev.filter(v => v.id !== id));
-    markChanged();
+    setDraftVacancies(prev => {
+      const updated = prev.filter(v => v.id !== id);
+      autoSave({ vacancies: updated });
+      return updated;
+    });
   };
   const handleToggleVacancyActive = (id) => {
-    setDraftVacancies(prev => prev.map(v => v.id === id ? { ...v, active: v.active === false } : v));
-    markChanged();
+    setDraftVacancies(prev => {
+      const updated = prev.map(v => v.id === id ? { ...v, active: v.active === false ? true : false } : v);
+      autoSave({ vacancies: updated });
+      return updated;
+    });
   };
 
   // --- Handlers for Offices ---
@@ -275,21 +314,28 @@ export const SiteEditor = ({
     setOfficeModalOpen(true);
   };
   const handleSaveOfficeModal = (offData) => {
-    if (editingOffice) {
-      setDraftOffices(prev => prev.map(o => o.id === offData.id ? offData : o));
-    } else {
-      setDraftOffices(prev => [...prev, offData]);
-    }
-    markChanged();
+    const offWithId = { ...offData, id: offData.id || Date.now() };
+    setDraftOffices(prev => {
+      const isEdit = prev.some(o => o.id === offWithId.id);
+      const updated = isEdit ? prev.map(o => o.id === offWithId.id ? offWithId : o) : [...prev, offWithId];
+      autoSave({ offices: updated });
+      return updated;
+    });
     setOfficeModalOpen(false);
   };
   const handleDeleteOffice = (id) => {
-    setDraftOffices(prev => prev.filter(o => o.id !== id));
-    markChanged();
+    setDraftOffices(prev => {
+      const updated = prev.filter(o => o.id !== id);
+      autoSave({ offices: updated });
+      return updated;
+    });
   };
   const handleToggleOfficeActive = (id) => {
-    setDraftOffices(prev => prev.map(o => o.id === id ? { ...o, active: o.active === false } : o));
-    markChanged();
+    setDraftOffices(prev => {
+      const updated = prev.map(o => o.id === id ? { ...o, active: o.active === false ? true : false } : o);
+      autoSave({ offices: updated });
+      return updated;
+    });
   };
 
   // --- Handlers for Hub Blocks ---
@@ -302,27 +348,37 @@ export const SiteEditor = ({
     setHubModalOpen(true);
   };
   const handleSaveHubModal = (hubData) => {
-    if (editingHubBlock) {
-      setDraftHubBlocks(prev => prev.map(b => b.id === hubData.id ? hubData : b));
-    } else {
-      setDraftHubBlocks(prev => [...prev, hubData]);
-    }
-    markChanged();
+    const hubWithId = { ...hubData, id: hubData.id || Date.now() };
+    setDraftHubBlocks(prev => {
+      const isEdit = prev.some(b => b.id === hubWithId.id);
+      const updated = isEdit ? prev.map(b => b.id === hubWithId.id ? hubWithId : b) : [...prev, hubWithId];
+      autoSave({ hubBlocks: updated });
+      return updated;
+    });
     setHubModalOpen(false);
   };
   const handleDeleteHubBlock = (id) => {
-    setDraftHubBlocks(prev => prev.filter(b => b.id !== id));
-    markChanged();
+    setDraftHubBlocks(prev => {
+      const updated = prev.filter(b => b.id !== id);
+      autoSave({ hubBlocks: updated });
+      return updated;
+    });
   };
   const handleToggleHubActive = (id) => {
-    setDraftHubBlocks(prev => prev.map(b => b.id === id ? { ...b, active: b.active === false } : b));
-    markChanged();
+    setDraftHubBlocks(prev => {
+      const updated = prev.map(b => b.id === id ? { ...b, active: b.active === false ? true : false } : b);
+      autoSave({ hubBlocks: updated });
+      return updated;
+    });
   };
 
   // --- Handlers for Section Visibility ---
   const handleToggleSection = (key) => {
-    setDraftSectionVisibility(prev => ({ ...prev, [key]: !prev[key] }));
-    markChanged();
+    setDraftSectionVisibility(prev => {
+      const updated = { ...prev, [key]: !prev[key] };
+      autoSave({ sectionVisibility: updated });
+      return updated;
+    });
   };
 
   // --- Handlers for Hero Stats ---
@@ -330,18 +386,18 @@ export const SiteEditor = ({
     setDraftStats(prev => {
       const updated = [...prev];
       updated[index] = { ...updated[index], number: newNum };
+      autoSave({ stats: updated });
       return updated;
     });
-    markChanged();
   };
 
   const handleUpdateStatLabel = (index, newLabel) => {
     setDraftStats(prev => {
       const updated = [...prev];
       updated[index] = { ...updated[index], labelRu: newLabel, labelEn: newLabel };
+      autoSave({ stats: updated });
       return updated;
     });
-    markChanged();
   };
 
   return (
@@ -376,18 +432,12 @@ export const SiteEditor = ({
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <span className="badge badge-gold" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Edit3 size={14} /> ВИЗУАЛЬНЫЙ РЕДАКТОР СТАЙТА
+              <Edit3 size={14} /> ВИЗУАЛЬНЫЙ РЕДАКТОР САЙТА
             </span>
             
-            {hasChanges ? (
-              <span style={{ fontSize: '0.8rem', color: '#eab308', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }}>
-                <AlertCircle size={14} /> Есть несохранённые правки в черновике
-              </span>
-            ) : (
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-emerald)', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }}>
-                <CheckCircle2 size={14} /> Черновик совпадает с сайтом
-              </span>
-            )}
+            <span style={{ fontSize: '0.82rem', color: 'var(--color-emerald)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600 }}>
+              <CheckCircle2 size={15} /> Автосохранение в базу данных активна
+            </span>
           </div>
         </div>
 
@@ -403,17 +453,6 @@ export const SiteEditor = ({
             <span>{previewMode ? 'Выйти из Предпросмотра' : '👁️ Предпросмотр (как у гостей)'}</span>
           </button>
 
-          {hasChanges && (
-            <button
-              type="button"
-              onClick={handleResetDraft}
-              className="btn btn-secondary btn-sm"
-              style={{ color: 'var(--color-danger)', borderColor: 'rgba(239,68,68,0.4)' }}
-            >
-              <RefreshCw size={14} /> Сбросить черновик
-            </button>
-          )}
-
           <button
             type="button"
             onClick={handlePublishAll}
@@ -427,7 +466,7 @@ export const SiteEditor = ({
             }}
           >
             <Rocket size={18} />
-            <span>🚀 Опубликовать на сайт</span>
+            <span>💾 Сохранить и Опубликовать всё</span>
           </button>
         </div>
       </header>
