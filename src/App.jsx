@@ -282,38 +282,6 @@ function AppContent() {
       })
       .catch(() => {});
 
-    fetch('/api/config.php')
-      .then((res) => {
-        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
-        return res.json();
-      })
-      .then((data) => {
-        if (data && data.success && data.data) {
-          if (Array.isArray(data.data.vacancies)) setVacancies(data.data.vacancies);
-          if (Array.isArray(data.data.offices)) setOffices(data.data.offices);
-          if (Array.isArray(data.data.hub_blocks)) setHubBlocks(data.data.hub_blocks);
-          if (Array.isArray(data.data.stats)) setStats(data.data.stats);
-          if (data.data.section_visibility && typeof data.data.section_visibility === 'object') {
-            setSectionVisibility(data.data.section_visibility);
-          }
-          if (data.data.site_titles) {
-            const st = data.data.site_titles;
-            if (st.heroBadge) setHeroBadge(st.heroBadge);
-            if (st.heroTitle) setHeroTitle(st.heroTitle);
-            if (st.heroSubtitle) setHeroSubtitle(st.heroSubtitle);
-            if (st.vacanciesTitle) setVacanciesTitle(st.vacanciesTitle);
-            if (st.vacanciesSubtitle) setVacanciesSubtitle(st.vacanciesSubtitle);
-            if (st.hubTitle) setHubTitle(st.hubTitle);
-            if (st.hubSubtitle) setHubSubtitle(st.hubSubtitle);
-            if (st.officesTitle) setOfficesTitle(st.officesTitle);
-            if (st.officesSubtitle) setOfficesSubtitle(st.officesSubtitle);
-            if (st.shipownerTitle) setShipownerTitle(st.shipownerTitle);
-            if (st.shipownerSubtitle) setShipownerSubtitle(st.shipownerSubtitle);
-          }
-        }
-      })
-      .catch(() => {});
-
     fetch('/api/shipowner-requests')
       .then((res) => {
         if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
@@ -325,6 +293,69 @@ function AppContent() {
         }
       })
       .catch(() => {});
+  }, []);
+
+  // Real-time server config auto-sync for live visitors
+  useEffect(() => {
+    let lastVersion = null;
+
+    const applyConfigData = (data) => {
+      if (Array.isArray(data.vacancies)) setVacancies(data.vacancies);
+      if (Array.isArray(data.offices)) setOffices(data.offices);
+      if (Array.isArray(data.hub_blocks)) setHubBlocks(data.hub_blocks);
+      if (Array.isArray(data.stats)) setStats(data.stats);
+      if (data.section_visibility && typeof data.section_visibility === 'object') {
+        setSectionVisibility(data.section_visibility);
+      }
+      if (data.site_titles) {
+        const st = data.site_titles;
+        if (st.heroBadge !== undefined) setHeroBadge(st.heroBadge);
+        if (st.heroTitle !== undefined) setHeroTitle(st.heroTitle);
+        if (st.heroSubtitle !== undefined) setHeroSubtitle(st.heroSubtitle);
+        if (st.vacanciesTitle !== undefined) setVacanciesTitle(st.vacanciesTitle);
+        if (st.vacanciesSubtitle !== undefined) setVacanciesSubtitle(st.vacanciesSubtitle);
+        if (st.hubTitle !== undefined) setHubTitle(st.hubTitle);
+        if (st.hubSubtitle !== undefined) setHubSubtitle(st.hubSubtitle);
+        if (st.officesTitle !== undefined) setOfficesTitle(st.officesTitle);
+        if (st.officesSubtitle !== undefined) setOfficesSubtitle(st.officesSubtitle);
+        if (st.shipownerTitle !== undefined) setShipownerTitle(st.shipownerTitle);
+        if (st.shipownerSubtitle !== undefined) setShipownerSubtitle(st.shipownerSubtitle);
+      }
+    };
+
+    const fetchConfigFull = () => {
+      fetch('/api/config.php')
+        .then((res) => res.ok ? res.json() : null)
+        .then((resData) => {
+          if (resData && resData.success && resData.data) {
+            applyConfigData(resData.data);
+            if (resData.version) lastVersion = resData.version;
+          }
+        })
+        .catch(() => {});
+    };
+
+    // Initial full fetch
+    fetchConfigFull();
+
+    // Fast version check every 5 seconds
+    const interval = setInterval(() => {
+      fetch('/api/config.php?version_check=1')
+        .then((res) => res.ok ? res.json() : null)
+        .then((verData) => {
+          if (verData && verData.success && verData.version) {
+            if (lastVersion === null) {
+              lastVersion = verData.version;
+            } else if (verData.version !== lastVersion) {
+              lastVersion = verData.version;
+              fetchConfigFull();
+            }
+          }
+        })
+        .catch(() => {});
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   // Clear stale legacy localStorage overrides so MySQL DB on server is always 100% authoritative

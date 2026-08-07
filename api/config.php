@@ -188,7 +188,7 @@ function save_database($data) {
             }
 
             $stmtConfig = $pdo->prepare("INSERT OR REPLACE INTO site_config (config_key, config_val) VALUES (?, ?)");
-            foreach (['offices', 'hub_blocks', 'vacancies', 'stats', 'site_titles', 'section_visibility'] as $k) {
+            foreach (['offices', 'hub_blocks', 'vacancies', 'stats', 'site_titles', 'section_visibility', 'last_updated_at'] as $k) {
                 if (isset($data[$k])) {
                     $stmtConfig->execute([$k, json_encode($data[$k], JSON_UNESCAPED_UNICODE)]);
                 }
@@ -211,6 +211,12 @@ function get_pdo_for_delete() { return get_pdo(); }
 if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) === 'config.php') {
     $db = get_database();
 
+    if (isset($_GET['version_check']) || isset($_GET['check'])) {
+        $ver = $db['last_updated_at'] ?? (file_exists(DB_SQLITE_FILE) ? filemtime(DB_SQLITE_FILE) : time());
+        echo json_encode(['success' => true, 'version' => (int)$ver]);
+        exit();
+    }
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         if (!empty($input)) {
@@ -222,12 +228,13 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) 
             if (array_key_exists('candidates', $input)) $db['candidates'] = $input['candidates'];
             if (array_key_exists('shipowner_requests', $input)) $db['shipowner_requests'] = $input['shipowner_requests'];
 
+            $db['last_updated_at'] = time();
             save_database($db);
-            echo json_encode(['success' => true, 'data' => $db]);
+            echo json_encode(['success' => true, 'data' => $db, 'version' => $db['last_updated_at']]);
             exit();
         }
     }
 
-    echo json_encode(['success' => true, 'data' => $db]);
+    echo json_encode(['success' => true, 'data' => $db, 'version' => $db['last_updated_at'] ?? time()]);
     exit();
 }
