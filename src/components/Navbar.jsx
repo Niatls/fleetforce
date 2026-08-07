@@ -171,9 +171,11 @@ export const Navbar = ({ onOpenWizard, onOpenAdmin, activeSection, setActiveSect
 
           {/* Hotline Button */}
           <a 
-            href="tel:+78005553535" 
+            href="https://t.me/AtanMartin" 
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn btn-secondary btn-sm hotline-btn"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', padding: '0.45rem 0.85rem', whiteSpace: 'nowrap' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', padding: '0.45rem 0.85rem', whiteSpace: 'nowrap', textDecoration: 'none' }}
           >
             <Phone size={15} color="var(--color-emerald)" />
             <span style={{ fontSize: '0.85rem' }}>{t('nav.hotline')}</span>
