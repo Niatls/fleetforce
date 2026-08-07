@@ -135,16 +135,7 @@ function AppContent() {
   };
 
   // Data State with LocalStorage Persistence Fallback
-  const [vacancies, setVacancies] = useState(() => {
-    try {
-      const deletedIds = getDeletedVacancyIds();
-      const saved = localStorage.getItem('fleetforce_vacancies');
-      const list = saved ? JSON.parse(saved) : INITIAL_VACANCIES;
-      return list.filter((v) => !deletedIds.has(String(v.id || '').trim().toLowerCase()));
-    } catch (e) {
-      return INITIAL_VACANCIES;
-    }
-  });
+  const [vacancies, setVacancies] = useState(INITIAL_VACANCIES);
 
   const [candidates, setCandidates] = useState(() => {
     try {
@@ -168,46 +159,15 @@ function AppContent() {
     }
   });
 
-  const [offices, setOffices] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fleetforce_offices');
-      return saved ? JSON.parse(saved) : INITIAL_OFFICES;
-    } catch (e) {
-      return INITIAL_OFFICES;
-    }
-  });
-
-  const [hubBlocks, setHubBlocks] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fleetforce_hub_blocks');
-      return saved ? JSON.parse(saved) : INITIAL_HUB_BLOCKS;
-    } catch (e) {
-      return INITIAL_HUB_BLOCKS;
-    }
-  });
-
-  const [stats, setStats] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fleetforce_stats');
-      return saved ? JSON.parse(saved) : INITIAL_STATS;
-    } catch (e) {
-      return INITIAL_STATS;
-    }
-  });
-
-  const [sectionVisibility, setSectionVisibility] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fleetforce_section_visibility');
-      return saved ? JSON.parse(saved) : {
-        hero: true,
-        vacancies: true,
-        hub: true,
-        shipowners: true,
-        offices: true
-      };
-    } catch (e) {
-      return { hero: true, vacancies: true, hub: true, shipowners: true, offices: true };
-    }
+  const [offices, setOffices] = useState(INITIAL_OFFICES);
+  const [hubBlocks, setHubBlocks] = useState(INITIAL_HUB_BLOCKS);
+  const [stats, setStats] = useState(INITIAL_STATS);
+  const [sectionVisibility, setSectionVisibility] = useState({
+    hero: true,
+    vacancies: true,
+    hub: true,
+    shipowners: true,
+    offices: true
   });
 
   const [heroBadge, setHeroBadge] = useState(() => localStorage.getItem('fleetforce_hero_badge') || '');
@@ -256,31 +216,16 @@ function AppContent() {
     document.body.setAttribute('data-theme', savedTheme);
   }, []);
 
-  // Try fetching from Backend API — localStorage always wins (API store resets on server restart)
+  // Try fetching from Backend API — server DB is source of truth
   useEffect(() => {
-    // Helper: merge API data into local state, but LOCAL records always take priority
-    // Deleted IDs are never re-added.
-    const mergeApiIntoLocal = (apiItems, setFn, keyField = 'id', type = 'vacancy') => {
-      const deletedIds = type === 'vacancy' ? getDeletedVacancyIds() : (type === 'request' ? getDeletedRequestIds() : (type === 'candidate' ? getDeletedCandidateIds() : new Set()));
-      setFn((prev) => {
-        const localIds = new Set(prev.map((item) => String(item[keyField] || '').trim().toLowerCase()));
-        const newFromApi = apiItems.filter((item) => {
-          const itemKey = String(item[keyField] || '').trim().toLowerCase();
-          if (deletedIds.has(itemKey)) return false;
-          return !localIds.has(itemKey);
-        });
-        return newFromApi.length > 0 ? [...prev, ...newFromApi] : prev;
-      });
-    };
-
-    fetch('/api/vacancies')
+    fetch('/api/vacancies.php')
       .then((res) => {
         if (!res.ok || res.headers.get('content-type')?.includes('text/html')) return null;
         return res.json();
       })
       .then((data) => {
-        if (data && data.success && data.data?.length) {
-          mergeApiIntoLocal(data.data, setVacancies, 'id', 'vacancy');
+        if (data && data.success && Array.isArray(data.data)) {
+          setVacancies(data.data);
         }
       })
       .catch(() => {});
@@ -375,8 +320,8 @@ function AppContent() {
         return res.json();
       })
       .then((data) => {
-        if (data && data.success && data.data?.length) {
-          mergeApiIntoLocal(data.data, setShipownerRequests, 'id', 'request');
+        if (data && data.success && Array.isArray(data.data)) {
+          setShipownerRequests(data.data);
         }
       })
       .catch(() => {});
