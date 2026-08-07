@@ -2,11 +2,13 @@ import React from 'react';
 import { Eye, Trash2 } from 'lucide-react';
 
 export const ShipownerRequestsTab = ({
-  shipownerRequests,
+  shipownerRequests = [],
   onSelectShipownerRequest,
   onUpdateShipownerRequestStatus,
   onDeleteShipownerRequest
 }) => {
+  const requestsList = Array.isArray(shipownerRequests) ? shipownerRequests : [];
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -33,59 +35,63 @@ export const ShipownerRequestsTab = ({
             </tr>
           </thead>
           <tbody>
-            {shipownerRequests.map((req) => (
-              <tr key={req.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '1rem' }}>
-                  <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{req.companyName}</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--color-accent)' }}>{req.id} • {new Date(req.createdAt).toLocaleDateString()}</div>
-                </td>
-                <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  {req.contactName}
-                </td>
-                <td style={{ padding: '1rem' }}>
-                  <div style={{ display: 'grid', gap: '0.2rem', fontSize: '0.85rem' }}>
-                    <a href={`mailto:${req.email}`} style={{ color: 'var(--color-accent)', textDecoration: 'none' }}>{req.email}</a>
-                    <a href={`tel:${req.phone}`} style={{ color: 'var(--color-emerald)', textDecoration: 'none' }}>{req.phone}</a>
-                  </div>
-                </td>
-                <td style={{ padding: '1rem', maxWidth: '300px' }}>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                    {req.details}
-                  </div>
-                </td>
-                <td style={{ padding: '1rem' }}>
-                  <select 
-                    value={req.status || 'New'} 
-                    onChange={(e) => onUpdateShipownerRequestStatus && onUpdateShipownerRequestStatus(req.id, e.target.value)}
-                    className="form-select"
-                    style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', background: req.status === 'New' ? 'var(--color-gold-light)' : 'rgba(255,255,255,0.05)', color: req.status === 'New' ? 'var(--color-gold)' : 'var(--text-primary)' }}
-                  >
-                    <option value="New">Новый запрос</option>
-                    <option value="In Progress">В работе / Расчет</option>
-                    <option value="Quoted">КП отправлено</option>
-                    <option value="Archive">Архив</option>
-                  </select>
-                </td>
-                <td style={{ padding: '1rem', textAlign: 'right' }}>
-                  <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
-                    <button 
-                      onClick={() => onSelectShipownerRequest(req)}
-                      className="btn btn-secondary btn-sm"
+            {requestsList.map((req, idx) => {
+              if (!req) return null;
+              return (
+                <tr key={req.id || idx} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                  <td style={{ padding: '1rem' }}>
+                    <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{req.companyName}</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--color-accent)' }}>{req.id} • {req.createdAt ? new Date(req.createdAt).toLocaleDateString() : ''}</div>
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    <div style={{ fontWeight: 600 }}>{req.contactPerson || '—'}</div>
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    <div>{req.phone}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{req.email}</div>
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    <span className="badge badge-gold" style={{ fontSize: '0.75rem' }}>
+                      {req.vesselType || 'Флот'}
+                    </span>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      Экипаж: {req.crewCount || 'по запросу'}
+                    </div>
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    <select
+                      value={req.status || 'New'}
+                      onChange={(e) => onUpdateShipownerRequestStatus && onUpdateShipownerRequestStatus(req.id, e.target.value)}
+                      style={{ background: 'var(--bg-surface)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '0.3rem 0.6rem', borderRadius: '6px', fontSize: '0.82rem' }}
                     >
-                      <Eye size={14} /> Просмотр
-                    </button>
-                    <button 
-                      onClick={() => onDeleteShipownerRequest && onDeleteShipownerRequest(req.id)}
-                      style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem' }}
-                      title="Удалить заявку"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {shipownerRequests.length === 0 && (
+                      <option value="New">Новая</option>
+                      <option value="In Progress">В обработке</option>
+                      <option value="Completed">Обработана</option>
+                      <option value="Rejected">Отклонена</option>
+                    </select>
+                  </td>
+                  <td style={{ padding: '1rem', textAlign: 'right' }}>
+                    <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
+                      <button
+                        onClick={() => onSelectShipownerRequest && onSelectShipownerRequest(req)}
+                        style={{ background: 'rgba(0,139,255,0.1)', border: '1px solid rgba(0,139,255,0.3)', color: 'var(--color-accent)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem 0.6rem', fontSize: '0.8rem' }}
+                        title="Открыть детали заявки"
+                      >
+                        <Eye size={14} /> Просмотр
+                      </button>
+                      <button
+                        onClick={() => onDeleteShipownerRequest && onDeleteShipownerRequest(req.id)}
+                        style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '6px', cursor: 'pointer', padding: '0.35rem' }}
+                        title="Удалить заявку"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {requestsList.length === 0 && (
               <tr>
                 <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
                   Пока нет поступивших запросов расчетов от судовладельцев.

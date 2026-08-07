@@ -21,7 +21,8 @@ export const CandidatesTab = ({
   const { lang, t } = useLanguage();
   const [confirmDeleteId, setConfirmDeleteId] = React.useState(null);
 
-  const filteredCandidates = candidates.filter((cand) => {
+  const filteredCandidates = (candidates || []).filter((cand) => {
+    if (!cand) return false;
     if (filterStatus && cand.status !== filterStatus) return false;
     if (filterRank && cand.appliedRank !== filterRank) return false;
     if (searchCandidate) {

@@ -142,7 +142,8 @@ function AppContent() {
       const deletedIds = getDeletedCandidateIds();
       const saved = localStorage.getItem('fleetforce_candidates');
       const list = saved ? JSON.parse(saved) : INITIAL_CANDIDATES;
-      return list.filter(c => !deletedIds.has(String(c.id || '').trim().toLowerCase()));
+      if (!Array.isArray(list)) return INITIAL_CANDIDATES;
+      return list.filter(c => c && c.id != null && !deletedIds.has(String(c.id || '').trim().toLowerCase()));
     } catch (e) {
       return INITIAL_CANDIDATES;
     }
@@ -153,7 +154,8 @@ function AppContent() {
       const deletedIds = getDeletedRequestIds();
       const saved = localStorage.getItem('fleetforce_shipowner_requests');
       const list = saved ? JSON.parse(saved) : INITIAL_SHIPOWNER_REQUESTS;
-      return list.filter((r) => !deletedIds.has(String(r.id || '').trim().toLowerCase()));
+      if (!Array.isArray(list)) return INITIAL_SHIPOWNER_REQUESTS;
+      return list.filter((r) => r && r.id != null && !deletedIds.has(String(r.id || '').trim().toLowerCase()));
     } catch (e) {
       return INITIAL_SHIPOWNER_REQUESTS;
     }
@@ -231,10 +233,12 @@ function AppContent() {
       .catch(() => {});
 
     const syncCandidatesWithServer = (serverCandidates) => {
+      if (!Array.isArray(serverCandidates)) return;
       const deletedIds = getDeletedCandidateIds();
       setCandidates((prev) => {
         const localCandidateMap = new Map();
-        prev.forEach((cand) => {
+        (prev || []).forEach((cand) => {
+          if (!cand || cand.id == null) return;
           const idStr = String(cand.id);
           if (!deletedIds.has(idStr)) {
             localCandidateMap.set(idStr, cand);
@@ -242,6 +246,7 @@ function AppContent() {
         });
 
         serverCandidates.forEach((cand) => {
+          if (!cand || cand.id == null) return;
           const idStr = String(cand.id);
           if (!deletedIds.has(idStr)) {
             if (!localCandidateMap.has(idStr)) {
@@ -289,7 +294,8 @@ function AppContent() {
       })
       .then((data) => {
         if (data && data.success && Array.isArray(data.data)) {
-          setShipownerRequests(data.data);
+          const valid = data.data.filter(r => r && r.id != null);
+          setShipownerRequests(valid);
         }
       })
       .catch(() => {});
@@ -300,12 +306,20 @@ function AppContent() {
     let lastVersion = null;
 
     const applyConfigData = (data) => {
-      if (Array.isArray(data.vacancies)) setVacancies(data.vacancies);
-      if (Array.isArray(data.offices)) setOffices(data.offices);
-      if (Array.isArray(data.hub_blocks)) setHubBlocks(data.hub_blocks);
-      if (Array.isArray(data.stats)) setStats(data.stats);
+      if (Array.isArray(data.vacancies) && data.vacancies.length > 0) {
+        setVacancies(data.vacancies.filter(Boolean));
+      }
+      if (Array.isArray(data.offices) && data.offices.length > 0) {
+        setOffices(data.offices.filter(Boolean));
+      }
+      if (Array.isArray(data.hub_blocks) && data.hub_blocks.length > 0) {
+        setHubBlocks(data.hub_blocks.filter(Boolean));
+      }
+      if (Array.isArray(data.stats) && data.stats.length > 0) {
+        setStats(data.stats.filter(Boolean));
+      }
       if (data.section_visibility && typeof data.section_visibility === 'object') {
-        setSectionVisibility(data.section_visibility);
+        setSectionVisibility(prev => ({ ...prev, ...data.section_visibility }));
       }
       if (data.site_titles) {
         const st = data.site_titles;
