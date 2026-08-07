@@ -29,8 +29,17 @@ export const SiteEditor = ({
   liveStats = [],
   liveSectionVisibility = {},
   liveShipownerRequests = [],
+  liveHeroBadge = '',
   liveHeroTitle = '',
-  liveHeroSubtitle = ''
+  liveHeroSubtitle = '',
+  liveVacanciesTitle = '',
+  liveVacanciesSubtitle = '',
+  liveHubTitle = '',
+  liveHubSubtitle = '',
+  liveOfficesTitle = '',
+  liveOfficesSubtitle = '',
+  liveShipownerTitle = '',
+  liveShipownerSubtitle = ''
 }) => {
   const { lang, t } = useLanguage();
 
@@ -111,21 +120,21 @@ export const SiteEditor = ({
       setDraftHubBlocks(JSON.parse(JSON.stringify(liveHubBlocks)));
       setDraftStats(JSON.parse(JSON.stringify(liveStats)));
       setDraftSectionVisibility(JSON.parse(JSON.stringify(liveSectionVisibility)));
-      setDraftHeroBadge(localStorage.getItem('fleetforce_hero_badge') || 'Международный крюинговый альянс FLEET FORCE');
+      setDraftHeroBadge(liveHeroBadge || 'Международный крюинговый альянс FLEET FORCE');
       setDraftHeroTitle(liveHeroTitle || 'Трудоустройство моряков на мировой торговый флот');
       setDraftHeroSubtitle(liveHeroSubtitle || 'Официальное трудоустройство, высокие ставки, стабильные контракты на танкерном, контейнерном, балкерном и офшорном флоте.');
       
-      setDraftVacanciesTitle(localStorage.getItem('fleetforce_vacancies_title') || 'Актуальные Вакансии в Море');
-      setDraftVacanciesSubtitle(localStorage.getItem('fleetforce_vacancies_subtitle') || 'Прямые контракты от ведущих мировых судовладельцев и операторов флота');
+      setDraftVacanciesTitle(liveVacanciesTitle || 'Актуальные Вакансии в Море');
+      setDraftVacanciesSubtitle(liveVacanciesSubtitle || 'Прямые контракты от ведущих мировых судовладельцев и операторов флота');
       
-      setDraftHubTitle(localStorage.getItem('fleetforce_hub_title') || 'Центр Загрузок и Информация для Моряков');
-      setDraftHubSubtitle(localStorage.getItem('fleetforce_hub_subtitle') || 'Скачайте бланки анкет или пройдите подготовку к тестированию');
+      setDraftHubTitle(liveHubTitle || 'Центр Загрузок и Информация для Моряков');
+      setDraftHubSubtitle(liveHubSubtitle || 'Скачайте бланки анкет или пройдите подготовку к тестированию');
       
-      setDraftOfficesTitle(localStorage.getItem('fleetforce_offices_title') || 'Наши Офисы и Представительства');
-      setDraftOfficesSubtitle(localStorage.getItem('fleetforce_offices_subtitle') || 'Сеть крюинговых центров в ключевых портовых городах');
+      setDraftOfficesTitle(liveOfficesTitle || 'Наши Офисы и Представительства');
+      setDraftOfficesSubtitle(liveOfficesSubtitle || 'Сеть крюинговых центров в ключевых портовых городах');
 
-      setDraftShipownerTitle(localStorage.getItem('fleetforce_shipowner_title') || DEFAULT_SHIPOWNER_TITLE);
-      setDraftShipownerSubtitle(localStorage.getItem('fleetforce_shipowner_subtitle') || DEFAULT_SHIPOWNER_SUBTITLE);
+      setDraftShipownerTitle(liveShipownerTitle || DEFAULT_SHIPOWNER_TITLE);
+      setDraftShipownerSubtitle(liveShipownerSubtitle || DEFAULT_SHIPOWNER_SUBTITLE);
       setDraftService1Title(localStorage.getItem('fleetforce_service1_title') || DEFAULT_SERVICE1_TITLE);
       setDraftService1Desc(localStorage.getItem('fleetforce_service1_desc') || DEFAULT_SERVICE1_DESC);
       setDraftService2Title(localStorage.getItem('fleetforce_service2_title') || DEFAULT_SERVICE2_TITLE);
@@ -138,7 +147,7 @@ export const SiteEditor = ({
       setDraftFooterCopyright(localStorage.getItem('fleetforce_footer_copyright') || DEFAULT_FOOTER_COPYRIGHT);
       setHasChanges(false);
     }
-  }, [isOpen, liveVacancies, liveOffices, liveHubBlocks, liveStats, liveSectionVisibility, liveHeroTitle, liveHeroSubtitle]);
+  }, [isOpen, liveVacancies, liveOffices, liveHubBlocks, liveStats, liveSectionVisibility, liveHeroBadge, liveHeroTitle, liveHeroSubtitle, liveVacanciesTitle, liveVacanciesSubtitle, liveHubTitle, liveHubSubtitle, liveOfficesTitle, liveOfficesSubtitle, liveShipownerTitle, liveShipownerSubtitle]);
 
   // Track if changes exist compared to live
   const markChanged = () => setHasChanges(true);

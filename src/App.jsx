@@ -736,8 +736,17 @@ function AppContent() {
           liveStats={stats}
           liveSectionVisibility={sectionVisibility}
           liveShipownerRequests={shipownerRequests}
+          liveHeroBadge={heroBadge}
           liveHeroTitle={heroTitle}
           liveHeroSubtitle={heroSubtitle}
+          liveVacanciesTitle={vacanciesTitle}
+          liveVacanciesSubtitle={vacanciesSubtitle}
+          liveHubTitle={hubTitle}
+          liveHubSubtitle={hubSubtitle}
+          liveOfficesTitle={officesTitle}
+          liveOfficesSubtitle={officesSubtitle}
+          liveShipownerTitle={shipownerTitle}
+          liveShipownerSubtitle={shipownerSubtitle}
         />
       );
     }
