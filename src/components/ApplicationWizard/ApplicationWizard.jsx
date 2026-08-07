@@ -298,89 +298,89 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
     switch (step) {
       case 1: return (
         <div style={grid()}>
-          <SectionTitle>Applied Position & Readiness</SectionTitle>
-          <FG label="Applied for (Rank) *">
+          <SectionTitle>Желаемая Должность и Готовность (Position & Readiness)</SectionTitle>
+          <FG label="Желаемая должность / Applied Rank *">
             <Sel value={fd.appliedRank} onChange={v => set('appliedRank', v)}>
               {MARITIME_RANKS.map(r => <option key={r} value={r}>{r}</option>)}
             </Sel>
           </FG>
-          <FG label="Date of Readiness *">
+          <FG label="Готовность к выходу / Date of Readiness *">
             <Inp type="date" value={fd.readyDate} onChange={v => set('readyDate', v)} required />
           </FG>
 
-          <SectionTitle>Personal Information</SectionTitle>
-          <FG label="Full Name (Surname, Name) *" col="1 / -1">
-            <Inp placeholder="e.g. Ivanov Alexander Sergeevich"
+          <SectionTitle>Личные Данные (Personal Details)</SectionTitle>
+          <FG label="ФИО моряка (Фамилия Имя) / Full Name *" col="1 / -1">
+            <Inp placeholder="например: Иванов Александр Сергеевич"
               value={fd.fullName} onChange={v => set('fullName', v)} required />
           </FG>
-          <FG label="Date of Birth (Дата рождения) *">
+          <FG label="Отчество / Father's Name">
+            <Inp placeholder="например: Сергеевич" value={fd.fatherName} onChange={v => set('fatherName', v)} />
+          </FG>
+          <FG label="Имя матери / Mother's Name">
+            <Inp placeholder="например: Елена" value={fd.motherName} onChange={v => set('motherName', v)} />
+          </FG>
+          <FG label="🎂 Дата рождения / Date of Birth *">
             <Inp type="date" value={fd.dob} onChange={v => set('dob', v)} required />
           </FG>
-          <FG label="Patronymic (Отчество)">
-            <Inp placeholder="e.g. Sergeevich / Отчество" value={fd.fatherName} onChange={v => set('fatherName', v)} />
+          <FG label="Место рождения / Place of Birth">
+            <Inp placeholder="например: г. Санкт-Петербург, Россия" value={fd.placeOfBirth} onChange={v => set('placeOfBirth', v)} />
           </FG>
-          <FG label="Mother's Name">
-            <Inp placeholder="Mother's Name" value={fd.motherName} onChange={v => set('motherName', v)} />
+          <FG label="Гражданство / Nationality">
+            <Inp placeholder="например: Россия" value={fd.nationality} onChange={v => set('nationality', v)} />
           </FG>
-          <FG label="Place of Birth">
-            <Inp placeholder="City, Country of Birth" value={fd.placeOfBirth} onChange={v => set('placeOfBirth', v)} />
-          </FG>
-          <FG label="Nationality / Citizenship">
-            <Inp placeholder="Country of citizenship" value={fd.nationality} onChange={v => set('nationality', v)} />
-          </FG>
-          <FG label="Marital Status">
+          <FG label="Семейное положение / Marital Status">
             <Sel value={fd.maritalStatus} onChange={v => set('maritalStatus', v)} options={MARITAL_STATUS} />
           </FG>
-          <FG label="No. of Children under 18">
+          <FG label="Дети до 18 лет / Children under 18">
             <Inp type="number" min="0" max="20" value={fd.childrenUnder18} onChange={v => set('childrenUnder18', v)} />
           </FG>
 
-          <SectionTitle>Contact Details & Residence</SectionTitle>
-          <FG label="Contact Phone *">
+          <SectionTitle>Контакты и Проживание (Contacts & Residence)</SectionTitle>
+          <FG label="Контактный телефон / Phone *">
             <Inp type="tel" placeholder="+7 (900) 000-00-00" value={fd.phone} onChange={v => set('phone', v)} required />
           </FG>
-          <FG label="Email *">
+          <FG label="Электронная почта / Email *">
             <Inp type="email" placeholder="seaman@example.com" value={fd.email} onChange={v => set('email', v)} required />
           </FG>
           <FG label="Skype / Telegram">
-            <Inp placeholder="@username or Telegram/Skype" value={fd.skypeTelegram} onChange={v => set('skypeTelegram', v)} />
+            <Inp placeholder="@username или номер Telegram/Skype" value={fd.skypeTelegram} onChange={v => set('skypeTelegram', v)} />
           </FG>
-          <FG label="Home Address" col="1 / -1">
-            <Inp placeholder="Full Country, City, Street, Zip Code" value={fd.address} onChange={v => set('address', v)} />
+          <FG label="Домашний адрес / Home Address" col="1 / -1">
+            <Inp placeholder="Страна, Индекс, Город, Улица, Дом, Квартира" value={fd.address} onChange={v => set('address', v)} />
           </FG>
 
-          <SectionTitle>Next of Kin (Emergency Contact)</SectionTitle>
-          <FG label="Next of Kin Full Name">
-            <Inp placeholder="Full Name of Spouse / Parent" value={fd.kinName} onChange={v => set('kinName', v)} />
+          <SectionTitle>Ближайший Родственник (Next of Kin - Emergency Contact)</SectionTitle>
+          <FG label="ФИО родственника / Next of Kin Name">
+            <Inp placeholder="ФИО супруги / родителя" value={fd.kinName} onChange={v => set('kinName', v)} />
           </FG>
-          <FG label="Relation">
+          <FG label="Степень родства / Relation">
             <Sel value={fd.kinRelation} onChange={v => set('kinRelation', v)} options={KIN_RELATIONS} />
           </FG>
-          <FG label="Next of Kin Phone">
+          <FG label="Телефон родственника / Next of Kin Phone">
             <Inp type="tel" placeholder="+7 (900) 000-00-00" value={fd.kinPhone} onChange={v => set('kinPhone', v)} />
           </FG>
-          <FG label="Next of Kin Address">
-            <Inp placeholder="Address if different" value={fd.kinAddress} onChange={v => set('kinAddress', v)} />
+          <FG label="Адрес родственника / Next of Kin Address">
+            <Inp placeholder="Адрес (если отличается)" value={fd.kinAddress} onChange={v => set('kinAddress', v)} />
           </FG>
 
-          <SectionTitle>Physical & Uniform Sizes</SectionTitle>
-          <FG label="Height (cm)">
-            <Inp type="number" placeholder="e.g. 182" value={fd.height} onChange={v => set('height', v)} />
+          <SectionTitle>Антропометрия и Размеры Спецодежды (Physical & Sizes)</SectionTitle>
+          <FG label="Рост (см) / Height (cm)">
+            <Inp type="number" placeholder="например: 182" value={fd.height} onChange={v => set('height', v)} />
           </FG>
-          <FG label="Weight (kg)">
-            <Inp type="number" placeholder="e.g. 80" value={fd.weight} onChange={v => set('weight', v)} />
+          <FG label="Вес (кг) / Weight (kg)">
+            <Inp type="number" placeholder="например: 80" value={fd.weight} onChange={v => set('weight', v)} />
           </FG>
-          <FG label="Overall Coverall Size (EUR)">
+          <FG label="Размер комбинезона / Overall Size (EUR)">
             <Sel value={fd.overallSize} onChange={v => set('overallSize', v)} options={OVERALL_SIZES_EUR} />
           </FG>
-          <FG label="Safety Shoes Size (EUR)">
+          <FG label="Размер обуви / Shoe Size (EUR)">
             <Sel value={fd.shoeSize} onChange={v => set('shoeSize', v)} options={SHOE_SIZES} />
           </FG>
-          <FG label="Color of Eyes">
-            <Inp placeholder="e.g. Brown / Blue" value={fd.eyesColour} onChange={v => set('eyesColour', v)} />
+          <FG label="Цвет глаз / Color of Eyes">
+            <Inp placeholder="например: Карие / Синие" value={fd.eyesColour} onChange={v => set('eyesColour', v)} />
           </FG>
-          <FG label="Color of Hair">
-            <Inp placeholder="e.g. Dark / Fair" value={fd.hairColour} onChange={v => set('hairColour', v)} />
+          <FG label="Цвет волос / Color of Hair">
+            <Inp placeholder="например: Тёмные / Русые" value={fd.hairColour} onChange={v => set('hairColour', v)} />
           </FG>
         </div>
       );
