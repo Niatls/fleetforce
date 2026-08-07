@@ -400,6 +400,45 @@ export const SiteEditor = ({
     });
   };
 
+  const handleToggleStatActive = (id) => {
+    setDraftStats(prev => {
+      const updated = prev.map(s => s.id === id ? { ...s, active: s.active === false ? true : false } : s);
+      autoSave({ stats: updated });
+      return updated;
+    });
+  };
+
+  const handleDeleteStat = (id) => {
+    if (!window.confirm('Вы действительно хотите удалить этот счётчик?')) return;
+    setDraftStats(prev => {
+      const updated = prev.filter(s => s.id !== id);
+      autoSave({ stats: updated });
+      return updated;
+    });
+  };
+
+  const handleAddStat = () => {
+    const num = prompt('Введите значение счётчика (например: 100+):', '100+');
+    if (!num) return;
+    const label = prompt('Введите подпись счётчика (например: Успешных рейсов):', 'Новый показатель');
+    if (!label) return;
+
+    const newStat = {
+      id: String(Date.now()),
+      number: num,
+      labelRu: label,
+      labelEn: label,
+      color: 'blue',
+      active: true
+    };
+
+    setDraftStats(prev => {
+      const updated = [...prev, newStat];
+      autoSave({ stats: updated });
+      return updated;
+    });
+  };
+
   return (
     <div className="site-editor-root" style={{ background: 'var(--bg-main)', minHeight: '100vh', paddingBottom: '4rem' }}>
       
