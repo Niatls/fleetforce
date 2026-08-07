@@ -594,6 +594,7 @@ export const SiteEditor = ({
                   if (statItem.active === false) return <div key={statItem.id || idx} style={{ display: 'none' }} />;
                   return null;
                 }
+                const isHidden = statItem.active === false;
                 return (
                   <div
                     key={statItem.id || idx}
