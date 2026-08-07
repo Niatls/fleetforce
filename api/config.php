@@ -115,9 +115,7 @@ function get_database() {
             $rows = $pdo->query("SELECT config_key, config_val FROM site_config")->fetchAll();
             foreach ($rows as $r) {
                 $val = json_decode($r['config_val'], true);
-                if ($val !== null) {
-                    $db[$r['config_key']] = $val;
-                }
+                $db[$r['config_key']] = ($val !== null) ? $val : $r['config_val'];
             }
 
             // Read candidates
@@ -220,7 +218,7 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename($_SERVER['SCRIPT_FILENAME']) 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         if (!empty($input)) {
-            foreach (['offices','hub_blocks','vacancies','stats','site_titles','section_visibility'] as $key) {
+            foreach (['offices','hub_blocks','vacancies','stats','site_titles','section_visibility','theme'] as $key) {
                 if (array_key_exists($key, $input)) {
                     $db[$key] = $input[$key];
                 }
