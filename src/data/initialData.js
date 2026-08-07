@@ -521,7 +521,8 @@ export const INITIAL_HUB_BLOCKS = [
   },
   {
     id: 3,
-    title: 'Чек-лист документов для посадки',
+    title: 'Заполнить анкету онлайн',
+    titleEn: 'Online application',
     description: 'Полный перечень рабочих дипломов, подтверждений, НБЖС и медицинских комиссий (Подплав / ОУК) для рейса.',
     buttonText: 'Заполнить онлайн',
     actionType: 'wizard',

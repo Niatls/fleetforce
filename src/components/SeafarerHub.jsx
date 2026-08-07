@@ -69,7 +69,7 @@ export const SeafarerHub = ({ onOpenWizard, hubBlocks = INITIAL_HUB_BLOCKS, rend
     if (block.titleEn) return block.titleEn;
     if (block.id === 1 || String(block.title).includes('PDF')) return 'Fleet Force Standard Application (PDF)';
     if (block.id === 2 || String(block.title).includes('DOC')) return 'Fleet Force CV Form (DOC)';
-    if (block.id === 3 || String(block.title).includes('Чек-лист')) return 'Embarkation Document Checklist & Online Application';
+    if (block.id === 3 || String(block.title).includes('Чек-лист') || String(block.title).includes('анкету')) return 'Online application';
     return block.title;
   };
 

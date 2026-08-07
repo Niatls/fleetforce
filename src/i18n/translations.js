@@ -117,7 +117,7 @@ export const translations = {
       subtitle: "Скачайте бланки анкет или пройдите подготовку к тестированию",
       downloadBgiForm: "Скачать бланки анкеты Fleet Force (.DOCX)",
       downloadLegacyForm: "Скачать анкету Fleet Force (.PDF)",
-      stcwChecklist: "Чек-лист документов для посадки",
+      stcwChecklist: "Заполнить анкету онлайн",
       marlinsInfo: "Подготовка к Marlins & CES тестам",
       salaryGuide: "Обзор окладов на торговом флоте 2026"
     },
@@ -328,7 +328,7 @@ export const translations = {
       subtitle: "Download official application forms or prepare for marine assessments",
       downloadBgiForm: "Download Fleet Force Application Form (.DOCX)",
       downloadLegacyForm: "Download Fleet Force Form (.PDF)",
-      stcwChecklist: "Embarkation Document Checklist",
+      stcwChecklist: "Online application",
       marlinsInfo: "Marlins & CES Test Preparation",
       salaryGuide: "2026 Merchant Fleet Wage Benchmark"
     },
