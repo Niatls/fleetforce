@@ -297,6 +297,108 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
     }
   };
 
+  const handleFillDemoData = () => {
+    setFd({
+      appliedRank: 'Master / Captain',
+      readyDate: '15.08.2026',
+      fullName: 'Воронов Александр Сергеевич',
+      fatherName: 'Sergeevich',
+      motherName: 'Voronova Elena Viktorovna',
+      dob: '12.04.1984',
+      placeOfBirth: 'Novorossiysk, Russia',
+      nationality: 'Russian',
+      maritalStatus: 'Married',
+      childrenUnder18: '2 (Dmitriy 2012, Anna 2016)',
+      phone: '+7 (918) 456-78-90',
+      email: 'voronov.capt@gmail.com',
+      skypeTelegram: '@capt_voronov_novoross',
+      address: 'Naberezhnaya Admiral Serebryakov Str. 15, Apt. 42',
+      homeZip: '353900',
+      kinName: 'Voronova Olga Dmitrievna',
+      kinRelation: 'Wife',
+      kinPhone: '+7 (918) 987-65-43',
+      kinAddress: 'Naberezhnaya Admiral Serebryakov Str. 15, Apt. 42',
+      height: '182',
+      weight: '84',
+      overallSize: 'L / 50',
+      shoeSize: '43',
+      eyesColour: 'Blue',
+      hairColour: 'Brown',
+      photoDataUrl: '',
+
+      alternativeRank: 'Chief Officer / 1st Mate',
+      minSalary: '14000',
+      preferredVessels: 'Chemical / Product Tanker',
+      contractDuration: '4 months',
+      englishLevel: 'Fluent / Advanced',
+      marlinsScore: '94%',
+      nearestAirport: 'Krasnodar (KRR) / Sochi (AER)',
+      collegeName: 'ADMIRAL USHAKOV MARITIME STATE UNIVERSITY',
+      collegeFrom: '01.09.2001',
+      collegeTill: '30.06.2007',
+      collegeDepartment: 'NAVIGATION & MARITIME TRANSPORTATION',
+
+      passportNo: '75 1234567', passportIssued: '14.05.2021', passportExpiry: '14.05.2031', passportPlace: 'FMS 23001 NOVOROSSIYSK',
+      seamanBookNo: 'M 0987654', seamanBookIssued: '10.02.2022', seamanBookExpiry: '10.02.2027', seamanBookPlace: 'PORT NOVOROSSIYSK',
+      recordBooks: [
+        { id: 1, flag: "Panama", number: "PAN-SB-884912", issuedDate: "12.04.2022", validUntil: "12.04.2027", place: "PANAMA CITY" },
+        { id: 2, flag: "Marshall Islands", number: "MI-SB-004912", issuedDate: "15.05.2022", validUntil: "15.05.2027", place: "MAJURO" },
+        { id: 3, flag: "Liberia", number: "LIB-SB-559124", issuedDate: "20.06.2022", validUntil: "20.06.2027", place: "MONROVIA" },
+        { id: 4, flag: "Bahamas", number: "BAH-SB-119402", issuedDate: "10.08.2022", validUntil: "10.08.2027", place: "NASSAU" }
+      ],
+
+      cocName: 'Master Unlimited (STCW II/2)',
+      cocNo: 'COC-RU-2022-8841', cocIssued: '15.03.2022', cocExpiry: '15.03.2027', cocCapacity: 'Master Unlimited',
+      certificates: [],
+
+      seaService: [
+        { id: 1, dateFrom: "15.02.2025", dateTo: "20.06.2025", rankHeld: "Master", salary: "14500", vesselName: "SCF SAMOTLOR", shipowner: "Sovcomflot / SCF Group", vesselType: "Oil / Product Tanker", engineType: "MAN B&W 6S60MC-C", buildYear: "2018", dwtGrt: "47,400 DWT", engineBhp: "12,240 BHP", flag: "Liberia", manningCompany: "SCF Crewing Novorossiysk" },
+        { id: 2, dateFrom: "10.03.2024", dateTo: "15.07.2024", rankHeld: "Master", salary: "14000", vesselName: "STENA POLARIS", shipowner: "Stena Bulk AB", vesselType: "Chemical / Product Tanker", engineType: "MAN B&W 7S50ME-B9", buildYear: "2016", dwtGrt: "65,000 DWT", engineBhp: "13,500 BHP", flag: "Panama", manningCompany: "Legacy Marine Agency" },
+        { id: 3, dateFrom: "05.04.2023", dateTo: "10.08.2023", rankHeld: "Master", salary: "13800", vesselName: "MARLIN AMETHYST", shipowner: "Marlin Tankers Ltd", vesselType: "Chemical Tanker", engineType: "Wärtsilä 6L46F", buildYear: "2015", dwtGrt: "50,000 DWT", engineBhp: "11,800 BHP", flag: "Marshall Islands", manningCompany: "Columbia Shipmanagement" },
+        { id: 4, dateFrom: "12.05.2022", dateTo: "18.09.2022", rankHeld: "Chief Officer", salary: "10200", vesselName: "SCF BALTICA", shipowner: "Sovcomflot / SCF Group", vesselType: "Aframax Oil Tanker", engineType: "MAN B&W 7S60MC", buildYear: "2014", dwtGrt: "115,000 DWT", engineBhp: "19,400 BHP", flag: "Liberia", manningCompany: "SCF Crewing Novorossiysk" },
+        { id: 5, dateFrom: "01.06.2021", dateTo: "05.10.2021", rankHeld: "Chief Officer", salary: "9800", vesselName: "NAVIGATOR GAS", shipowner: "Navigator Gas Shipping", vesselType: "LPG / Ethylene Carrier", engineType: "MAN B&W ME-GI Dual Fuel", buildYear: "2013", dwtGrt: "22,500 CBM", engineBhp: "9,600 BHP", flag: "Bahamas", manningCompany: "BGI St. Petersburg" },
+        { id: 6, dateFrom: "15.01.2020", dateTo: "20.05.2020", rankHeld: "Chief Officer", salary: "9500", vesselName: "ATLANTIC GEMINI", shipowner: "V.Group / V.Ships", vesselType: "Product Tanker", engineType: "MAN B&W 6S50MC", buildYear: "2012", dwtGrt: "46,000 DWT", engineBhp: "10,800 BHP", flag: "Malta", manningCompany: "V.Ships Novorossiysk" },
+        { id: 7, dateFrom: "10.02.2019", dateTo: "15.06.2019", rankHeld: "2nd Officer", salary: "5200", vesselName: "SCF NEVA", shipowner: "Sovcomflot", vesselType: "Oil Tanker", engineType: "MAN B&W 6S60MC", buildYear: "2010", dwtGrt: "106,000 DWT", engineBhp: "18,200 BHP", flag: "Liberia", manningCompany: "SCF Crewing Novorossiysk" },
+        { id: 8, dateFrom: "05.03.2018", dateTo: "10.07.2018", rankHeld: "2nd Officer", salary: "4800", vesselName: "CAPESIZE LEADER", shipowner: "Zodiac Maritime", vesselType: "Bulk Carrier Capesize", engineType: "Sulzer 6RTA84T", buildYear: "2009", dwtGrt: "180,000 DWT", engineBhp: "22,000 BHP", flag: "UK", manningCompany: "Zodiac Maritime Agencies" },
+        { id: 9, dateFrom: "20.04.2017", dateTo: "25.08.2017", rankHeld: "3rd Officer", salary: "3600", vesselName: "PACIFIC VOYAGER", shipowner: "Eastern Pacific Shipping", vesselType: "Container Ship (4500 TEU)", engineType: "MAN B&W 9K90MC-C", buildYear: "2008", dwtGrt: "55,000 DWT", engineBhp: "41,000 BHP", flag: "Singapore", manningCompany: "EPS Crewing Center" },
+        { id: 10, dateFrom: "01.05.2016", dateTo: "01.09.2016", rankHeld: "Deck Cadet", salary: "850", vesselName: "PROFESSOR KHLYUSTIN", shipowner: "Far Eastern Shipping (FESCO)", vesselType: "Training / General Cargo", engineType: "MAN B&W 6S50MC", buildYear: "2005", dwtGrt: "12,500 DWT", engineBhp: "7,800 BHP", flag: "Russia", manningCompany: "Admiral Ushakov University" }
+      ],
+      employers: [
+        { id: 1, company: "Sovcomflot / SCF Group Novorossiysk", personInCharge: "Captain Petrov Igor Anatolyevich (Crew Superintendent)", contactDetails: "+7 (8617) 60-12-34 / petrov.i@scf-group.ru" },
+        { id: 2, company: "Stena Bulk Shipping Gothenburg", personInCharge: "Mr. Lars Lindqvist (Fleet Marine Personnel Manager)", contactDetails: "+46 (31) 855-000 / lars.lindqvist@stenabulk.com" },
+        { id: 3, company: "Columbia Shipmanagement Limassol Cyprus", personInCharge: "Capt. Andreas Georgiou (Senior Manning Director)", contactDetails: "+357 (25) 843-100 / a.georgiou@columbia-shipmanagement.com" },
+        { id: 4, company: "V.Group / V.Ships Novorossiysk Branch", personInCharge: "Mrs. Elena Smirnova (Crewing Operations Lead)", contactDetails: "+7 (8617) 30-05-55 / elena.smirnova@vgroup.com" },
+        { id: 5, company: "Zodiac Maritime Agencies London UK", personInCharge: "Mr. David Miller (Fleet Personnel Director)", contactDetails: "+44 (20) 7262-8000 / crew@zodiac-maritime.com" }
+      ],
+      attachedFiles: [],
+      consent: true,
+      signature: 'Voronov A.S.',
+      signDate: '10.08.2026',
+    });
+
+    const pDocs = {};
+    PRIMARY_DOCS_LIST.forEach((d, idx) => {
+      pDocs[d] = {
+        number: `DOC-RU-${202200 + idx}`,
+        issued: `15.03.2022`,
+        expiry: `15.03.2027`,
+        place: `NOVOROSSIYSK`
+      };
+    });
+    setPrimaryDocs(pDocs);
+
+    const sDocs = {};
+    STCW_CERTS_LIST.forEach((c, idx) => {
+      sDocs[c] = {
+        number: `STCW-RU-${88400 + idx}`,
+        issued: `20.03.2022`,
+        expiry: `20.03.2027`,
+        place: `NOVOROSSIYSK`
+      };
+    });
+    setStcwDocs(sDocs);
+  };
+
   const handlePrintForm = () => {
     const html = buildApplicationFormHtml(fd);
     const printWin = window.open('', '_blank');
@@ -1177,7 +1279,10 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                 <Eye size={16} color="var(--color-accent)" />
                 <span><strong>Встроенный просмотр анкеты:</strong> Проверяйте заполненность DOCX и PDF непосредственно на экране:</span>
               </div>
-              <div style={{ display: 'flex', gap: '0.6rem' }}>
+              <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                <button type="button" onClick={handleFillDemoData} className="btn btn-secondary btn-sm" style={{ fontWeight: 700, color: '#f59e0b', borderColor: 'rgba(245,158,11,0.4)' }} title="Заполнить все 100+ ячеек всех 7 шагов анкеты тестовыми данными капитана">
+                  ⚡ Автозаполнение
+                </button>
                 <button type="button" onClick={handlePreviewHtmlInline} className="btn btn-secondary btn-sm" style={{ fontWeight: 700, color: 'var(--color-accent)', borderColor: 'var(--color-accent)' }}>
                   👁️ Бланк A4
                 </button>
