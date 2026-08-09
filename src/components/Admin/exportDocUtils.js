@@ -140,9 +140,11 @@ export const buildApplicationFormHtml = (cand) => {
     const iss = getStcwVal(name, 'issued');
     const exp = getStcwVal(name, 'expiry');
     const plc = getStcwVal(name, 'place');
+    const isLong = name.length > 35;
+    const fontSize = isLong ? '5.8pt' : '6.5pt';
     return `
       <tr>
-        <td style="width:46.48mm;background-color:#E2EFD9;font-size:7.5pt;font-weight:bold;" colspan="3">${name}</td>
+        <td class="cert-label-cell" style="width:46.48mm;background-color:#E2EFD9;font-size:${fontSize};font-weight:bold;" colspan="3" title="${name}">${name}</td>
         <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
         <td style="width:25.47mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4">${exp}</td>
@@ -242,22 +244,35 @@ export const buildApplicationFormHtml = (cand) => {
     border-left: 0.75pt solid #000000;
     border-right: 0.75pt solid #000000;
   }
+  .page-portrait tr {
+    height: 6mm;
+  }
   .page-portrait td {
     border: 0.5pt solid #000000;
-    padding: 0.5px 2px;
+    padding: 0px 2px;
+    height: 6mm;
+    max-height: 6mm;
     vertical-align: middle;
     font-size: 7.0pt;
-    line-height: 1.1;
-    word-wrap: break-word;
+    line-height: 1.0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .page-landscape tr {
+    height: 6mm;
   }
   .page-landscape td {
     border: 0.5pt solid #000000;
-    padding: 1px 3px;
+    padding: 0.5px 3px;
+    height: 6mm;
+    max-height: 6mm;
     vertical-align: middle;
     font-size: 7.5pt;
-    line-height: 1.15;
-    height: 5.5mm;
-    word-wrap: break-word;
+    line-height: 1.0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .photo-cell { text-align: center; vertical-align: middle; padding: 2px; }
   .photo-placeholder {
@@ -265,7 +280,19 @@ export const buildApplicationFormHtml = (cand) => {
     width: 26mm; height: 34mm; margin: 0 auto;
     border: 1pt solid #000; color: #999; font-size: 8pt;
   }
-  .declaration-text { font-size: 7.5pt; line-height: 1.2; padding: 2px 4px; }
+  .declaration-text {
+    font-size: 6.8pt;
+    line-height: 1.05;
+    padding: 1px 3px;
+    white-space: normal !important;
+  }
+  .cert-label-cell {
+    font-size: 6.2pt !important;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   @media print {
     body { background: #fff; width: 100%; }
     .page-portrait {
