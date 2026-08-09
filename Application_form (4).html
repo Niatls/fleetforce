@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seafarer Application Form</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 10pt;
+    color: #000;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  /* Portrait page section - Table 0 */
+  .page-portrait {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 20mm 5mm 10mm 5mm;
+  }
+  
+  /* Landscape page sections - Tables 1, 2 */
+  .page-landscape {
+    width: 297mm;
+    min-height: 210mm;
+    margin: 0 auto;
+    padding: 20mm 5mm 20mm 5mm;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    border-left: 1pt solid #000000;
+    border-right: 1pt solid #000000;
+  }
+
+  .page-landscape table {
+    height: auto;
+  }
+
+  .page-landscape td {
+    height: 6mm;
+  }
+
+  tr.no-bottom-border td {
+    border-bottom: none;
+  }
+  
+  td {
+    border: 0.5pt solid #000000;
+    padding: 2px 4px;
+    vertical-align: middle;
+    font-size: 10pt;
+    line-height: 1.3;
+  }
+  
+  /* PHOTO cell */
+  .photo-cell {
+    text-align: center;
+    vertical-align: middle;
+    padding: 4px;
+  }
+  
+  .photo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30mm;
+    height: 40mm;
+    margin: 0 auto;
+    border: 1pt solid #000;
+    color: #999;
+    font-size: 9pt;
+  }
+  
+  /* Declaration text */
+  .declaration-text {
+    font-size: 9pt;
+    line-height: 1.4;
+    padding: 2px 4px;
+  }
+  
+  /* Print styles */
+  @media print {
+    body {
+      width: 210mm;
+    }
+    
+    .page-portrait {
+      page: portrait;
+      page-break-after: always;
+    }
+    
+    .page-landscape {
+      page: landscape;
+      page-break-after: always;
+    }
+    
+    .page-landscape:last-child {
+      page-break-after: auto;
+    }
+  }
+  
+  /* Screen styles - show page boundaries */
+  @media screen {
+    body {
+      background: #e0e0e0;
+      padding: 10mm;
+      padding-top: 20mm;
+    }
+    
+    .page-portrait, .page-landscape {
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      margin-bottom: 10mm;
+    }
+  }
+
+  /* Export toolbar */
+  .export-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #fff;
+    padding: 8px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-family: Calibri, Arial, sans-serif;
+  }
+
+  .export-toolbar button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .export-toolbar button:hover { opacity: 0.85; }
+
+  .btn-pdf { background: #e74c3c; color: #fff; }
+  .btn-docx { background: #2b5797; color: #fff; }
+
+  .export-toolbar .hint {
+    margin-left: auto;
+    color: #888;
+    font-size: 12px;
+  }
+
+  /* Editable cells */
+  td[contenteditable="true"] {
+    outline: none;
+    cursor: text;
+  }
+  td[contenteditable="true"]:focus {
+    background-color: #fffde7 !important;
+    box-shadow: inset 0 0 0 1.5pt #2196F3;
+  }
+
+  @media print {
+    .export-toolbar { display: none !important; }
+    td[contenteditable="true"]:focus { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Export toolbar -->
+<div class="export-toolbar">
+  <button class="btn-pdf" onclick="exportPDF()">⬇ PDF</button>
+  <button class="btn-docx" onclick="exportDOCX()">⬇ DOC</button>
+  <span class="hint">Кликните по пустым ячейкам чтобы заполнить, затем сохранить</span>
+</div>
+
+<!-- Page 1: Portrait - Personal Information, Education, Certificates -->
+<div class="page-portrait">
+<table>
+  <colgroup>
+    <col style="width:15.81mm">
+    <col style="width:15.81mm">
+    <col style="width:14.85mm">
+    <col style="width:14.85mm">
+    <col style="width:14.85mm">
+    <col style="width:14.86mm">
+    <col style="width:14.86mm">
+    <col style="width:10.61mm">
+    <col style="width:10.61mm">
+    <col style="width:10.61mm">
+    <col style="width:10.76mm">
+    <col style="width:10.76mm">
+    <col style="width:10.76mm">
+  </colgroup>
+  <tr>
+    <td style="width:31.62mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Positions applied for:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;font-size:10.0pt;font-weight:bold;" colspan="3"></td>
+    <td style="width:29.72mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Date of readiness:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:32.27mm;background-color:#FFFFFF;font-weight:bold;" colspan="3" rowspan="8" class="photo-cell"><div class="photo-placeholder">PHOTO</div></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Surname:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:29.72mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Name:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Father’s name:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Mother’s name:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Date of birth:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Nationality:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Place of birth:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Marital status:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">N of children under 18:</td>
+    <td style="width:106.11mm;background-color:#FFFFFF;" colspan="8"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Home Address:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Contact Phone:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">E-mail:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Skype/Telegram:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Next of kin:</td>
+    <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5"></td>
+    <td style="width:31.83mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Relation:</td>
+    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Next of kin’s address:</td>
+    <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5"></td>
+    <td style="width:31.83mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Next of kin’s phone №:</td>
+    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3"></td>
+  </tr>
+  <tr>
+    <td style="width:15.81mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Height (cm):</td>
+    <td style="width:15.81mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.85mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Weight (kg):</td>
+    <td style="width:14.85mm;background-color:#FFFFFF;"></td>
+    <td style="width:44.57mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3" rowspan="2">Size of Overall (EUR):</td>
+    <td style="width:10.61mm;background-color:#FFFFFF;" rowspan="2"></td>
+    <td style="width:42.73mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="4" rowspan="2">Shoes (EUR):</td>
+    <td style="width:10.76mm;background-color:#FFFFFF;" rowspan="2"></td>
+  </tr>
+  <tr>
+    <td style="width:15.81mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Eyes Colour:</td>
+    <td style="width:15.81mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.85mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Hair Colour:</td>
+    <td style="width:14.85mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:70.04mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="5">Marine Education</td>
+    <td style="width:53.49mm;background-color:#FFFFFF;" colspan="5"></td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Name of maritime college or academy</td>
+    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6"></td>
+    <td style="width:21.37mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">From</td>
+    <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2"></td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Department</td>
+    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6"></td>
+    <td style="width:21.37mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Till</td>
+    <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:70.04mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="5">PASSPORTS and CERTIFICATES</td>
+    <td style="width:53.49mm;background-color:#FFFFFF;" colspan="5"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">DOCUMENT</td>
+    <td style="width:45.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">NUMBER</td>
+    <td style="width:20.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
+    <td style="width:20.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="4">VALID UNTIL</td>
+    <td style="width:27.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">PLACE</td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">TRAVEL PASSPORT:</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">SEAMAN’S BOOK:</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">SEAFARERS’S IDENTITY DOCUMENT(SID):</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">CIVIL PASSPORT:</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">U.S. VISA:</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">OTHER VALID VISA:</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">CERTIFICATE OF COMPETENCY # 1</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">RANK / CAPACITY</td>
+    <td style="width:138.38mm;background-color:#FFFFFF;" colspan="11"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ENDORSEMENT OF CERTIFICATE # 1</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">CERTIFICATE OF COMPETENCY # 2</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">RANK / CAPACITY</td>
+    <td style="width:138.38mm;background-color:#FFFFFF;" colspan="11"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ENDORSEMENT OF CERTIFICATE # 2</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">CERTIFICATE</td>
+    <td style="width:45.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">NUMBER</td>
+    <td style="width:20.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
+    <td style="width:20.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="4">VALID UNTIL</td>
+    <td style="width:27.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">PLACE</td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">GMDSS CERTIFICATE/ENDORSEMENT</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">BASIC SAFETY TRAINING</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">PROFICIENCY IN SURVIVAL CRAFT</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ADVANCED FIRE FIGHTING</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">MEDICAL FIRST AID</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">MEDICAL CARE</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">SHIPS SECURITY OFFICER</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">DESIGNATED SECURITY DUTIES</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">SECURITY AWARENESS</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">SHIPS SAFETY OFFICER / ISM</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">RADAR NAVIGATION, RADAR PLOTTING AND USE OF ARPA</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ADVANCED TRAINING FOR SHIPS OPERATING IN POLAR WATERS CERTIFICATE</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">BASIC TRAINING FOR SHIPS OPERATING IN POLAR WATERS CERTIFICATE</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">DANGEROUS & HAZARDOUS CARGOES</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">BRIDGE TEAM MNGT</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ENGINE ROOM RESOURCE MNGT</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ECDIS GENERIC</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ECDIS SPECIFIC</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">BASIC TRAINING FOR OIL & CHEMICAL TANKER CERTIFICATE</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ADV. TRAINING FOR CHEMICAL TANKER CERTIFICATE</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ADV. TRAINING FOR CHEMICAL TANKER CERTIFICATE</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">BASIC TRAINING FOR OIL AND CHEMICAL TANKER - ENDORSEMENT</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ADV. TRAINING FOR OIL TANKER -ENDORSEMENT</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">ADV. TRAINING FOR CHEMICAL TANKER -ENDORSEMENT</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">BASIC/ADV. TRAINING FOR GAS TANKER ENDO</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">HIGH VOLTAGE EL. EQUIPMENT</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">COOK CERTIFICATE</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">MESSMAN (MLC-2006)</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:27.00mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:58.00mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">YELLOW FEVER CERTIFICATE</td>
+    <td style="width:45.00mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:20.00mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:10.76mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">COVID-19 VACCINATION CERTIFICATE</td>
+    <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:25.47mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:10.76mm;background-color:#FFFFFF;"></td>
+  </tr>
+</table>
+</div>
+
+<!-- Page 2: Landscape - Foreign Seaman's ID / Record Books -->
+<div class="page-landscape">
+<table>
+  <colgroup>
+    <col style="width:92.95mm">
+    <col style="width:53.94mm">
+    <col style="width:53.94mm">
+    <col style="width:38.08mm">
+    <col style="width:38.08mm">
+  </colgroup>
+  <tr>
+    <td style="width:92.95mm;background-color:#FFFFFF;"></td>
+    <td style="width:107.88mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;" colspan="2">FOREIGN SEAMAN’S ID / RECORD BOOKS</td>
+    <td style="width:76.17mm;background-color:#FFFFFF;" colspan="2"></td>
+  </tr>
+  <tr>
+    <td style="width:92.95mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">CERTIFICATE</td>
+    <td style="width:53.94mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">NUMBER</td>
+    <td style="width:53.94mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">ISSUED DATE</td>
+    <td style="width:38.08mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">VALID UNTIL</td>
+    <td style="width:38.08mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">PLACE</td>
+  </tr>
+  <tr>
+    <td style="width:92.95mm;background-color:#FFFFFF;"></td>
+    <td style="width:53.94mm;background-color:#FFFFFF;"></td>
+    <td style="width:53.94mm;background-color:#FFFFFF;"></td>
+    <td style="width:38.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:38.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:92.95mm;background-color:#FFFFFF;"></td>
+    <td style="width:53.94mm;background-color:#FFFFFF;"></td>
+    <td style="width:53.94mm;background-color:#FFFFFF;"></td>
+    <td style="width:38.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:38.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:92.95mm;background-color:#FFFFFF;"></td>
+    <td style="width:53.94mm;background-color:#FFFFFF;"></td>
+    <td style="width:53.94mm;background-color:#FFFFFF;"></td>
+    <td style="width:38.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:38.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:92.95mm;background-color:#FFFFFF;"></td>
+    <td style="width:53.94mm;background-color:#FFFFFF;"></td>
+    <td style="width:53.94mm;background-color:#FFFFFF;"></td>
+    <td style="width:38.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:38.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+</table>
+</div>
+
+<!-- Page 3: Landscape - Previous Sea Service -->
+<div class="page-landscape">
+<table>
+  <colgroup>
+    <col style="width:11.80mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+  </colgroup>
+  <tr>
+    <td style="width:277.00mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="20">PREVIOUS SEA SERVICE</td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">FROM</td>
+    <td style="width:25.88mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TO</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">POSITION</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">SALARY</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">NAME OF VESSEL</td>
+    <td style="width:42.23mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="3">SHIPOWNER</td>
+    <td style="width:28.16mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TYPE OF VESSEL</td>
+    <td style="width:42.23mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="3">TYPE OF ENGINE</td>
+    <td style="width:28.16mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">BUILD YEAR</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">DWT</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">BHP</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">FLAG</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">CREWING AGENT</td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#FFFFFF;"></td>
+    <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+  </tr>
+  <tr>
+    <td style="width:277.00mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;" colspan="20">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td>
+  </tr>
+  <tr>
+    <td style="width:93.99mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="7">COMPANY</td>
+    <td style="width:126.70mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="9">PERSON IN CHARGE</td>
+    <td style="width:56.31mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="4">CONTACT DETAILS (Phone Number, e-mail)</td>
+  </tr>
+  <tr>
+    <td style="width:93.99mm;background-color:#FFFFFF;" colspan="7"></td>
+    <td style="width:126.70mm;background-color:#FFFFFF;" colspan="9"></td>
+    <td style="width:56.31mm;background-color:#FFFFFF;" colspan="4"></td>
+  </tr>
+  <tr>
+    <td style="width:93.99mm;background-color:#FFFFFF;" colspan="7"></td>
+    <td style="width:126.70mm;background-color:#FFFFFF;" colspan="9"></td>
+    <td style="width:56.31mm;background-color:#FFFFFF;" colspan="4"></td>
+  </tr>
+  <tr>
+    <td style="width:93.99mm;background-color:#FFFFFF;" colspan="7"></td>
+    <td style="width:126.70mm;background-color:#FFFFFF;" colspan="9"></td>
+    <td style="width:56.31mm;background-color:#FFFFFF;" colspan="4"></td>
+  </tr>
+  <tr>
+    <td style="width:93.99mm;background-color:#FFFFFF;" colspan="7"></td>
+    <td style="width:126.70mm;background-color:#FFFFFF;" colspan="9"></td>
+    <td style="width:56.31mm;background-color:#FFFFFF;" colspan="4"></td>
+  </tr>
+  <tr>
+    <td style="width:93.99mm;background-color:#FFFFFF;" colspan="7"></td>
+    <td style="width:126.70mm;background-color:#FFFFFF;" colspan="9"></td>
+    <td style="width:56.31mm;background-color:#FFFFFF;" colspan="4"></td>
+  </tr>
+  <tr>
+    <td style="width:23.60mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:253.40mm;background-color:#FFFFFF;font-size:9.0pt;" colspan="18">I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.</td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#C5E0B3;font-size:10.0pt;font-weight:bold;">Date:</td>
+    <td style="width:54.03mm;background-color:#FFFFFF;" colspan="4"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:28.16mm;background-color:#C5E0B3;font-size:10.0pt;font-weight:bold;border-left:none;" colspan="2">Signature:</td>
+    <td style="width:70.39mm;background-color:#FFFFFF;" colspan="5"></td>
+  </tr>
+</table>
+</div>
+
+</body>
+
+<!-- Export libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
+<script>
+// Make white (empty) cells editable
+document.querySelectorAll('td').forEach(function(td) {
+  if (td.style.backgroundColor === 'rgb(255, 255, 255)' ||
+      td.style.backgroundColor === '#FFFFFF' ||
+      td.style.backgroundColor === '#ffffff') {
+    // Only make cells editable if they have no text or only whitespace
+    if (!td.textContent.trim()) {
+      td.setAttribute('contenteditable', 'true');
+    }
+  }
+});
+
+// Export to PDF
+function exportPDF() {
+  var el = document.body;
+  // Temporarily hide toolbar
+  var toolbar = document.querySelector('.export-toolbar');
+  toolbar.style.display = 'none';
+
+  var opt = {
+    margin: 0,
+    filename: 'Application_Form.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, logging: false },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['css', 'legacy'] }
+  };
+
+  html2pdf().set(opt).from(el).save().then(function() {
+    toolbar.style.display = 'flex';
+  });
+}
+
+// Export to DOCX (Word-compatible HTML)
+function exportDOCX() {
+  // Clone body content
+  var pages = document.querySelectorAll('.page-portrait, .page-landscape');
+  var html = '';
+  pages.forEach(function(page) {
+    html += page.outerHTML;
+  });
+
+  // Build Word-compatible HTML
+  var docContent =
+    '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+    'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
+    'xmlns="http://www.w3.org/TR/REC-html40">' +
+    '<head><meta charset="utf-8">' +
+    '<!--[if gte mso 9]><xml>' +
+    '<w:WordDocument><w:View>Print</w:View>' +
+    '<w:Zoom>100</w:Zoom></w:WordDocument>' +
+    '</xml><![endif]-->' +
+    '<style>' +
+    '@page { size: A4; margin: 5mm; }' +
+    'body { font-family: Calibri, sans-serif; font-size: 10pt; color: #000; }' +
+    'table { border-collapse: collapse; width: 100%; table-layout: fixed; }' +
+    'td { border: 0.5pt solid #000; padding: 2px 4px; vertical-align: middle; font-size: 10pt; }' +
+    '.page-portrait { width: 100%; margin-bottom: 10mm; }' +
+    '.page-landscape { width: 100%; margin-bottom: 10mm; }' +
+    '.photo-placeholder { width: 30mm; height: 40mm; border: 1pt solid #000; display: flex; align-items: center; justify-content: center; color: #999; font-size: 9pt; }' +
+    '@page Section2 { size: A4 landscape; margin: 5mm; }' +
+    '.page-landscape { page: Section2; }' +
+    '</style></head><body>' +
+    html +
+    '</body></html>';
+
+  var blob = new Blob(['\ufeff', docContent], { type: 'application/msword' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Application_Form.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+</html>
