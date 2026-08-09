@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { FileCheck, FileText, Printer, X, Paperclip, Plus, Eye, Download, Trash2 } from 'lucide-react';
+import { handleExportWordHtml } from './exportUtils';
 
 export const CandidateDossierModal = ({
   candidate,
@@ -38,10 +39,13 @@ export const CandidateDossierModal = ({
             <h3 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Seafarer Dossier - {candidate.id}</h3>
           </div>
           <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button onClick={() => onExportDoc && onExportDoc(candidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-accent)', borderColor: 'rgba(0,139,255,0.4)', gap: '0.4rem' }}>
-              <FileText size={15} /> Export DOC (.docx)
+            <button onClick={() => handleExportWordHtml(candidate)} className="btn btn-secondary btn-sm" style={{ color: '#A8D08D', borderColor: '#A8D08D', gap: '0.4rem' }} title="Скачать бланк в формате Word (.doc)">
+              <FileText size={15} /> Export Word (.doc)
             </button>
-            <button onClick={() => onExportPdf && onExportPdf(candidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-emerald)', borderColor: 'rgba(16,185,129,0.4)', gap: '0.4rem' }}>
+            <button onClick={() => onExportDoc && onExportDoc(candidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-accent)', borderColor: 'rgba(0,139,255,0.4)', gap: '0.4rem' }} title="Скачать заполненную анкету (.docx)">
+              <FileText size={15} /> Export DOCX (.docx)
+            </button>
+            <button onClick={() => onExportPdf && onExportPdf(candidate)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-emerald)', borderColor: 'rgba(16,185,129,0.4)', gap: '0.4rem' }} title="Скачать заполненную анкету (.pdf)">
               <Download size={15} /> Export PDF (.pdf)
             </button>
             <button onClick={() => window.print()} className="btn btn-primary btn-sm" style={{ gap: '0.4rem' }}>

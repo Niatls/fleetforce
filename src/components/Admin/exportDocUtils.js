@@ -780,3 +780,28 @@ export const handleExportDoc = async (cand) => {
   a.click();
   URL.revokeObjectURL(url);
 };
+
+export const handleExportWordHtml = (cand) => {
+  if (!cand) return;
+  const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '');
+  const htmlContent = buildApplicationFormHtml(cand);
+  const docContent =
+    '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+    'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
+    'xmlns="http://www.w3.org/TR/REC-html40">' +
+    '<head><meta charset="utf-8">' +
+    '<!--[if gte mso 9]><xml>' +
+    '<w:WordDocument><w:View>Print</w:View>' +
+    '<w:Zoom>100</w:Zoom></w:WordDocument>' +
+    '</xml><![endif]-->' +
+    '</head><body>' +
+    htmlContent +
+    '</body></html>';
+  const blob = new Blob(['\ufeff', docContent], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `FleetForce_Application_${cleanName}_${cand.id || 'FORM'}.doc`;
+  a.click();
+  URL.revokeObjectURL(url);
+};

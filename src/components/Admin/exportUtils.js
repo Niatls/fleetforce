@@ -1,5 +1,5 @@
 // Main export orchestrator module re-exporting DOCX, PDF, CSV and ZIP export functions
-export { parseCandidateNameParts, buildApplicationFormHtml, generateDocBlob, handleExportDoc } from './exportDocUtils';
+export { parseCandidateNameParts, buildApplicationFormHtml, generateDocBlob, handleExportDoc, handleExportWordHtml } from './exportDocUtils';
 export { generatePdfBlob, handleExportPdf } from './exportPdfUtils';
 
 import JSZip from 'jszip';
