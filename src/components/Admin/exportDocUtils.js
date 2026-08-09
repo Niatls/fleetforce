@@ -83,7 +83,7 @@ export const buildApplicationFormHtml = (cand) => {
     const plc = getDocVal(item.key, 'place');
     let html = `
       <tr>
-        <td style="width:46.48mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">${item.label}</td>
+        <td style="width:46.48mm;background-color:#E2EFD9;font-size:7.5pt;font-weight:bold;" colspan="3">${item.label}</td>
         <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
         <td style="width:25.47mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4">${exp}</td>
@@ -94,7 +94,7 @@ export const buildApplicationFormHtml = (cand) => {
       const rankVal = getDocVal(`RANK_CAPACITY_${item.hasRank}`, 'number');
       html += `
         <tr>
-          <td style="width:31.62mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">RANK / CAPACITY</td>
+          <td style="width:31.62mm;background-color:#E2EFD9;font-size:7.5pt;font-weight:bold;" colspan="2">RANK / CAPACITY</td>
           <td style="width:138.38mm;background-color:#FFFFFF;" colspan="11">${rankVal}</td>
         </tr>
       `;
@@ -142,7 +142,7 @@ export const buildApplicationFormHtml = (cand) => {
     const plc = getStcwVal(name, 'place');
     return `
       <tr>
-        <td style="width:46.48mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">${name}</td>
+        <td style="width:46.48mm;background-color:#E2EFD9;font-size:7.5pt;font-weight:bold;" colspan="3">${name}</td>
         <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
         <td style="width:25.47mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4">${exp}</td>
@@ -203,65 +203,102 @@ export const buildApplicationFormHtml = (cand) => {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seafarer Application Form - ${cand.fullName || 'FleetForce'}</title>
 <style>
-  @page { size: A4; margin: 0; }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  @page page-portrait {
+    size: A4 portrait;
+    margin: 5mm;
+  }
+  @page page-landscape {
+    size: A4 landscape;
+    margin: 5mm;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: Calibri, Arial, sans-serif;
-    font-size: 10pt;
+    font-size: 7.5pt;
     color: #000;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
   .page-portrait {
-    width: 210mm;
-    min-height: 297mm;
+    page: page-portrait;
+    width: 200mm;
     margin: 0 auto;
-    padding: 20mm 5mm 10mm 5mm;
+    padding: 6mm 3mm 4mm 3mm;
   }
   .page-landscape {
-    width: 297mm;
-    min-height: 210mm;
+    page: page-landscape;
+    width: 287mm;
     margin: 0 auto;
-    padding: 20mm 5mm 20mm 5mm;
+    padding: 6mm 3mm 4mm 3mm;
   }
   table {
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
-    border-left: 1pt solid #000000;
-    border-right: 1pt solid #000000;
+    border-left: 0.75pt solid #000000;
+    border-right: 0.75pt solid #000000;
   }
-  .page-landscape table { height: auto; }
-  .page-landscape td { height: 6mm; }
-  tr.no-bottom-border td { border-bottom: none; }
-  td {
+  .page-portrait td {
     border: 0.5pt solid #000000;
-    padding: 2px 4px;
+    padding: 0.5px 2px;
     vertical-align: middle;
-    font-size: 10pt;
-    line-height: 1.3;
+    font-size: 7.0pt;
+    line-height: 1.1;
     word-wrap: break-word;
   }
-  .photo-cell { text-align: center; vertical-align: middle; padding: 4px; }
+  .page-landscape td {
+    border: 0.5pt solid #000000;
+    padding: 1px 3px;
+    vertical-align: middle;
+    font-size: 7.5pt;
+    line-height: 1.15;
+    height: 5.5mm;
+    word-wrap: break-word;
+  }
+  .photo-cell { text-align: center; vertical-align: middle; padding: 2px; }
   .photo-placeholder {
     display: flex; align-items: center; justify-content: center;
-    width: 30mm; height: 40mm; margin: 0 auto;
-    border: 1pt solid #000; color: #999; font-size: 9pt;
+    width: 26mm; height: 34mm; margin: 0 auto;
+    border: 1pt solid #000; color: #999; font-size: 8pt;
   }
-  .declaration-text { font-size: 9pt; line-height: 1.4; padding: 2px 4px; }
+  .declaration-text { font-size: 7.5pt; line-height: 1.2; padding: 2px 4px; }
   @media print {
-    body { width: 210mm; }
-    .page-portrait { page: portrait; page-break-after: always; }
-    .page-landscape { page: landscape; page-break-after: always; }
-    .page-landscape:last-child { page-break-after: auto; }
+    body { background: #fff; width: 100%; }
+    .page-portrait {
+      page: page-portrait;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      page-break-after: always !important;
+      break-after: page !important;
+    }
+    .page-landscape {
+      page: page-landscape;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      page-break-after: always !important;
+      break-after: page !important;
+    }
+    .page-landscape:last-child {
+      page-break-after: auto !important;
+      break-after: auto !important;
+    }
   }
   @media screen {
-    body { background: #e0e0e0; padding: 10mm; padding-top: 20mm; }
+    body { background: #e0e0e0; padding: 10mm; padding-top: 10mm; }
     .page-portrait, .page-landscape {
       background: #fff;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       margin-bottom: 10mm;
     }
+    .page-portrait { page-break-after: always; }
+    .page-landscape { page-break-after: always; }
+    .page-landscape:last-child { page-break-after: auto; }
   }
   td[contenteditable="true"] { outline: none; cursor: text; }
   td[contenteditable="true"]:focus {

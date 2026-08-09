@@ -304,38 +304,16 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       alert('Пожалуйста, разрешите всплывающие окна в браузере для печати.');
       return;
     }
-    printWin.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>FleetForce Application Form - ${fd.fullName || 'Seafarer'}</title>
-          <meta charset="utf-8" />
-          <style>
-            @page { size: A4 portrait; margin: 10mm; }
-            body { font-family: Arial, sans-serif; color: #000; background: #fff; margin: 0; padding: 15px; font-size: 11px; }
-            h1, h2, h3 { color: #000; margin: 5px 0; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 12px; page-break-inside: avoid; }
-            th, td { border: 1px solid #000; padding: 4px 6px; font-size: 10px; text-align: left; }
-            th { background: #e2e8f0; font-weight: bold; }
-            .lbl { font-weight: bold; background: #f1f5f9; width: 25%; }
-            @media print {
-              .no-print { display: none !important; }
-              body { padding: 0; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="no-print" style="margin-bottom: 15px; text-align: right;">
-            <button onclick="window.print()" style="padding: 8px 18px; background: #0EA5E9; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">🖨️ Распечатать страницу</button>
-          </div>
-          ${html}
-          <script>
-            setTimeout(() => { window.print(); }, 500);
-          </script>
-        </body>
-      </html>
-    `);
+    printWin.document.open();
+    printWin.document.write(html);
     printWin.document.close();
+    setTimeout(() => {
+      try {
+        printWin.print();
+      } catch (e) {
+        console.error(e);
+      }
+    }, 500);
   };
 
   React.useEffect(() => {
