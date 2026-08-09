@@ -83,7 +83,7 @@ export const buildApplicationFormHtml = (cand) => {
     const plc = getDocVal(item.key, 'place');
     let html = `
       <tr>
-        <td style="width:46.48mm;background-color:#E2EFD9;font-size:7.5pt;font-weight:bold;" colspan="3">${item.label}</td>
+        <td style="width:46.48mm;background-color:#E2EFD9;font-size:10pt;font-weight:bold;" colspan="3">${item.label}</td>
         <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
         <td style="width:25.47mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4">${exp}</td>
@@ -94,7 +94,7 @@ export const buildApplicationFormHtml = (cand) => {
       const rankVal = getDocVal(`RANK_CAPACITY_${item.hasRank}`, 'number');
       html += `
         <tr>
-          <td style="width:31.62mm;background-color:#E2EFD9;font-size:7.5pt;font-weight:bold;" colspan="2">RANK / CAPACITY</td>
+          <td style="width:31.62mm;background-color:#E2EFD9;font-size:10pt;font-weight:bold;" colspan="2">RANK / CAPACITY</td>
           <td style="width:138.38mm;background-color:#FFFFFF;" colspan="11">${rankVal}</td>
         </tr>
       `;
@@ -140,11 +140,9 @@ export const buildApplicationFormHtml = (cand) => {
     const iss = getStcwVal(name, 'issued');
     const exp = getStcwVal(name, 'expiry');
     const plc = getStcwVal(name, 'place');
-    const isLong = name.length > 35;
-    const fontSize = isLong ? '5.8pt' : '6.5pt';
     return `
       <tr>
-        <td class="cert-label-cell" style="width:46.48mm;background-color:#E2EFD9;font-size:${fontSize};font-weight:bold;" colspan="3" title="${name}">${name}</td>
+        <td class="cert-label-cell" style="width:46.48mm;background-color:#E2EFD9;font-size:10pt;font-weight:bold;" colspan="3" title="${name}">${name}</td>
         <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
         <td style="width:25.47mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4">${exp}</td>
@@ -245,29 +243,29 @@ export const buildApplicationFormHtml = (cand) => {
     border-right: 0.75pt solid #000000;
   }
   .page-portrait tr {
-    height: 6mm;
+    min-height: 6mm;
   }
   .page-portrait td {
     border: 0.5pt solid #000000;
-    padding: 0.5px 2px;
-    height: 6mm;
+    padding: 1px 3px;
+    min-height: 6mm;
     vertical-align: middle;
-    font-size: 6.8pt;
-    line-height: 0.95;
+    font-size: 10pt;
+    line-height: 1.1;
     word-break: break-word;
     overflow-wrap: anywhere;
     white-space: normal;
   }
   .page-landscape tr {
-    height: 6mm;
+    min-height: 6mm;
   }
   .page-landscape td {
     border: 0.5pt solid #000000;
-    padding: 0.5px 3px;
-    height: 6mm;
+    padding: 1px 3px;
+    min-height: 6mm;
     vertical-align: middle;
-    font-size: 7.2pt;
-    line-height: 0.98;
+    font-size: 10pt;
+    line-height: 1.1;
     word-break: break-word;
     overflow-wrap: anywhere;
     white-space: normal;
@@ -276,17 +274,17 @@ export const buildApplicationFormHtml = (cand) => {
   .photo-placeholder {
     display: flex; align-items: center; justify-content: center;
     width: 26mm; height: 34mm; margin: 0 auto;
-    border: 1pt solid #000; color: #999; font-size: 8pt;
+    border: 1pt solid #000; color: #999; font-size: 9pt;
   }
   .declaration-text {
-    font-size: 6.8pt;
-    line-height: 1.0;
-    padding: 1px 3px;
+    font-size: 10pt;
+    line-height: 1.1;
+    padding: 2px 4px;
     white-space: normal !important;
   }
   .cert-label-cell {
-    font-size: 6.0pt !important;
-    line-height: 0.95 !important;
+    font-size: 10pt !important;
+    line-height: 1.0 !important;
     word-break: break-word;
     white-space: normal !important;
   }
