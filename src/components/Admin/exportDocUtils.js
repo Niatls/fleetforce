@@ -249,15 +249,14 @@ export const buildApplicationFormHtml = (cand) => {
   }
   .page-portrait td {
     border: 0.5pt solid #000000;
-    padding: 0px 2px;
+    padding: 0.5px 2px;
     height: 6mm;
-    max-height: 6mm;
     vertical-align: middle;
-    font-size: 7.0pt;
-    line-height: 1.0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 6.8pt;
+    line-height: 0.95;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
   .page-landscape tr {
     height: 6mm;
@@ -266,13 +265,12 @@ export const buildApplicationFormHtml = (cand) => {
     border: 0.5pt solid #000000;
     padding: 0.5px 3px;
     height: 6mm;
-    max-height: 6mm;
     vertical-align: middle;
-    font-size: 7.5pt;
-    line-height: 1.0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 7.2pt;
+    line-height: 0.98;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
   .photo-cell { text-align: center; vertical-align: middle; padding: 2px; }
   .photo-placeholder {
@@ -282,16 +280,15 @@ export const buildApplicationFormHtml = (cand) => {
   }
   .declaration-text {
     font-size: 6.8pt;
-    line-height: 1.05;
+    line-height: 1.0;
     padding: 1px 3px;
     white-space: normal !important;
   }
   .cert-label-cell {
-    font-size: 6.2pt !important;
-    letter-spacing: -0.2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 6.0pt !important;
+    line-height: 0.95 !important;
+    word-break: break-word;
+    white-space: normal !important;
   }
   @media print {
     body { background: #fff; width: 100%; }
