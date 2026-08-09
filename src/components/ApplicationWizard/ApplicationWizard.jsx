@@ -178,6 +178,62 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
   const [inlinePreview, setInlinePreview] = useState(null);
   const docxContainerRef = React.useRef(null);
 
+  const [fd, setFd] = useState({
+    appliedRank: initialRank || '',
+    readyDate: '',
+    fullName: '',
+    fatherName: '',
+    motherName: '',
+    dob: '',
+    placeOfBirth: '',
+    nationality: '',
+    maritalStatus: '',
+    childrenUnder18: '',
+    phone: '',
+    email: '',
+    skypeTelegram: '',
+    address: '',
+    homeZip: '',
+    kinName: '',
+    kinRelation: '',
+    kinPhone: '',
+    kinAddress: '',
+    height: '',
+    weight: '',
+    overallSize: '',
+    shoeSize: '',
+    eyesColour: '',
+    hairColour: '',
+    photoDataUrl: '',
+
+    alternativeRank: '',
+    minSalary: '',
+    preferredVessels: initialVesselType || '',
+    contractDuration: '',
+    englishLevel: '',
+    marlinsScore: '',
+    nearestAirport: '',
+    collegeName: '',
+    collegeFrom: '',
+    collegeTill: '',
+    collegeDepartment: '',
+
+    passportNo: '', passportIssued: '', passportExpiry: '', passportPlace: '',
+    seamanBookNo: '', seamanBookIssued: '', seamanBookExpiry: '', seamanBookPlace: '',
+    recordBooks: [emptyRecordBook()],
+
+    cocName: '',
+    cocNo: '', cocIssued: '', cocExpiry: '', cocCapacity: '',
+    certificates: [emptyCertificate()],
+
+    seaService: [emptySeaService(''), emptySeaService(''), emptySeaService('')],
+    employers: [emptyEmployer(), emptyEmployer(), emptyEmployer()],
+    attachedFiles: [],
+    consent: false,
+    signature: '',
+    signDate: '',
+  });
+
   const [primaryDocs, setPrimaryDocs] = useState(() => {
     const obj = {};
     PRIMARY_DOCS_LIST.forEach(doc => {
@@ -281,62 +337,6 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
     `);
     printWin.document.close();
   };
-
-  const [fd, setFd] = useState({
-    appliedRank: initialRank || '',
-    readyDate: '',
-    fullName: '',
-    fatherName: '',
-    motherName: '',
-    dob: '',
-    placeOfBirth: '',
-    nationality: '',
-    maritalStatus: '',
-    childrenUnder18: '',
-    phone: '',
-    email: '',
-    skypeTelegram: '',
-    address: '',
-    homeZip: '',
-    kinName: '',
-    kinRelation: '',
-    kinPhone: '',
-    kinAddress: '',
-    height: '',
-    weight: '',
-    overallSize: '',
-    shoeSize: '',
-    eyesColour: '',
-    hairColour: '',
-    photoDataUrl: '',
-
-    alternativeRank: '',
-    minSalary: '',
-    preferredVessels: initialVesselType || '',
-    contractDuration: '',
-    englishLevel: '',
-    marlinsScore: '',
-    nearestAirport: '',
-    collegeName: '',
-    collegeFrom: '',
-    collegeTill: '',
-    collegeDepartment: '',
-
-    passportNo: '', passportIssued: '', passportExpiry: '', passportPlace: '',
-    seamanBookNo: '', seamanBookIssued: '', seamanBookExpiry: '', seamanBookPlace: '',
-    recordBooks: [emptyRecordBook()],
-
-    cocName: '',
-    cocNo: '', cocIssued: '', cocExpiry: '', cocCapacity: '',
-    certificates: [emptyCertificate()],
-
-    seaService: [emptySeaService(''), emptySeaService(''), emptySeaService('')],
-    employers: [emptyEmployer(), emptyEmployer(), emptyEmployer()],
-    attachedFiles: [],
-    consent: false,
-    signature: '',
-    signDate: '',
-  });
 
   React.useEffect(() => {
     if (isOpen) {
