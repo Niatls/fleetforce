@@ -475,3 +475,50 @@ button, input, select, textarea {
     print-color-adjust: exact !important;
   }
 }
+
+/* ─── docx-preview paper rendering & table layout fixes ─── */
+.docx-wrapper, [class*="docx-wrapper"] {
+  background: #525659 !important;
+  padding: 24px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  overflow-x: auto !important;
+}
+
+.docx-wrapper > section, section.docx, [class*="docx"][class*="section"] {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  margin: 0 auto 30px auto !important;
+  background: #ffffff !important;
+  padding-left: 0px !important;
+  padding-right: 15px !important;
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+[class*="docx"] article,
+[class*="docx"] table,
+[class*="docx"] div {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.docx-wrapper section table,
+[class*="docx"] table {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+}
+
+.docx-wrapper section.docx td, 
+.docx-wrapper section.docx th {
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+  box-sizing: border-box !important;
+  padding: 3px 4px !important;
+}

@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 function removeModuleAttributePlugin() {
   return {
     name: 'remove-module-attribute',
+    apply: 'build',
     enforce: 'post',
     transformIndexHtml(html) {
       // Add no-cache meta tags to index.html
