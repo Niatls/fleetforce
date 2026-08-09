@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crew Application Form</title>
+<style>
+:root{
+  --dark:#A8D08D;
+  --mid:#C5E0B3;
+  --light:#E2EFD9;
+  --border:#000;
+}
+*{box-sizing:border-box;}
+body{
+  font-family:'Calibri','Carlito','Segoe UI',Arial,sans-serif;
+  font-size:12px;
+  color:#000;
+  background:#c8c8c8;
+  margin:0;
+  padding:24px 0 60px;
+}
+.sheet{
+  background:#fff;
+  margin:0 auto 28px;
+  box-shadow:0 0 10px rgba(0,0,0,.3);
+  position:relative;
+}
+/* A4 portrait @96dpi = 794 x 1123 px */
+.sheet.portrait{
+  width:794px;
+  min-height:1123px;
+  padding:57px 57px 38px 76px;
+}
+/* A4 landscape = 1123 x 794 px */
+.sheet.landscape{
+  width:1123px;
+  min-height:794px;
+  padding:76px 42px 57px 38px;
+}
+h1{
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+  letter-spacing:.5px;
+  margin:0 0 12px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  margin-bottom:0;
+}
+td{
+  border:1px solid var(--border);
+  padding:2px 5px;
+  vertical-align:middle;
+  font-size:10.5px;
+  height:20px;
+  word-wrap:break-word;
+}
+input[type=text]{
+  width:100%;
+  border:none;
+  outline:none;
+  background:transparent;
+  font-family:inherit;
+  font-size:10.5px;
+  font-weight:normal !important;
+  padding:1px 2px;
+}
+select{
+  width:100%;
+  border:none;
+  outline:none;
+  background:transparent;
+  font-family:inherit;
+  font-size:10.5px;
+  padding:1px 2px;
+}
+.foot{
+  position:absolute;
+  bottom:10px;
+  left:76px;
+  right:57px;
+  font-size:9px;
+  display:flex;
+  justify-content:space-between;
+}
+.sheet.landscape .foot{ left:38px; right:42px; }
+.no-print-bar{
+  position:fixed;
+  top:0; left:0; right:0;
+  background:#1e293b;
+  color:#fff;
+  padding:8px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  z-index:999;
+  font-size:13px;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
+.no-print-bar button{
+  background:#0EA5E9;
+  color:#fff;
+  border:none;
+  padding:7px 18px;
+  border-radius:5px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:13px;
+}
+.no-print-bar button:hover{ background:#0369A1; }
+body{ padding-top:52px; }
+@media print{
+  .no-print-bar{ display:none; }
+  body{ background:#fff; padding:0; }
+  .sheet{ box-shadow:none; margin:0; }
+  @page{ size:A4 portrait; margin:0; }
+  .sheet.landscape{ page:landscape; }
+  @page landscape{ size:A4 landscape; margin:0; }
+}
+</style>
+</head>
+<body>
+
+<div class="no-print-bar">
+  <span><strong>FleetForce Alliance</strong> — Crew Application Form (MLC 2006 / IMO Standard)</span>
+  <button onclick="window.print()">🖨️ Print Application</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SHEET 1 — PORTRAIT: Personal Details + Education + Passports/CoC
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="sheet portrait">
+<h1>APPLICATION FORM</h1>
+<table>
+<!-- Row 1: Position + Date of Readiness + PHOTO (rowspan 8) -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--dark);font-weight:bold;">Positions applied for:</td>
+  <td colspan="3" style="width:26.2%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:17.5%;background:var(--dark);font-weight:bold;">Date of readiness:</td>
+  <td colspan="3" style="width:18.7%;font-weight:bold;"><input type="text"></td>
+  <td colspan="3" rowspan="8" style="width:19.0%;font-weight:bold;text-align:center;vertical-align:middle;">PHOTO</td>
+</tr>
+<!-- Row 2: Surname + Name -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--dark);font-weight:bold;">Surname:</td>
+  <td colspan="3" style="width:26.2%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:17.5%;background:var(--dark);font-weight:bold;">Name:</td>
+  <td colspan="3" style="width:18.7%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Row 3: Father's / Mother's Name -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;border-top:none;">Father's name:</td>
+  <td colspan="3" style="width:26.2%;font-weight:bold;border-top:none;"><input type="text"></td>
+  <td colspan="2" style="width:17.5%;background:var(--light);font-weight:bold;border-top:none;">Mother's name:</td>
+  <td colspan="3" style="width:18.7%;font-weight:bold;border-top:none;"><input type="text"></td>
+</tr>
+<!-- Row 4: DOB + Nationality -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;">Date of birth:</td>
+  <td colspan="3" style="width:26.2%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:17.5%;background:var(--light);font-weight:bold;">Nationality:</td>
+  <td colspan="3" style="width:18.7%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Row 5: Place of birth + Marital status -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;">Place of birth:</td>
+  <td colspan="3" style="width:26.2%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:17.5%;background:var(--light);font-weight:bold;">Marital status:</td>
+  <td colspan="3" style="width:18.7%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Row 6: Children under 18 -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;">N of children under 18:</td>
+  <td colspan="8" style="width:62.4%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Row 7: Home Address + Contact Phone -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;">Home Address:</td>
+  <td colspan="3" style="width:26.2%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:17.5%;background:var(--light);font-weight:bold;">Contact Phone:</td>
+  <td colspan="3" style="width:18.7%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Row 8: E-mail + Skype/Telegram -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;">E-mail:</td>
+  <td colspan="3" style="width:26.2%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:17.5%;background:var(--light);font-weight:bold;">Skype / Telegram:</td>
+  <td colspan="3" style="width:18.7%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Row 9: Next of kin + Relation -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;">Next of kin:</td>
+  <td colspan="5" style="width:43.7%;font-weight:bold;"><input type="text"></td>
+  <td colspan="3" style="width:18.7%;background:var(--light);font-weight:bold;">Relation:</td>
+  <td colspan="3" style="width:19.0%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Row 10: Next of kin address + Phone -->
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;">Next of kin's address:</td>
+  <td colspan="5" style="width:43.7%;font-weight:bold;"><input type="text"></td>
+  <td colspan="3" style="width:18.7%;background:var(--light);font-weight:bold;">Next of kin's phone No:</td>
+  <td colspan="3" style="width:19.0%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Row 11–12: Physical attributes (rowspan for Size/Shoes) -->
+<tr>
+  <td style="width:12.0%;background:var(--light);font-weight:bold;">Height (cm):</td>
+  <td style="width:6.6%;font-weight:bold;"><input type="text"></td>
+  <td style="width:16.2%;background:var(--light);font-weight:bold;">Weight (kg):</td>
+  <td style="width:9.1%;font-weight:bold;"><input type="text"></td>
+  <td colspan="3" rowspan="2" style="width:18.4%;background:var(--light);font-weight:bold;">Size of Overall (EUR):</td>
+  <td rowspan="2" style="width:10.2%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" rowspan="2" style="width:14.0%;background:var(--light);font-weight:bold;">Shoes (EUR):</td>
+  <td rowspan="2" style="width:13.5%;font-weight:bold;border-top:none;"><input type="text"></td>
+</tr>
+<tr>
+  <td style="width:12.0%;background:var(--light);font-weight:bold;">Eyes Colour:</td>
+  <td style="width:6.6%;font-weight:bold;"><input type="text"></td>
+  <td style="width:16.2%;background:var(--light);font-weight:bold;">Hair Colour:</td>
+  <td style="width:9.1%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Marine Education section header -->
+<tr>
+  <td colspan="3" style="width:34.8%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="5" style="width:37.7%;background:var(--dark);font-weight:bold;text-align:center;">Marine Education</td>
+  <td colspan="5" style="width:27.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">Name of maritime college or academy</td>
+  <td colspan="6" style="width:43.7%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:7.5%;background:var(--light);font-weight:bold;">From</td>
+  <td colspan="2" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">Department</td>
+  <td colspan="6" style="width:43.7%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:7.5%;background:var(--light);font-weight:bold;">Till</td>
+  <td colspan="2" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+</tr>
+<!-- Passports section header -->
+<tr>
+  <td colspan="3" style="width:34.8%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="5" style="width:37.7%;background:var(--dark);font-weight:bold;text-align:center;">PASSPORTS and CERTIFICATES</td>
+  <td colspan="5" style="width:27.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;text-align:center;">DOCUMENT</td>
+  <td colspan="3" style="width:21.3%;background:var(--light);font-weight:bold;text-align:center;">NUMBER</td>
+  <td colspan="2" style="width:16.3%;background:var(--light);font-weight:bold;text-align:center;">ISSUED DATE</td>
+  <td colspan="4" style="width:14.0%;background:var(--light);font-weight:bold;text-align:center;">VALID UNTIL</td>
+  <td style="width:13.5%;background:var(--light);font-weight:bold;text-align:center;">PLACE</td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">TRAVEL PASSPORT:</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">SEAMAN'S BOOK (SID):</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">CIVIL PASSPORT:</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">U.S. VISA:</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">OTHER VALID VISA:</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;border-bottom:none;">CERTIFICATE OF COMPETENCY # 1</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;border-top:none;">RANK / CAPACITY</td>
+  <td colspan="11" style="width:81.4%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">ENDORSEMENT OF CERTIFICATE # 1</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;border-bottom:none;">CERTIFICATE OF COMPETENCY # 2</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="2" style="width:18.6%;background:var(--light);font-weight:bold;border-top:none;">RANK / CAPACITY</td>
+  <td colspan="11" style="width:81.4%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">ENDORSEMENT OF CERTIFICATE # 2</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;text-align:center;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;text-align:center;"><input type="text"></td>
+</tr>
+</table>
+<div class="foot">
+  <span>Prepared by: Quality Manager. Approved by: Crewing Director. Validated by: Quality Manager.</span>
+  <span>1 / 3</span>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SHEET 2 — PORTRAIT: STCW Certificates
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="sheet portrait">
+<h1>APPLICATION FORM</h1>
+<table>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">CERTIFICATE</td>
+  <td colspan="3" style="width:21.3%;background:var(--light);font-weight:bold;text-align:center;">NUMBER</td>
+  <td colspan="2" style="width:16.3%;background:var(--light);font-weight:bold;text-align:center;">ISSUED DATE</td>
+  <td colspan="4" style="width:14.0%;background:var(--light);font-weight:bold;text-align:center;">VALID UNTIL</td>
+  <td style="width:13.5%;background:var(--light);font-weight:bold;text-align:center;">PLACE</td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">GMDSS CERTIFICATE/ENDORSEMENT</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">BASIC SAFETY TRAINING</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">PROFICIENCY IN SURVIVAL CRAFT</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">ADVANCED FIRE FIGHTING</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">MEDICAL FIRST AID</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">MEDICAL CARE</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">SHIPS SECURITY OFFICER</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">DESIGNATED SECURITY DUTIES</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">SECURITY AWARENESS</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">SHIPS SAFETY OFFICER / ISM</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">RADAR NAVIGATION &amp; ARPA</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">DANGEROUS &amp; HAZARDOUS CARGOES</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">BRIDGE TEAM MNGT</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">ENGINE ROOM RESOURCE MNGT</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">ECDIS GENERIC</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">ECDIS SPECIFIC</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">BASIC TRAINING OIL/CHEM TANKER</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">ADV. TRAINING OIL TANKER</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">ADV. TRAINING CHEM TANKER</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">HIGH VOLTAGE EL. EQUIPMENT</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">COOK CERTIFICATE</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">MESSMAN (MLC-2006)</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">YELLOW FEVER CERTIFICATE</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="3" style="width:34.8%;background:var(--light);font-weight:bold;">COVID-19 VACCINATION</td>
+  <td colspan="3" style="width:21.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="2" style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td colspan="4" style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+</table>
+<div class="foot">
+  <span>Prepared by: Quality Manager. Approved by: Crewing Director. Validated by: Quality Manager.</span>
+  <span>2 / 3</span>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SHEET 3 — LANDSCAPE: Sea Service + Previous Employers + Declaration
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="sheet landscape">
+<h1>APPLICATION FORM</h1>
+
+<!-- Sea Service header -->
+<table style="margin-bottom:14px">
+<tr>
+  <td style="width:33.6%;"><input type="text"></td>
+  <td colspan="2" style="width:38.9%;background:var(--dark);font-weight:bold;">FOREIGN SEAMAN'S ID / RECORD BOOKS</td>
+  <td colspan="2" style="width:27.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td style="width:33.6%;background:var(--light);font-weight:bold;">CERTIFICATE</td>
+  <td style="width:22.7%;background:var(--light);font-weight:bold;">NUMBER</td>
+  <td style="width:16.3%;background:var(--light);font-weight:bold;">ISSUED DATE</td>
+  <td style="width:14.0%;background:var(--light);font-weight:bold;">VALID UNTIL</td>
+  <td style="width:13.5%;background:var(--light);font-weight:bold;">PLACE</td>
+</tr>
+<tr>
+  <td style="width:33.6%;font-weight:bold;"><input type="text"></td>
+  <td style="width:22.7%;font-weight:bold;"><input type="text"></td>
+  <td style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td style="width:33.6%;font-weight:bold;"><input type="text"></td>
+  <td style="width:22.7%;font-weight:bold;"><input type="text"></td>
+  <td style="width:16.3%;font-weight:bold;"><input type="text"></td>
+  <td style="width:14.0%;font-weight:bold;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;"><input type="text"></td>
+</tr>
+<tr>
+  <td style="width:33.6%;font-weight:bold;border-bottom:none;"><input type="text"></td>
+  <td style="width:22.7%;font-weight:bold;border-bottom:none;"><input type="text"></td>
+  <td style="width:16.3%;font-weight:bold;border-bottom:none;"><input type="text"></td>
+  <td style="width:14.0%;font-weight:bold;border-bottom:none;"><input type="text"></td>
+  <td style="width:13.5%;font-weight:bold;border-bottom:none;"><input type="text"></td>
+</tr>
+</table>
+
+<table>
+<tr>
+  <td colspan="2" style="width:8.5%;font-weight:bold;border-left:none;border-right:none;"><input type="text"></td>
+  <td colspan="18" style="width:91.5%;font-weight:bold;text-align:center;border-left:none;border-right:none;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="20" style="width:100.0%;background:var(--dark);font-weight:bold;text-align:center;">PREVIOUS SEA SERVICE</td>
+</tr>
+<tr>
+  <td style="width:6.1%;background:var(--mid);font-weight:bold;text-align:center;">FROM</td>
+  <td colspan="2" style="width:6.7%;background:var(--mid);font-weight:bold;text-align:center;">TO</td>
+  <td style="width:6.7%;background:var(--mid);font-weight:bold;text-align:center;">POSITION</td>
+  <td style="width:5.3%;background:var(--mid);font-weight:bold;text-align:center;">SALARY</td>
+  <td style="width:9.6%;background:var(--mid);font-weight:bold;text-align:center;">NAME OF VESSEL</td>
+  <td colspan="3" style="width:10.9%;background:var(--mid);font-weight:bold;text-align:center;">SHIPOWNER</td>
+  <td colspan="2" style="width:11.4%;background:var(--mid);font-weight:bold;text-align:center;">TYPE OF VESSEL</td>
+  <td colspan="3" style="width:10.6%;background:var(--mid);font-weight:bold;text-align:center;">TYPE OF ENGINE</td>
+  <td colspan="2" style="width:7.1%;background:var(--mid);font-weight:bold;text-align:center;">BUILD YEAR</td>
+  <td style="width:4.4%;background:var(--mid);font-weight:bold;text-align:center;">DWT</td>
+  <td style="width:5.3%;background:var(--mid);font-weight:bold;text-align:center;">BHP</td>
+  <td style="width:7.1%;background:var(--mid);font-weight:bold;text-align:center;">FLAG</td>
+  <td style="width:8.8%;background:var(--mid);font-weight:bold;text-align:center;">CREWING AGENT</td>
+</tr>
+<!-- 10 sea service rows -->
+<tr><td style="width:6.1%;"><input type="text"></td><td colspan="2" style="width:6.7%;"><input type="text"></td><td style="width:6.7%;"><input type="text"></td><td style="width:5.3%;"><input type="text"></td><td style="width:9.6%;"><input type="text"></td><td colspan="3" style="width:10.9%;"><input type="text"></td><td colspan="2" style="width:11.4%;"><input type="text"></td><td colspan="3" style="width:10.6%;"><input type="text"></td><td colspan="2" style="width:7.1%;"><input type="text"></td><td style="width:4.4%;"><input type="text"></td><td style="width:5.3%;"><input type="text"></td><td style="width:7.1%;"><input type="text"></td><td style="width:8.8%;"><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+<tr><td><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td colspan="3"><input type="text"></td><td colspan="2"><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+
+<!-- Previous Employers -->
+<tr>
+  <td colspan="20" style="width:100.0%;background:var(--dark);font-weight:bold;text-align:center;">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td>
+</tr>
+<tr>
+  <td colspan="7" style="width:35.8%;background:var(--mid);font-weight:bold;text-align:center;">COMPANY</td>
+  <td colspan="9" style="width:38.6%;background:var(--mid);font-weight:bold;text-align:center;">PERSON IN CHARGE</td>
+  <td colspan="4" style="width:25.6%;background:var(--mid);font-weight:bold;text-align:center;">CONTACT DETAILS (Phone Number, e-mail)</td>
+</tr>
+<tr>
+  <td colspan="7" style="width:35.8%;"><input type="text"></td>
+  <td colspan="9" style="width:38.6%;"><input type="text"></td>
+  <td colspan="4" style="width:25.6%;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="7" style="width:35.8%;"><input type="text"></td>
+  <td colspan="9" style="width:38.6%;"><input type="text"></td>
+  <td colspan="4" style="width:25.6%;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="7" style="width:35.8%;"><input type="text"></td>
+  <td colspan="9" style="width:38.6%;"><input type="text"></td>
+  <td colspan="4" style="width:25.6%;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="7" style="width:35.8%;"><input type="text"></td>
+  <td colspan="9" style="width:38.6%;"><input type="text"></td>
+  <td colspan="4" style="width:25.6%;"><input type="text"></td>
+</tr>
+<tr>
+  <td colspan="7" style="width:35.8%;"><input type="text"></td>
+  <td colspan="9" style="width:38.6%;"><input type="text"></td>
+  <td colspan="4" style="width:25.6%;"><input type="text"></td>
+</tr>
+
+<!-- Declaration row -->
+<tr>
+  <td colspan="2" style="width:8.5%;"><input type="text"></td>
+  <td colspan="18" style="width:91.5%;font-size:9.5px;line-height:1.4;">I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.</td>
+</tr>
+<!-- Date + Signature row -->
+<tr>
+  <td style="width:6.1%;background:var(--mid);font-weight:bold;">Date:</td>
+  <td colspan="4" style="width:18.7%;"><input type="text"></td>
+  <td style="width:9.6%;border-bottom:none;border-right:none;"><input type="text"></td>
+  <td colspan="2" style="width:1.5%;border-left:none;border-bottom:none;border-right:none;"><input type="text"></td>
+  <td colspan="2" style="width:15.6%;border-left:none;border-bottom:none;border-right:none;"><input type="text"></td>
+  <td colspan="2" style="width:13.5%;border-left:none;border-bottom:none;border-right:none;"><input type="text"></td>
+  <td style="width:1.5%;border-left:none;border-bottom:none;"><input type="text"></td>
+  <td colspan="2" style="width:7.1%;background:var(--mid);font-weight:bold;">Signature:</td>
+  <td colspan="5" style="width:26.6%;"><input type="text"></td>
+</tr>
+</table>
+
+<div class="foot">
+  <span>Prepared by: Quality Manager. Approved by: Crewing Director. Validated by: Quality Manager.</span>
+  <span>3 / 3</span>
+</div>
+</div>
+
+</body>
+</html>
