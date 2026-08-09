@@ -18,246 +18,504 @@ export const formatAppliedPositionsText = (cand) => {
 
 // Helper: Build comprehensive HTML application form matching Crew_Application_Form.pdf for Word (.doc) fallback
 export const buildApplicationFormHtml = (cand) => {
-  const todayStr = new Date().toISOString().split('T')[0];
+  if (!cand) cand = {};
+  const todayStr = new Date().toLocaleDateString('ru-RU');
   const { surname: parsedSurname, name: parsedName, fatherName: parsedFatherName } = parseCandidateNameParts(cand);
 
-  const seaServiceRows = (cand.seaService && cand.seaService.length > 0)
-    ? cand.seaService.map(s => `
+  const surname = cand.surname || parsedSurname || '';
+  const name = cand.name || parsedName || '';
+  const fatherName = cand.fatherName || parsedFatherName || '';
+
+  const getDocVal = (docName, field) => {
+    if (cand.primaryDocs && cand.primaryDocs[docName]) {
+      return cand.primaryDocs[docName][field] || '';
+    }
+    if (docName.includes('TRAVEL PASSPORT')) {
+      if (field === 'number') return cand.passportNo || '';
+      if (field === 'issued') return cand.passportIssued || '';
+      if (field === 'expiry') return cand.passportExpiry || '';
+      if (field === 'place') return cand.passportPlace || '';
+    }
+    if (docName.includes('SEAMAN')) {
+      if (field === 'number') return cand.seamanBookNo || '';
+      if (field === 'issued') return cand.seamanBookIssued || '';
+      if (field === 'expiry') return cand.seamanBookExpiry || '';
+      if (field === 'place') return cand.seamanBookPlace || '';
+    }
+    return '';
+  };
+
+  const getStcwVal = (certName, field) => {
+    if (cand.stcwDocs && cand.stcwDocs[certName]) {
+      return cand.stcwDocs[certName][field] || '';
+    }
+    if (cand.certificates && Array.isArray(cand.certificates)) {
+      const found = cand.certificates.find(c => c.certName && c.certName.toUpperCase().includes(certName.substring(0, 8).toUpperCase()));
+      if (found) {
+        if (field === 'number') return found.certNo || '';
+        if (field === 'issued') return found.certIssued || '';
+        if (field === 'expiry') return found.certValid || '';
+        if (field === 'place') return found.rankCapacity || '';
+      }
+    }
+    return '';
+  };
+
+  const photoHtml = cand.photoDataUrl
+    ? `<img src="${cand.photoDataUrl}" style="max-width:30mm;max-height:40mm;object-fit:cover;display:block;margin:0 auto;" />`
+    : `<div class="photo-placeholder">PHOTO</div>`;
+
+  const primaryDocsRows = [
+    { label: 'TRAVEL PASSPORT:', key: 'TRAVEL PASSPORT:' },
+    { label: "SEAMAN’S BOOK:", key: "SEAMAN'S BOOK (SID):" },
+    { label: 'SEAFARERS’S IDENTITY DOCUMENT(SID):', key: "SEAFARERS'S IDENTITY DOCUMENT(SID):" },
+    { label: 'CIVIL PASSPORT:', key: 'CIVIL PASSPORT:' },
+    { label: 'U.S. VISA:', key: 'U.S. VISA:' },
+    { label: 'OTHER VALID VISA:', key: 'OTHER VALID VISA:' },
+    { label: 'CERTIFICATE OF COMPETENCY # 1', key: 'CERTIFICATE OF COMPETENCY # 1', hasRank: 1 },
+    { label: 'ENDORSEMENT OF CERTIFICATE # 1', key: 'ENDORSEMENT OF CERTIFICATE #1' },
+    { label: 'CERTIFICATE OF COMPETENCY # 2', key: 'CERTIFICATE OF COMPETENCY # 2', hasRank: 2 },
+    { label: 'ENDORSEMENT OF CERTIFICATE # 2', key: 'ENDORSEMENT OF CERTIFICATE #2' },
+  ].map(item => {
+    const num = getDocVal(item.key, 'number');
+    const iss = getDocVal(item.key, 'issued');
+    const exp = getDocVal(item.key, 'expiry');
+    const plc = getDocVal(item.key, 'place');
+    let html = `
       <tr>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.dateFrom || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.dateTo || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-weight:bold;font-size:8.5pt;">${s.rankHeld || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">$${s.salary || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-weight:bold;font-size:8.5pt;">${s.vesselName || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.shipowner || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.vesselType || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.engineType || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.buildYear || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.dwtGrt || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.engineBhp || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.flag || '-'}</td>
-        <td style="padding:4px;border:1px solid #000;font-size:8.5pt;">${s.manningCompany || '-'}</td>
+        <td style="width:46.48mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">${item.label}</td>
+        <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
+        <td style="width:25.47mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
+        <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4">${exp}</td>
+        <td style="width:10.76mm;background-color:#FFFFFF;">${plc}</td>
       </tr>
-    `).join('')
-    : '<tr><td colspan="13" style="padding:8px;text-align:center;border:1px solid #000;">No sea experience recorded</td></tr>';
+    `;
+    if (item.hasRank) {
+      const rankVal = getDocVal(`RANK_CAPACITY_${item.hasRank}`, 'number');
+      html += `
+        <tr>
+          <td style="width:31.62mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">RANK / CAPACITY</td>
+          <td style="width:138.38mm;background-color:#FFFFFF;" colspan="11">${rankVal}</td>
+        </tr>
+      `;
+    }
+    return html;
+  }).join('');
 
-  const certificatesRows = (cand.certificates && cand.certificates.length > 0)
-    ? cand.certificates.map(c => `
+  const stcwList = [
+    "GMDSS CERTIFICATE/ENDORSEMENT",
+    "BASIC SAFETY TRAINING",
+    "PROFICIENCY IN SURVIVAL CRAFT",
+    "ADVANCED FIRE FIGHTING",
+    "MEDICAL FIRST AID",
+    "MEDICAL CARE",
+    "SHIPS SECURITY OFFICER",
+    "DESIGNATED SECURITY DUTIES",
+    "SECURITY AWARENESS",
+    "SHIPS SAFETY OFFICER / ISM",
+    "RADAR NAVIGATION, RADAR PLOTTING AND USE OF ARPA",
+    "ADVANCED TRAINING FOR SHIPS OPERATING IN POLAR WATERS CERTIFICATE",
+    "BASIC TRAINING FOR SHIPS OPERATING IN POLAR WATERS CERTIFICATE",
+    "DANGEROUS & HAZARDOUS CARGOES",
+    "BRIDGE TEAM MNGT",
+    "ENGINE ROOM RESOURCE MNGT",
+    "ECDIS GENERIC",
+    "ECDIS SPECIFIC",
+    "BASIC TRAINING FOR OIL & CHEMICAL TANKER CERTIFICATE",
+    "ADV. TRAINING FOR CHEMICAL TANKER CERTIFICATE",
+    "ADV. TRAINING FOR CHEMICAL TANKER CERTIFICATE",
+    "BASIC TRAINING FOR OIL AND CHEMICAL TANKER - ENDORSEMENT",
+    "ADV. TRAINING FOR OIL TANKER -ENDORSEMENT",
+    "ADV. TRAINING FOR CHEMICAL TANKER -ENDORSEMENT",
+    "BASIC/ADV. TRAINING FOR GAS TANKER ENDO",
+    "HIGH VOLTAGE EL. EQUIPMENT",
+    "COOK CERTIFICATE",
+    "MESSMAN (MLC-2006)",
+    "YELLOW FEVER CERTIFICATE",
+    "COVID-19 VACCINATION CERTIFICATE"
+  ];
+
+  const stcwRows = stcwList.map(name => {
+    const num = getStcwVal(name, 'number');
+    const iss = getStcwVal(name, 'issued');
+    const exp = getStcwVal(name, 'expiry');
+    const plc = getStcwVal(name, 'place');
+    return `
       <tr>
-        <td style="padding:5px;border:1px solid #000;font-weight:bold;">${c.certName || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${c.certNo || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${c.certIssued || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${c.certValid || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${c.rankCapacity || '-'}</td>
+        <td style="width:46.48mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">${name}</td>
+        <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
+        <td style="width:25.47mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
+        <td style="width:42.73mm;background-color:#FFFFFF;" colspan="4">${exp}</td>
+        <td style="width:10.76mm;background-color:#FFFFFF;">${plc}</td>
       </tr>
-    `).join('')
-    : '';
+    `;
+  }).join('');
 
-  const recordBooksRows = (cand.recordBooks && cand.recordBooks.length > 0)
-    ? cand.recordBooks.map(rb => `
+  const recBookRows = Array.from({ length: 4 }).map((_, i) => {
+    const rb = (cand.recordBooks || [])[i] || {};
+    return `
       <tr>
-        <td style="padding:5px;border:1px solid #000;font-weight:bold;">${rb.flag || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${rb.number || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${rb.issuedDate || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${rb.validUntil || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${rb.place || '-'}</td>
+        <td style="width:92.95mm;background-color:#FFFFFF;">${rb.flag || ''}</td>
+        <td style="width:53.94mm;background-color:#FFFFFF;">${rb.number || ''}</td>
+        <td style="width:53.94mm;background-color:#FFFFFF;">${rb.issuedDate || ''}</td>
+        <td style="width:38.08mm;background-color:#FFFFFF;">${rb.validUntil || ''}</td>
+        <td style="width:38.08mm;background-color:#FFFFFF;">${rb.place || ''}</td>
       </tr>
-    `).join('')
-    : '<tr><td colspan="5" style="padding:6px;text-align:center;border:1px solid #000;">No foreign record books listed</td></tr>';
+    `;
+  }).join('');
 
-  const employersRows = (cand.employers && cand.employers.length > 0)
-    ? cand.employers.map(e => `
+  const seaRows = Array.from({ length: 10 }).map((_, i) => {
+    const s = (cand.seaService || [])[i] || {};
+    return `
       <tr>
-        <td style="padding:5px;border:1px solid #000;font-weight:bold;">${e.company || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${e.personInCharge || '-'}</td>
-        <td style="padding:5px;border:1px solid #000;">${e.contactDetails || '-'}</td>
+        <td style="width:11.80mm;background-color:#FFFFFF;">${s.dateFrom || ''}</td>
+        <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2">${s.dateTo || ''}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;">${s.rankHeld || ''}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;">${s.salary ? '$' + s.salary : ''}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;">${s.vesselName || ''}</td>
+        <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3">${s.shipowner || ''}</td>
+        <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2">${s.vesselType || ''}</td>
+        <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3">${s.engineType || ''}</td>
+        <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2">${s.buildYear || ''}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;">${s.dwtGrt || ''}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;">${s.engineBhp || ''}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;">${s.flag || ''}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;">${s.manningCompany || ''}</td>
       </tr>
-    `).join('')
-    : '<tr><td colspan="3" style="padding:6px;text-align:center;border:1px solid #000;">No previous employer contacts listed</td></tr>';
+    `;
+  }).join('');
 
-  return `
-    <html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-    <head>
-      <meta charset='utf-8'>
-      <title>APPLICATION FORM - ${cand.fullName}</title>
-      <style>
-        body { font-family: Arial, sans-serif; font-size: 9.5pt; color: #000; margin: 15px; }
-        .header-title { text-align: center; font-size: 16pt; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 10px; text-transform: uppercase; }
-        .meta-line { font-size: 8pt; color: #555; margin-bottom: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-        th, td { border: 1px solid #000; padding: 4px 6px; font-size: 9pt; }
-        .sec-hdr { background: #b6d7a8; font-weight: bold; text-align: center; font-size: 10pt; text-transform: uppercase; padding: 6px; }
-        .tbl-hdr { background: #d9ead3; font-weight: bold; font-size: 8.5pt; text-align: left; }
-        .lbl { background: #eef7ea; font-weight: bold; width: 22%; }
-        .val { width: 28%; }
-      </style>
-    </head>
-    <body>
-      <div class="header-title">APPLICATION FORM</div>
-      <div class="meta-line">FLEETFORCE CREWING ALLIANCE | REF: ${cand.id || 'N/A'} | Date: ${todayStr}</div>
+  const empRows = Array.from({ length: 5 }).map((_, i) => {
+    const e = (cand.employers || [])[i] || {};
+    return `
+      <tr>
+        <td style="width:93.99mm;background-color:#FFFFFF;" colspan="7">${e.company || ''}</td>
+        <td style="width:126.70mm;background-color:#FFFFFF;" colspan="9">${e.personInCharge || ''}</td>
+        <td style="width:56.31mm;background-color:#FFFFFF;" colspan="4">${e.contactDetails || ''}</td>
+      </tr>
+    `;
+  }).join('');
 
-      <!-- 1. GENERAL INFORMATION -->
-      <table>
-        <tr>
-          <td class="lbl">Positions applied for:</td>
-          <td class="val"><strong>${formatAppliedPositionsText(cand)}</strong></td>
-          <td class="lbl">Date of readiness:</td>
-          <td class="val">${cand.readyDate || '-'}</td>
-        </tr>
-        <tr>
-          <td class="lbl">Surname:</td>
-          <td class="val">${parsedSurname || '-'}</td>
-          <td class="lbl">Name:</td>
-          <td class="val">${parsedName || '-'}</td>
-        </tr>
-        <tr>
-          <td class="lbl">Father’s name:</td>
-          <td class="val">${parsedFatherName || '-'}</td>
-          <td class="lbl">Mother’s name:</td>
-          <td class="val">${cand.motherName || '-'}</td>
-        </tr>
-        <tr>
-          <td class="lbl">Date of birth:</td>
-          <td class="val">${cand.dob || '-'}</td>
-          <td class="lbl">Nationality:</td>
-          <td class="val">${cand.nationality || cand.citizenship || '-'}</td>
-        </tr>
-        <tr>
-          <td class="lbl">Place of birth (City, Country):</td>
-          <td class="val">${cand.placeOfBirth || '-'}</td>
-          <td class="lbl">Marital status:</td>
-          <td class="val">${cand.maritalStatus || 'Single'} (Children &lt;18: ${cand.childrenUnder18 || '0'})</td>
-        </tr>
-        <tr>
-          <td class="lbl">Home Address:</td>
-          <td colspan="3">${[cand.address || cand.homeAddress, cand.homeZip ? `Zip: ${cand.homeZip}` : ''].filter(Boolean).join(', ') || '-'}</td>
-        </tr>
-        <tr>
-          <td class="lbl">Home Zip:</td>
-          <td class="val">${cand.homeZip || '-'}</td>
-          <td class="lbl">Contact Phone:</td>
-          <td class="val">${cand.phone || '-'}</td>
-        </tr>
-        <tr>
-          <td class="lbl">E-mail:</td>
-          <td class="val">${cand.email || '-'}</td>
-          <td class="lbl">Skype/Telegram:</td>
-          <td class="val">${cand.skypeTelegram || '-'}</td>
-        </tr>
-        <tr>
-          <td class="lbl">Next of kin:</td>
-          <td class="val">${cand.kinName || '-'} (${cand.kinRelation || '-'})</td>
-          <td class="lbl">Next of kin phone:</td>
-          <td class="val">${cand.kinPhone || '-'}</td>
-        </tr>
-        <tr>
-          <td class="lbl">Physical Details:</td>
-          <td colspan="3">Height: ${cand.height || '-'} cm | Weight: ${cand.weight || '-'} kg | Overall: ${cand.overallSize || '-'} EUR | Shoes: ${cand.shoeSize || '-'} EUR | Eyes: ${cand.eyesColour || '-'} | Hair: ${cand.hairColour || '-'}</td>
-        </tr>
-      </table>
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seafarer Application Form - ${cand.fullName || 'FleetForce'}</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 10pt;
+    color: #000;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .page-portrait {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 20mm 5mm 10mm 5mm;
+  }
+  .page-landscape {
+    width: 297mm;
+    min-height: 210mm;
+    margin: 0 auto;
+    padding: 20mm 5mm 20mm 5mm;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    border-left: 1pt solid #000000;
+    border-right: 1pt solid #000000;
+  }
+  .page-landscape table { height: auto; }
+  .page-landscape td { height: 6mm; }
+  tr.no-bottom-border td { border-bottom: none; }
+  td {
+    border: 0.5pt solid #000000;
+    padding: 2px 4px;
+    vertical-align: middle;
+    font-size: 10pt;
+    line-height: 1.3;
+    word-wrap: break-word;
+  }
+  .photo-cell { text-align: center; vertical-align: middle; padding: 4px; }
+  .photo-placeholder {
+    display: flex; align-items: center; justify-content: center;
+    width: 30mm; height: 40mm; margin: 0 auto;
+    border: 1pt solid #000; color: #999; font-size: 9pt;
+  }
+  .declaration-text { font-size: 9pt; line-height: 1.4; padding: 2px 4px; }
+  @media print {
+    body { width: 210mm; }
+    .page-portrait { page: portrait; page-break-after: always; }
+    .page-landscape { page: landscape; page-break-after: always; }
+    .page-landscape:last-child { page-break-after: auto; }
+  }
+  @media screen {
+    body { background: #e0e0e0; padding: 10mm; padding-top: 20mm; }
+    .page-portrait, .page-landscape {
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      margin-bottom: 10mm;
+    }
+  }
+  td[contenteditable="true"] { outline: none; cursor: text; }
+  td[contenteditable="true"]:focus {
+    background-color: #fffde7 !important;
+    box-shadow: inset 0 0 0 1.5pt #2196F3;
+  }
+</style>
+</head>
+<body>
 
-      <!-- 2. MARINE EDUCATION -->
-      <table>
-        <tr class="sec-hdr"><td colspan="3">Marine Education</td></tr>
-        <tr class="tbl-hdr">
-          <th style="width:60%;">Name of maritime college or academy</th>
-          <th style="width:20%;">From</th>
-          <th style="width:20%;">Till</th>
-        </tr>
-        <tr>
-          <td>${cand.collegeName || '-'}</td>
-          <td>${cand.collegeFrom || '-'}</td>
-          <td>${cand.collegeTill || '-'}</td>
-        </tr>
-      </table>
+<!-- Page 1: Portrait - Personal Information, Education, Certificates -->
+<div class="page-portrait">
+<table>
+  <colgroup>
+    <col style="width:15.81mm">
+    <col style="width:15.81mm">
+    <col style="width:14.85mm">
+    <col style="width:14.85mm">
+    <col style="width:14.85mm">
+    <col style="width:14.86mm">
+    <col style="width:14.86mm">
+    <col style="width:10.61mm">
+    <col style="width:10.61mm">
+    <col style="width:10.61mm">
+    <col style="width:10.76mm">
+    <col style="width:10.76mm">
+    <col style="width:10.76mm">
+  </colgroup>
+  <tr>
+    <td style="width:31.62mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Positions applied for:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;font-size:10.0pt;font-weight:bold;" colspan="3">${cand.appliedRank || ''}</td>
+    <td style="width:29.72mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Date of readiness:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.readyDate || ''}</td>
+    <td style="width:32.27mm;background-color:#FFFFFF;font-weight:bold;" colspan="3" rowspan="8" class="photo-cell">${photoHtml}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Surname:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${surname}</td>
+    <td style="width:29.72mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Name:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${name}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Father’s name:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${fatherName}</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Mother’s name:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.motherName || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Date of birth:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.dob || ''}</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Nationality:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.nationality || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Place of birth:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.placeOfBirth || ''}</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Marital status:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.maritalStatus || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">N of children under 18:</td>
+    <td style="width:106.11mm;background-color:#FFFFFF;" colspan="8">${cand.childrenUnder18 || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Home Address:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.address || ''}${cand.homeZip ? ` (Zip: ${cand.homeZip})` : ''}</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Contact Phone:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.phone || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">E-mail:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.email || ''}</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Skype/Telegram:</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.skypeTelegram || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Next of kin:</td>
+    <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinName || ''}</td>
+    <td style="width:31.83mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Relation:</td>
+    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinRelation || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Next of kin’s address:</td>
+    <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinAddress || ''}</td>
+    <td style="width:31.83mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Next of kin’s phone №:</td>
+    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinPhone || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:15.81mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Height (cm):</td>
+    <td style="width:15.81mm;background-color:#FFFFFF;">${cand.height || ''}</td>
+    <td style="width:14.85mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Weight (kg):</td>
+    <td style="width:14.85mm;background-color:#FFFFFF;">${cand.weight || ''}</td>
+    <td style="width:44.57mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3" rowspan="2">Size of Overall (EUR):</td>
+    <td style="width:10.61mm;background-color:#FFFFFF;" rowspan="2">${cand.overallSize || ''}</td>
+    <td style="width:42.73mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="4" rowspan="2">Shoes (EUR):</td>
+    <td style="width:10.76mm;background-color:#FFFFFF;" rowspan="2">${cand.shoeSize || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:15.81mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Eyes Colour:</td>
+    <td style="width:15.81mm;background-color:#FFFFFF;">${cand.eyesColour || ''}</td>
+    <td style="width:14.85mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Hair Colour:</td>
+    <td style="width:14.85mm;background-color:#FFFFFF;">${cand.hairColour || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:70.04mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;text-align:center;" colspan="5">Marine Education</td>
+    <td style="width:53.49mm;background-color:#FFFFFF;" colspan="5"></td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Name of maritime college or academy</td>
+    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeName || ''}</td>
+    <td style="width:21.37mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">From</td>
+    <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeFrom || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Department</td>
+    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeDepartment || ''}</td>
+    <td style="width:21.37mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Till</td>
+    <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeTill || ''}</td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
+    <td style="width:70.04mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;text-align:center;" colspan="5">PASSPORTS and CERTIFICATES</td>
+    <td style="width:53.49mm;background-color:#FFFFFF;" colspan="5"></td>
+  </tr>
+  <tr>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">DOCUMENT</td>
+    <td style="width:44.57mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">NUMBER</td>
+    <td style="width:25.47mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
+    <td style="width:42.73mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="4">VALID UNTIL</td>
+    <td style="width:10.76mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">PLACE</td>
+  </tr>
+  ${primaryDocsRows}
+  <tr>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">CERTIFICATE</td>
+    <td style="width:44.57mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">NUMBER</td>
+    <td style="width:25.47mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
+    <td style="width:42.73mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="4">VALID UNTIL</td>
+    <td style="width:10.76mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">PLACE</td>
+  </tr>
+  ${stcwRows}
+</table>
+</div>
 
-      <!-- 3. PASSPORTS AND CERTIFICATES -->
-      <table>
-        <tr class="sec-hdr"><td colspan="5">PASSPORTS and CERTIFICATES</td></tr>
-        <tr class="tbl-hdr">
-          <th>DOCUMENT</th>
-          <th>NUMBER</th>
-          <th>ISSUED DATE</th>
-          <th>VALID UNTIL</th>
-          <th>PLACE</th>
-        </tr>
-        <tr>
-          <td><strong>TRAVEL PASSPORT:</strong></td>
-          <td>${cand.passportNo || '-'}</td>
-          <td>${cand.passportIssued || '-'}</td>
-          <td>${cand.passportExpiry || '-'}</td>
-          <td>${cand.passportPlace || '-'}</td>
-        </tr>
-        <tr>
-          <td><strong>SEAMAN'S BOOK (SID):</strong></td>
-          <td>${cand.seamanBookNo || '-'}</td>
-          <td>${cand.seamanBookIssued || '-'}</td>
-          <td>${cand.seamanBookExpiry || '-'}</td>
-          <td>${cand.seamanBookPlace || '-'}</td>
-        </tr>
-        ${certificatesRows}
-      </table>
+<!-- Page 2: Landscape - Foreign Seaman's ID / Record Books -->
+<div class="page-landscape">
+<table>
+  <colgroup>
+    <col style="width:92.95mm">
+    <col style="width:53.94mm">
+    <col style="width:53.94mm">
+    <col style="width:38.08mm">
+    <col style="width:38.08mm">
+  </colgroup>
+  <tr>
+    <td style="width:92.95mm;background-color:#FFFFFF;"></td>
+    <td style="width:107.88mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="2">FOREIGN SEAMAN’S ID / RECORD BOOKS</td>
+    <td style="width:76.17mm;background-color:#FFFFFF;" colspan="2"></td>
+  </tr>
+  <tr>
+    <td style="width:92.95mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">CERTIFICATE</td>
+    <td style="width:53.94mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">NUMBER</td>
+    <td style="width:53.94mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">ISSUED DATE</td>
+    <td style="width:38.08mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">VALID UNTIL</td>
+    <td style="width:38.08mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">PLACE</td>
+  </tr>
+  ${recBookRows}
+</table>
+</div>
 
-      <!-- 4. FOREIGN SEAMAN'S RECORD BOOKS -->
-      <table>
-        <tr class="sec-hdr"><td colspan="5">FOREIGN SEAMAN’S ID / RECORD BOOKS</td></tr>
-        <tr class="tbl-hdr">
-          <th>FLAG</th>
-          <th>NUMBER</th>
-          <th>ISSUED DATE</th>
-          <th>VALID UNTIL</th>
-          <th>PLACE</th>
-        </tr>
-        ${recordBooksRows}
-      </table>
+<!-- Page 3: Landscape - Previous Sea Service & Employers -->
+<div class="page-landscape">
+<table>
+  <colgroup>
+    <col style="width:11.80mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+    <col style="width:14.08mm">
+  </colgroup>
+  <tr>
+    <td style="width:277.00mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;text-align:center;" colspan="20">PREVIOUS SEA SERVICE</td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">FROM</td>
+    <td style="width:25.88mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TO</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">POSITION</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">SALARY</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">NAME OF VESSEL</td>
+    <td style="width:42.23mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="3">SHIPOWNER</td>
+    <td style="width:28.16mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TYPE OF VESSEL</td>
+    <td style="width:42.23mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="3">TYPE OF ENGINE</td>
+    <td style="width:28.16mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">BUILD YEAR</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">DWT</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">BHP</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">FLAG</td>
+    <td style="width:14.08mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">CREWING AGENT</td>
+  </tr>
+  ${seaRows}
+  <tr>
+    <td style="width:277.00mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="20">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td>
+  </tr>
+  <tr>
+    <td style="width:93.99mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="7">COMPANY</td>
+    <td style="width:126.70mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="9">PERSON IN CHARGE</td>
+    <td style="width:56.31mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="4">CONTACT DETAILS (Phone Number, e-mail)</td>
+  </tr>
+  ${empRows}
+  <tr>
+    <td style="width:23.60mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:253.40mm;background-color:#FFFFFF;font-size:9.0pt;" colspan="18">I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.</td>
+  </tr>
+  <tr>
+    <td style="width:11.80mm;background-color:#C5E0B3;font-size:10.0pt;font-weight:bold;">Date:</td>
+    <td style="width:54.03mm;background-color:#FFFFFF;" colspan="4">${cand.signDate || todayStr}</td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2"></td>
+    <td style="width:14.08mm;background-color:#FFFFFF;"></td>
+    <td style="width:28.16mm;background-color:#C5E0B3;font-size:10.0pt;font-weight:bold;border-left:none;" colspan="2">Signature:</td>
+    <td style="width:70.39mm;background-color:#FFFFFF;" colspan="5">${cand.signature || cand.fullName || ''}</td>
+  </tr>
+</table>
+</div>
 
-      <!-- 5. PREVIOUS SEA SERVICE -->
-      <table>
-        <tr class="sec-hdr"><td colspan="13">PREVIOUS SEA SERVICE</td></tr>
-        <tr class="tbl-hdr" style="font-size:7.5pt;">
-          <th>FROM</th>
-          <th>TO</th>
-          <th>POSITION</th>
-          <th>SALARY</th>
-          <th>VESSEL</th>
-          <th>SHIPOWNER</th>
-          <th>TYPE</th>
-          <th>ENGINE</th>
-          <th>BUILD</th>
-          <th>DWT</th>
-          <th>BHP</th>
-          <th>FLAG</th>
-          <th>AGENT</th>
-        </tr>
-        ${seaServiceRows}
-      </table>
+<script>
+document.querySelectorAll('td').forEach(function(td) {
+  if (td.style.backgroundColor === 'rgb(255, 255, 255)' ||
+      td.style.backgroundColor === '#FFFFFF' ||
+      td.style.backgroundColor === '#ffffff') {
+    if (!td.textContent.trim()) {
+      td.setAttribute('contenteditable', 'true');
+    }
+  }
+});
+</script>
 
-      <!-- 6. BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS -->
-      <table>
-        <tr class="sec-hdr"><td colspan="3">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td></tr>
-        <tr class="tbl-hdr">
-          <th style="width:35%;">COMPANY</th>
-          <th style="width:30%;">PERSON IN CHARGE</th>
-          <th style="width:35%;">CONTACT DETAILS (Phone Number, e-mail)</th>
-        </tr>
-        ${employersRows}
-      </table>
-
-      <!-- 7. DECLARATION & SIGNATURE -->
-      <div style="margin-top:15px; font-size:8.5pt; border:1px solid #000; padding:10px;">
-        <p style="margin:0 0 10px 0; line-height:1.4;">
-          I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.
-        </p>
-        <table style="width:100%; border:none; margin-top:15px;">
-          <tr>
-            <td style="border:none; width:50%;"><strong>Date:</strong> ________________________</td>
-            <td style="border:none; width:50%; text-align:right;"><strong>Signature:</strong> ________________________</td>
-          </tr>
-        </table>
-      </div>
-    </body>
-    </html>
-  `;
+</body>
+</html>`;
 };
 
 // Fill exact Application form.docx template file using JSZip

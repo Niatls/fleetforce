@@ -195,38 +195,17 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
   });
 
   React.useEffect(() => {
-    if (inlinePreview?.type === 'docx_blob' && inlinePreview.blob && docxContainerRef.current) {
-      docxContainerRef.current.innerHTML = '';
-      if (window.docx && window.docx.renderAsync) {
-        window.docx.renderAsync(inlinePreview.blob, docxContainerRef.current, null, {
-          inWrapper: true,
-          ignoreWidth: false,
-          ignoreHeight: false,
-          breakPages: true
-        }).then(() => {
-          if (docxContainerRef.current) {
-            const sections = docxContainerRef.current.querySelectorAll('section');
-            sections.forEach(sec => {
-              sec.style.setProperty('padding-left', '0px', 'important');
-              sec.style.setProperty('padding-right', '15px', 'important');
-            });
-            const elements = docxContainerRef.current.querySelectorAll('article, table, div, [class*="table"]');
-            elements.forEach(el => {
-              el.style.setProperty('margin-left', '0px', 'important');
-              el.style.setProperty('padding-left', '0px', 'important');
-            });
-          }
-        }).catch(err => {
-          console.warn('docx-preview notice:', err);
-          if (docxContainerRef.current) {
-            docxContainerRef.current.innerHTML = buildApplicationFormHtml(fd);
-          }
-        });
-      } else {
-        docxContainerRef.current.innerHTML = buildApplicationFormHtml(fd);
-      }
+    if ((inlinePreview?.type === 'docx_blob' || inlinePreview?.type === 'html') && docxContainerRef.current) {
+      docxContainerRef.current.innerHTML = buildApplicationFormHtml(fd);
     }
-  }, [inlinePreview]);
+  }, [inlinePreview, fd]);
+
+  const handlePreviewHtmlInline = () => {
+    setInlinePreview({
+      title: `Просмотр A4 Бланка Application_form (${fd.fullName || 'Без имени'})`,
+      type: 'html'
+    });
+  };
 
   const handlePreviewPdfInline = async () => {
     try {
@@ -1221,6 +1200,9 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                 <span><strong>Встроенный просмотр анкеты:</strong> Проверяйте заполненность DOCX и PDF непосредственно на экране:</span>
               </div>
               <div style={{ display: 'flex', gap: '0.6rem' }}>
+                <button type="button" onClick={handlePreviewHtmlInline} className="btn btn-secondary btn-sm" style={{ fontWeight: 700, color: 'var(--color-accent)', borderColor: 'var(--color-accent)' }}>
+                  👁️ Бланк A4
+                </button>
                 <button type="button" onClick={handlePreviewDocInline} className="btn btn-secondary btn-sm" style={{ fontWeight: 700, borderColor: 'var(--color-accent)' }}>
                   👁️ Просмотр DOCX
                 </button>
