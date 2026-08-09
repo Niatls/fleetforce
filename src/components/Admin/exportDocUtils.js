@@ -151,15 +151,17 @@ export const buildApplicationFormHtml = (cand) => {
     `;
   }).join('');
 
+  const v = (val) => (val !== undefined && val !== null && String(val).trim() !== '') ? val : '&nbsp;';
+
   const recBookRows = Array.from({ length: 4 }).map((_, i) => {
     const rb = (cand.recordBooks || [])[i] || {};
     return `
-      <tr>
-        <td style="width:92.95mm;background-color:#FFFFFF;">${rb.flag || ''}</td>
-        <td style="width:53.94mm;background-color:#FFFFFF;">${rb.number || ''}</td>
-        <td style="width:53.94mm;background-color:#FFFFFF;">${rb.issuedDate || ''}</td>
-        <td style="width:38.08mm;background-color:#FFFFFF;">${rb.validUntil || ''}</td>
-        <td style="width:38.08mm;background-color:#FFFFFF;">${rb.place || ''}</td>
+      <tr style="height:6mm;">
+        <td style="width:92.95mm;background-color:#FFFFFF;height:6mm;">${v(rb.flag)}</td>
+        <td style="width:53.94mm;background-color:#FFFFFF;height:6mm;">${v(rb.number)}</td>
+        <td style="width:53.94mm;background-color:#FFFFFF;height:6mm;">${v(rb.issuedDate)}</td>
+        <td style="width:38.08mm;background-color:#FFFFFF;height:6mm;">${v(rb.validUntil)}</td>
+        <td style="width:38.08mm;background-color:#FFFFFF;height:6mm;">${v(rb.place)}</td>
       </tr>
     `;
   }).join('');
@@ -167,20 +169,20 @@ export const buildApplicationFormHtml = (cand) => {
   const seaRows = Array.from({ length: 10 }).map((_, i) => {
     const s = (cand.seaService || [])[i] || {};
     return `
-      <tr>
-        <td style="width:11.80mm;background-color:#FFFFFF;">${s.dateFrom || ''}</td>
-        <td style="width:25.88mm;background-color:#FFFFFF;" colspan="2">${s.dateTo || ''}</td>
-        <td style="width:14.08mm;background-color:#FFFFFF;">${s.rankHeld || ''}</td>
-        <td style="width:14.08mm;background-color:#FFFFFF;">${s.salary ? '$' + s.salary : ''}</td>
-        <td style="width:14.08mm;background-color:#FFFFFF;">${s.vesselName || ''}</td>
-        <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3">${s.shipowner || ''}</td>
-        <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2">${s.vesselType || ''}</td>
-        <td style="width:42.23mm;background-color:#FFFFFF;" colspan="3">${s.engineType || ''}</td>
-        <td style="width:28.16mm;background-color:#FFFFFF;" colspan="2">${s.buildYear || ''}</td>
-        <td style="width:14.08mm;background-color:#FFFFFF;">${s.dwtGrt || ''}</td>
-        <td style="width:14.08mm;background-color:#FFFFFF;">${s.engineBhp || ''}</td>
-        <td style="width:14.08mm;background-color:#FFFFFF;">${s.flag || ''}</td>
-        <td style="width:14.08mm;background-color:#FFFFFF;">${s.manningCompany || ''}</td>
+      <tr style="height:6mm;">
+        <td style="width:11.80mm;background-color:#FFFFFF;height:6mm;">${v(s.dateFrom)}</td>
+        <td style="width:25.88mm;background-color:#FFFFFF;height:6mm;" colspan="2">${v(s.dateTo)}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;height:6mm;">${v(s.rankHeld)}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;height:6mm;">${s.salary ? '$' + s.salary : '&nbsp;'}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;height:6mm;">${v(s.vesselName)}</td>
+        <td style="width:42.23mm;background-color:#FFFFFF;height:6mm;" colspan="3">${v(s.shipowner)}</td>
+        <td style="width:28.16mm;background-color:#FFFFFF;height:6mm;" colspan="2">${v(s.vesselType)}</td>
+        <td style="width:42.23mm;background-color:#FFFFFF;height:6mm;" colspan="3">${v(s.engineType)}</td>
+        <td style="width:28.16mm;background-color:#FFFFFF;height:6mm;" colspan="2">${v(s.buildYear)}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;height:6mm;">${v(s.dwtGrt)}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;height:6mm;">${v(s.engineBhp)}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;height:6mm;">${v(s.flag)}</td>
+        <td style="width:14.08mm;background-color:#FFFFFF;height:6mm;">${v(s.manningCompany)}</td>
       </tr>
     `;
   }).join('');
@@ -188,10 +190,10 @@ export const buildApplicationFormHtml = (cand) => {
   const empRows = Array.from({ length: 5 }).map((_, i) => {
     const e = (cand.employers || [])[i] || {};
     return `
-      <tr>
-        <td style="width:93.99mm;background-color:#FFFFFF;" colspan="7">${e.company || ''}</td>
-        <td style="width:126.70mm;background-color:#FFFFFF;" colspan="9">${e.personInCharge || ''}</td>
-        <td style="width:56.31mm;background-color:#FFFFFF;" colspan="4">${e.contactDetails || ''}</td>
+      <tr style="height:6mm;">
+        <td style="width:93.99mm;background-color:#FFFFFF;height:6mm;" colspan="7">${v(e.company)}</td>
+        <td style="width:126.70mm;background-color:#FFFFFF;height:6mm;" colspan="9">${v(e.personInCharge)}</td>
+        <td style="width:56.31mm;background-color:#FFFFFF;height:6mm;" colspan="4">${v(e.contactDetails)}</td>
       </tr>
     `;
   }).join('');
@@ -243,12 +245,12 @@ export const buildApplicationFormHtml = (cand) => {
     border-right: 0.75pt solid #000000;
   }
   .page-portrait tr {
-    min-height: 6mm;
+    height: 6mm !important;
   }
   .page-portrait td {
     border: 0.5pt solid #000000;
     padding: 1px 3px;
-    min-height: 6mm;
+    height: 6mm !important;
     vertical-align: middle;
     font-size: 10pt;
     line-height: 1.1;
@@ -257,12 +259,12 @@ export const buildApplicationFormHtml = (cand) => {
     white-space: normal;
   }
   .page-landscape tr {
-    min-height: 6mm;
+    height: 6mm !important;
   }
   .page-landscape td {
     border: 0.5pt solid #000000;
     padding: 1px 3px;
-    min-height: 6mm;
+    height: 6mm !important;
     vertical-align: middle;
     font-size: 10pt;
     line-height: 1.1;
