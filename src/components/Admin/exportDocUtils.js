@@ -166,14 +166,18 @@ export const buildApplicationFormHtml = (cand) => {
 
   const photoHtml = hasValidPhoto
     ? `<!--[if gte mso 9]>
-<v:rect id="photoFrame" style="width:30mm;height:40mm;" fillcolor="#ffffff" stroked="f">
+<v:rect id="photoFrame" style="width:30mm;height:40mm;" fillcolor="#ffffff" stroke="true" strokecolor="#000000" strokeweight="0.75pt">
   <v:fill src="${cand.photoDataUrl}" type="frame" />
 </v:rect>
 <![endif]-->
 <![if !mso]>
 <img src="${cand.photoDataUrl}" width="113" height="151" style="width:30mm;height:40mm;max-width:30mm;max-height:40mm;object-fit:cover;display:block;margin:0 auto;border:0.75pt solid #000000;" />
 <![endif]>`
-    : `<div class="photo-placeholder">PHOTO 3x4</div>`;
+    : `<table border="1" cellspacing="0" cellpadding="0" style="width:30mm;height:40mm;margin:0 auto;border-collapse:collapse;border:0.75pt dashed #888888;background-color:#FAFAFA;">
+        <tr>
+          <td style="text-align:center;vertical-align:middle;color:#666666;font-size:9.5pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;height:40mm;padding:0;">PHOTO<br/><span style="font-size:7.5pt;font-weight:normal;color:#888888;">3 x 4 cm</span></td>
+        </tr>
+      </table>`;
 
   const primaryDocsRows = [
     { label: 'TRAVEL PASSPORT:', key: 'TRAVEL PASSPORT:' },
