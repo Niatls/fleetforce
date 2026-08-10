@@ -1216,15 +1216,6 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
           <button
             type="button"
-            onClick={handleFillDemoData}
-            className="btn btn-secondary btn-sm"
-            style={{ fontWeight: 700, color: '#f59e0b', borderColor: 'rgba(245,158,11,0.4)' }}
-            title="Заполнить форму тестовыми данными"
-          >
-            ⚡ Автозаполнение
-          </button>
-          <button
-            type="button"
             onClick={handlePrintForm}
             className="btn btn-primary btn-sm"
             style={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
