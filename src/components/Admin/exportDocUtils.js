@@ -170,8 +170,8 @@ export const buildApplicationFormHtml = (cand) => {
     const s = (cand.seaService || [])[i] || {};
     return `
       <tr style="height:6mm;">
-        <td style="width:20.00mm;background-color:#FFFFFF;height:6mm;" colspan="2">${v(s.dateFrom)}</td>
-        <td style="width:21.00mm;background-color:#FFFFFF;height:6mm;" colspan="2">${v(s.dateTo)}</td>
+        <td style="width:18.00mm;background-color:#FFFFFF;height:6mm;" colspan="2">${v(s.dateFrom)}</td>
+        <td style="width:18.00mm;background-color:#FFFFFF;height:6mm;" colspan="2">${v(s.dateTo)}</td>
         <td style="width:15.00mm;background-color:#FFFFFF;height:6mm;">${v(s.rankHeld)}</td>
         <td style="width:13.00mm;background-color:#FFFFFF;height:6mm;">${s.salary ? '$' + s.salary : '&nbsp;'}</td>
         <td style="width:30.00mm;background-color:#FFFFFF;height:6mm;" colspan="2">${v(s.vesselName)}</td>
@@ -182,7 +182,7 @@ export const buildApplicationFormHtml = (cand) => {
         <td style="width:14.00mm;background-color:#FFFFFF;height:6mm;">${v(s.dwtGrt)}</td>
         <td style="width:14.00mm;background-color:#FFFFFF;height:6mm;">${v(s.engineBhp)}</td>
         <td style="width:22.00mm;background-color:#FFFFFF;height:6mm;">${v(s.flag)}</td>
-        <td style="width:26.00mm;background-color:#FFFFFF;height:6mm;">${v(s.manningCompany)}</td>
+        <td style="width:31.00mm;background-color:#FFFFFF;height:6mm;">${v(s.manningCompany)}</td>
       </tr>
     `;
   }).join('');
@@ -191,9 +191,9 @@ export const buildApplicationFormHtml = (cand) => {
     const e = (cand.employers || [])[i] || {};
     return `
       <tr style="height:6mm;">
-        <td style="width:84.00mm;background-color:#FFFFFF;height:6mm;" colspan="7">${v(e.company)}</td>
+        <td style="width:80.00mm;background-color:#FFFFFF;height:6mm;" colspan="7">${v(e.company)}</td>
         <td style="width:114.00mm;background-color:#FFFFFF;height:6mm;" colspan="8">${v(e.personInCharge)}</td>
-        <td style="width:76.00mm;background-color:#FFFFFF;height:6mm;" colspan="4">${v(e.contactDetails)}</td>
+        <td style="width:81.00mm;background-color:#FFFFFF;height:6mm;" colspan="4">${v(e.contactDetails)}</td>
       </tr>
     `;
   }).join('');
@@ -497,10 +497,10 @@ export const buildApplicationFormHtml = (cand) => {
 <div class="page-landscape">
 <table>
   <colgroup>
-    <col style="width:10.00mm">
-    <col style="width:10.00mm">
-    <col style="width:10.50mm">
-    <col style="width:10.50mm">
+    <col style="width:9.00mm">
+    <col style="width:9.00mm">
+    <col style="width:9.00mm">
+    <col style="width:9.00mm">
     <col style="width:15.00mm">
     <col style="width:13.00mm">
     <col style="width:15.00mm">
@@ -515,14 +515,14 @@ export const buildApplicationFormHtml = (cand) => {
     <col style="width:14.00mm">
     <col style="width:14.00mm">
     <col style="width:22.00mm">
-    <col style="width:26.00mm">
+    <col style="width:31.00mm">
   </colgroup>
   <tr>
-    <td style="width:274.00mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;text-align:center;" colspan="19">PREVIOUS SEA SERVICE</td>
+    <td style="width:275.00mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;text-align:center;" colspan="19">PREVIOUS SEA SERVICE</td>
   </tr>
   <tr>
-    <td style="width:20.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">FROM</td>
-    <td style="width:21.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TO</td>
+    <td style="width:18.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">FROM</td>
+    <td style="width:18.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TO</td>
     <td style="width:15.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">POSITION</td>
     <td style="width:13.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">SALARY</td>
     <td style="width:30.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">NAME OF VESSEL</td>
@@ -533,16 +533,16 @@ export const buildApplicationFormHtml = (cand) => {
     <td style="width:14.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">DWT</td>
     <td style="width:14.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">BHP</td>
     <td style="width:22.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">FLAG</td>
-    <td style="width:26.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">CREWING AGENT</td>
+    <td style="width:31.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">CREWING AGENT</td>
   </tr>
   ${seaRows}
   <tr>
-    <td style="width:274.00mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="19">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td>
+    <td style="width:275.00mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="19">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td>
   </tr>
   <tr>
-    <td style="width:84.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="7">COMPANY</td>
+    <td style="width:80.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="7">COMPANY</td>
     <td style="width:114.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="8">PERSON IN CHARGE</td>
-    <td style="width:76.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="4">CONTACT DETAILS (Phone Number, e-mail)</td>
+    <td style="width:81.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="4">CONTACT DETAILS (Phone Number, e-mail)</td>
   </tr>
   ${empRows}
   <tr>
