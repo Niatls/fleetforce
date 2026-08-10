@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   X, CheckCircle2, ChevronRight, ChevronLeft,
-  Plus, Trash2, Upload, FileText, Printer, ArrowLeft, Anchor, Eye, Download
+  Plus, Trash2, Upload, FileText, Printer, ArrowLeft, Anchor
 } from 'lucide-react';
 import {
   MARITIME_RANKS, VESSEL_TYPES,
@@ -10,7 +10,7 @@ import {
   MARITAL_STATUS, KIN_RELATIONS, OVERALL_SIZES_EUR, SHOE_SIZES,
   ENGINE_TYPES, FLAG_STATES, CERTIFICATE_TYPES
 } from '../../data/initialData';
-import { handleExportDoc, handleExportPdf, buildApplicationFormHtml, generatePdfBlob, generateDocBlob } from '../Admin/exportUtils';
+import { buildApplicationFormHtml } from '../Admin/exportUtils';
 
 // ─── helpers ───────────────────────────────────────────────────────────────
 const mkId = () => Date.now() + Math.random();
@@ -175,8 +175,6 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
   const [step, setStep] = useState(1);
   const TOTAL_STEPS = 7;
   const [submitted, setSubmitted] = useState(false);
-  const [inlinePreview, setInlinePreview] = useState(null);
-  const docxContainerRef = React.useRef(null);
 
   const [fd, setFd] = useState({
     appliedRank: initialRank || '',
@@ -256,52 +254,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
     stcwDocs
   });
 
-  React.useEffect(() => {
-    if ((inlinePreview?.type === 'docx_blob' || inlinePreview?.type === 'html') && docxContainerRef.current) {
-      docxContainerRef.current.innerHTML = buildApplicationFormHtml(getCombinedData());
-    }
-  }, [inlinePreview, fd, primaryDocs, stcwDocs]);
 
-  const handlePreviewHtmlInline = () => {
-    setInlinePreview({
-      title: `Просмотр A4 Бланка Application_form (${fd.fullName || 'Без имени'})`,
-      type: 'html'
-    });
-  };
-
-  const handlePreviewPdfInline = async () => {
-    try {
-      const pdfBytes = await generatePdfBlob(getCombinedData());
-      if (!pdfBytes) {
-        alert('Не удалось сформировать PDF для просмотра.');
-        return;
-      }
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      setInlinePreview({
-        title: `Просмотр PDF анкеты Crew_Application_Form.pdf (${fd.fullName || 'Без имени'})`,
-        type: 'pdf',
-        src: url
-      });
-    } catch(e) {
-      console.error(e);
-      alert('Ошибка при генерации PDF');
-    }
-  };
-
-  const handlePreviewDocInline = async () => {
-    try {
-      const docBlob = await generateDocBlob(getCombinedData());
-      setInlinePreview({
-        title: `Просмотр DOCX анкеты Application form.docx (${fd.fullName || 'Без имени'})`,
-        type: 'docx_blob',
-        blob: docBlob
-      });
-    } catch(e) {
-      console.error(e);
-      alert('Ошибка при генерации DOCX');
-    }
-  };
 
   const handleFillDemoData = () => {
     setFd({
@@ -1230,19 +1183,12 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
           <button
             type="button"
-            onClick={handlePreviewDocInline}
+            onClick={handleFillDemoData}
             className="btn btn-secondary btn-sm"
-            style={{ borderColor: 'var(--color-accent)', color: 'var(--color-accent)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+            style={{ fontWeight: 700, color: '#f59e0b', borderColor: 'rgba(245,158,11,0.4)' }}
+            title="Заполнить форму тестовыми данными"
           >
-            <Eye size={15} /> 👁️ Просмотр DOCX
-          </button>
-          <button
-            type="button"
-            onClick={handlePreviewPdfInline}
-            className="btn btn-secondary btn-sm"
-            style={{ borderColor: 'var(--color-emerald)', color: 'var(--color-emerald)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
-          >
-            <Eye size={15} /> 👁️ Просмотр PDF
+            ⚡ Автозаполнение
           </button>
           <button
             type="button"
@@ -1273,12 +1219,6 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
               Your seafarer application form has been registered in the Fleet Force Alliance database. Our manager will review your qualifications and contact you shortly.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button onClick={handlePreviewDocInline} className="btn btn-secondary btn-lg">
-                <Eye size={18} /> 👁️ Просмотр (.DOCX)
-              </button>
-              <button onClick={handlePreviewPdfInline} className="btn btn-secondary btn-lg">
-                <Eye size={18} /> 👁️ Просмотр (.PDF)
-              </button>
               <button onClick={handlePrintForm} className="btn btn-primary btn-lg">
                 <Printer size={18} /> 🖨️ Печать анкеты
               </button>
@@ -1287,30 +1227,6 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
           </div>
         ) : (
           <div>
-            {/* Live DOCX & PDF Test Preview Bar */}
-            <div style={{ background: 'var(--color-accent-light)', border: '1px solid var(--border-glow)', borderRadius: 'var(--radius-md)', padding: '0.75rem 1.2rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem' }}>
-              <div style={{ fontSize: '0.88rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Eye size={16} color="var(--color-accent)" />
-                <span><strong>Встроенный просмотр анкеты:</strong> Проверяйте заполненность DOCX и PDF непосредственно на экране:</span>
-              </div>
-              <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
-                <button type="button" onClick={handleFillDemoData} className="btn btn-secondary btn-sm" style={{ fontWeight: 700, color: '#f59e0b', borderColor: 'rgba(245,158,11,0.4)' }} title="Заполнить все 100+ ячеек всех 7 шагов анкеты тестовыми данными капитана">
-                  ⚡ Автозаполнение
-                </button>
-                <button type="button" onClick={handlePreviewHtmlInline} className="btn btn-secondary btn-sm" style={{ fontWeight: 700, color: 'var(--color-accent)', borderColor: 'var(--color-accent)' }}>
-                  👁️ Бланк A4
-                </button>
-                <button type="button" onClick={handlePreviewDocInline} className="btn btn-secondary btn-sm" style={{ fontWeight: 700, borderColor: 'var(--color-accent)' }}>
-                  👁️ Просмотр DOCX
-                </button>
-                <button type="button" onClick={handlePreviewPdfInline} className="btn btn-secondary btn-sm" style={{ fontWeight: 700, color: 'var(--color-emerald)', borderColor: 'var(--color-emerald)' }}>
-                  👁️ Просмотр PDF
-                </button>
-                <button type="button" onClick={handlePrintForm} className="btn btn-primary btn-sm" style={{ fontWeight: 700 }}>
-                  🖨️ Печать
-                </button>
-              </div>
-            </div>
             <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '2rem', overflowX: 'auto' }}>
               {STEP_LABELS.map((label, idx) => {
                 const s = idx + 1;
@@ -1358,41 +1274,6 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
           </div>
         )}
       </main>
-
-      {/* Interactive On-Screen Document Preview Modal */}
-      {inlinePreview && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 10000, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ background: 'var(--bg-main)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', width: '94%', maxWidth: '1050px', height: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-color)', background: 'rgba(11, 19, 41, 0.95)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                <Eye size={20} color="var(--color-accent)" />
-                <h3 style={{ fontSize: '1.1rem', color: '#FFFFFF', margin: 0, fontWeight: 700 }}>{inlinePreview.title}</h3>
-              </div>
-              <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                {inlinePreview.type === 'pdf' ? (
-                  <button type="button" onClick={() => handleExportPdf(fd)} className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <Download size={15} /> Скачать PDF
-                  </button>
-                ) : (
-                  <button type="button" onClick={() => handleExportDoc(fd)} className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <Download size={15} /> Скачать DOCX
-                  </button>
-                )}
-                <button type="button" onClick={() => setInlinePreview(null)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer' }}>
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-            <div style={{ flex: 1, overflow: 'auto', padding: 0, background: '#525659', color: '#000000' }}>
-              {inlinePreview.type === 'pdf' ? (
-                <iframe src={inlinePreview.src} title="PDF Preview" style={{ width: '100%', height: '100%', border: 'none' }} />
-              ) : (
-                <div ref={docxContainerRef} style={{ width: '100%', minHeight: '500px' }} />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
