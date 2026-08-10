@@ -421,7 +421,7 @@ export const buildApplicationFormHtml = (cand) => {
 <body>
 
 <!-- Page 1: Section 1 Portrait - Personal Information, Education, Certificates -->
-<div class="Section1 page-portrait">
+<div class="Section1 page-portrait" style="page: Section1; mso-page-orientation: portrait;">
 <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse; border:0.75pt solid #000000; width:100%; table-layout:fixed;">
   <colgroup>
     <col style="width:15.81mm">
@@ -558,7 +558,7 @@ export const buildApplicationFormHtml = (cand) => {
 <p class="MsoNormal" style="mso-element:header; page-break-before:always; mso-break-type:section-break;"></p>
 
 <!-- Page 2: Section 2 Landscape - Foreign Seaman's ID, Previous Sea Service & Employers -->
-<div class="Section2 page-landscape">
+<div class="Section2 page-landscape" style="page: Section2; mso-page-orientation: landscape;">
 <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse; border:0.75pt solid #000000; width:100%; table-layout:fixed; margin-bottom:3mm;">
   <colgroup>
     <col style="width:92.95mm">
@@ -665,19 +665,7 @@ document.querySelectorAll('td').forEach(function(td) {
 // Generate DOC Blob directly from the HTML A4 template (Application_form (4).html)
 export const generateDocBlob = async (cand) => {
   const htmlContent = buildApplicationFormHtml(cand);
-  const docContent =
-    '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
-    'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
-    'xmlns="http://www.w3.org/TR/REC-html40">' +
-    '<head><meta charset="utf-8">' +
-    '<!--[if gte mso 9]><xml>' +
-    '<w:WordDocument><w:View>Print</w:View>' +
-    '<w:Zoom>100</w:Zoom></w:WordDocument>' +
-    '</xml><![endif]-->' +
-    '</head><body>' +
-    htmlContent +
-    '</body></html>';
-  return new Blob(['\ufeff', docContent], { type: 'application/msword;charset=utf-8' });
+  return new Blob(['\ufeff', htmlContent], { type: 'application/msword;charset=utf-8' });
 };
 
 export const handleExportDoc = async (cand) => {
