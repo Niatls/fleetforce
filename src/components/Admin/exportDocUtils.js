@@ -297,26 +297,46 @@ export const buildApplicationFormHtml = (cand) => {
         <td style="width:81.00mm;background-color:#FFFFFF;height:6mm;" colspan="4">${v(e.contactDetails)}</td>
       </tr>
     `;
-  }).join('');
-
-  return `<!DOCTYPE html>
-<html lang="en">
+  }).join('');  return `<!DOCTYPE html>
+<html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seafarer Application Form - ${cand.fullName || 'FleetForce'}</title>
+<!--[if gte mso 9]>
+<xml>
+  <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+  </w:WordDocument>
+</xml>
+<![endif]-->
 <style>
   @page {
     size: A4;
     margin: 0;
   }
+  @page Section1 {
+    size: 595.35pt 841.99pt;
+    margin: 14.2pt 14.2pt 14.2pt 14.2pt;
+    mso-page-orientation: portrait;
+  }
+  @page Section2 {
+    size: 841.99pt 595.35pt;
+    margin: 14.2pt 14.2pt 14.2pt 14.2pt;
+    mso-page-orientation: landscape;
+  }
+  div.Section1 { page: Section1; }
+  div.Section2 { page: Section2; }
+
   @page page-portrait {
     size: A4 portrait;
-    margin: 5mm;
+    margin: 4mm;
   }
   @page page-landscape {
     size: A4 landscape;
-    margin: 5mm;
+    margin: 4mm;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -330,13 +350,13 @@ export const buildApplicationFormHtml = (cand) => {
     page: page-portrait;
     width: 200mm;
     margin: 0 auto;
-    padding: 6mm 3mm 4mm 3mm;
+    padding: 3mm 2mm 2mm 2mm;
   }
   .page-landscape {
     page: page-landscape;
-    width: 287mm;
+    width: 275mm;
     margin: 0 auto;
-    padding: 6mm 3mm 4mm 3mm;
+    padding: 3mm 2mm 2mm 2mm;
   }
   table {
     border-collapse: collapse;
@@ -346,48 +366,46 @@ export const buildApplicationFormHtml = (cand) => {
     border-right: 0.75pt solid #000000;
   }
   .page-portrait tr {
-    height: 6mm !important;
+    height: auto !important;
   }
   .page-portrait td {
     border: 0.5pt solid #000000;
-    padding: 1px 3px;
-    height: 6mm !important;
+    padding: 1px 2.5px !important;
     vertical-align: middle;
-    font-size: 10pt;
+    font-size: 7.5pt;
     line-height: 1.1;
     word-break: break-word;
     overflow-wrap: anywhere;
     white-space: normal;
   }
   .page-landscape tr {
-    height: 6mm !important;
+    height: auto !important;
   }
   .page-landscape td {
     border: 0.5pt solid #000000;
-    padding: 1px 3px;
-    height: 6mm !important;
+    padding: 1px 2.5px !important;
     vertical-align: middle;
-    font-size: 10pt;
+    font-size: 7.5pt;
     line-height: 1.1;
     word-break: break-word;
     overflow-wrap: anywhere;
     white-space: normal;
   }
-  .photo-cell { text-align: center; vertical-align: middle; padding: 2px; }
+  .photo-cell { text-align: center; vertical-align: middle; padding: 1px; }
   .photo-placeholder {
     display: flex; align-items: center; justify-content: center;
-    width: 26mm; height: 34mm; margin: 0 auto;
-    border: 1pt solid #000; color: #999; font-size: 9pt;
+    width: 24mm; height: 30mm; margin: 0 auto;
+    border: 1pt solid #000; color: #999; font-size: 8pt;
   }
   .declaration-text {
-    font-size: 10pt;
-    line-height: 1.1;
-    padding: 2px 4px;
+    font-size: 7.5pt !important;
+    line-height: 1.05 !important;
+    padding: 1.5px 3px !important;
     white-space: normal !important;
   }
   .cert-label-cell {
-    font-size: 10pt !important;
-    line-height: 1.0 !important;
+    font-size: 7.5pt !important;
+    line-height: 1.05 !important;
     word-break: break-word;
     white-space: normal !important;
   }
@@ -406,24 +424,19 @@ export const buildApplicationFormHtml = (cand) => {
       width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
-      page-break-after: always !important;
-      break-after: page !important;
-    }
-    .page-landscape:last-child {
       page-break-after: auto !important;
       break-after: auto !important;
     }
   }
   @media screen {
-    body { background: #e0e0e0; padding: 10mm; padding-top: 10mm; }
+    body { background: #e0e0e0; padding: 5mm; }
     .page-portrait, .page-landscape {
       background: #fff;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      margin-bottom: 10mm;
+      margin-bottom: 5mm;
     }
     .page-portrait { page-break-after: always; }
-    .page-landscape { page-break-after: always; }
-    .page-landscape:last-child { page-break-after: auto; }
+    .page-landscape { page-break-after: auto; }
   }
   td[contenteditable="true"] { outline: none; cursor: text; }
   td[contenteditable="true"]:focus {
@@ -434,8 +447,8 @@ export const buildApplicationFormHtml = (cand) => {
 </head>
 <body>
 
-<!-- Page 1: Portrait - Personal Information, Education, Certificates -->
-<div class="page-portrait">
+<!-- Page 1: Section 1 Portrait - Personal Information, Education, Certificates -->
+<div class="Section1 page-portrait">
 <table>
   <colgroup>
     <col style="width:15.81mm">
@@ -448,129 +461,132 @@ export const buildApplicationFormHtml = (cand) => {
     <col style="width:10.61mm">
     <col style="width:10.61mm">
     <col style="width:10.61mm">
+    <col style="width:10.61mm">
     <col style="width:10.76mm">
     <col style="width:10.76mm">
     <col style="width:10.76mm">
   </colgroup>
   <tr>
-    <td style="width:31.62mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Positions applied for:</td>
-    <td style="width:44.56mm;background-color:#FFFFFF;font-size:10.0pt;font-weight:bold;" colspan="3">${cand.appliedRank || cand.position || ''}</td>
-    <td style="width:29.72mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Date of readiness:</td>
+    <td style="width:31.62mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;" colspan="2">Positions applied for:</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;font-size:8.5pt;font-weight:bold;" colspan="3">${cand.appliedRank || cand.position || ''}</td>
+    <td style="width:29.72mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;" colspan="2">Date of readiness:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.readyDate || cand.readinessDate || ''}</td>
     <td style="width:32.27mm;background-color:#FFFFFF;font-weight:bold;" colspan="3" rowspan="8" class="photo-cell">${photoHtml}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Surname:</td>
+    <td style="width:31.62mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;" colspan="2">Surname:</td>
     <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${surname}</td>
-    <td style="width:29.72mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Name:</td>
+    <td style="width:29.72mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;" colspan="2">Name:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${name}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Father’s name:</td>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Father’s name:</td>
     <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${fatherName}</td>
-    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Mother’s name:</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Mother’s name:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.motherName || ''}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Date of birth:</td>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Date of birth:</td>
     <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.dob || cand.birthDate || ''}</td>
-    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Nationality:</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Nationality:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.nationality || cand.citizenship || ''}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Place of birth:</td>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Place of birth:</td>
     <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.placeOfBirth || cand.birthPlace || ''}</td>
-    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Marital status:</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Marital status:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.maritalStatus || ''}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">N of children under 18:</td>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">N of children under 18:</td>
     <td style="width:106.11mm;background-color:#FFFFFF;" colspan="8">${cand.childrenUnder18 || cand.childrenCount || ''}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Home Address:</td>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Home Address:</td>
     <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.address || cand.homeAddress || ''}${cand.homeZip ? ` (Zip: ${cand.homeZip})` : ''}</td>
-    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Contact Phone:</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Contact Phone:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.phone || cand.contactPhone || ''}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">E-mail:</td>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">E-mail:</td>
     <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.email || ''}</td>
-    <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Skype/Telegram:</td>
+    <td style="width:29.72mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Skype/Telegram:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.skypeTelegram || cand.skype || cand.telegram || ''}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Next of kin:</td>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Next of kin:</td>
     <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinName || cand.nextOfKin || ''}</td>
-    <td style="width:31.83mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Relation:</td>
+    <td style="width:31.83mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">Relation:</td>
     <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinRelation || cand.nextOfKinRelation || ''}</td>
   </tr>
   <tr>
-    <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Next of kin’s address:</td>
+    <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Next of kin’s address:</td>
     <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinAddress || cand.nextOfKinAddress || ''}</td>
-    <td style="width:31.83mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Next of kin’s phone №:</td>
+    <td style="width:31.83mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">Next of kin’s phone №:</td>
     <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinPhone || cand.nextOfKinPhone || ''}</td>
   </tr>
   <tr>
-    <td style="width:15.81mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Height (cm):</td>
+    <td style="width:15.81mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">Height (cm):</td>
     <td style="width:15.81mm;background-color:#FFFFFF;">${cand.height || ''}</td>
-    <td style="width:14.85mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Weight (kg):</td>
+    <td style="width:14.85mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">Weight (kg):</td>
     <td style="width:14.85mm;background-color:#FFFFFF;">${cand.weight || ''}</td>
-    <td style="width:44.57mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3" rowspan="2">Size of Overall (EUR):</td>
+    <td style="width:44.57mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3" rowspan="2">Size of Overall (EUR):</td>
     <td style="width:10.61mm;background-color:#FFFFFF;" rowspan="2">${cand.overallSize || cand.clothesSize || ''}</td>
-    <td style="width:42.73mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="4" rowspan="2">Shoes (EUR):</td>
+    <td style="width:42.73mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="4" rowspan="2">Shoes (EUR):</td>
     <td style="width:10.76mm;background-color:#FFFFFF;" rowspan="2">${cand.shoeSize || cand.shoesSize || ''}</td>
   </tr>
   <tr>
-    <td style="width:15.81mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Eyes Colour:</td>
+    <td style="width:15.81mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">Eyes Colour:</td>
     <td style="width:15.81mm;background-color:#FFFFFF;">${cand.eyesColour || cand.eyeColor || ''}</td>
-    <td style="width:14.85mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Hair Colour:</td>
+    <td style="width:14.85mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">Hair Colour:</td>
     <td style="width:14.85mm;background-color:#FFFFFF;">${cand.hairColour || cand.hairColor || ''}</td>
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
-    <td style="width:70.04mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;text-align:center;" colspan="5">Marine Education</td>
+    <td style="width:70.04mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="5">Marine Education</td>
     <td style="width:53.49mm;background-color:#FFFFFF;" colspan="5"></td>
   </tr>
   <tr>
-    <td style="width:46.48mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Name of maritime college or academy</td>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">Name of maritime college or academy</td>
     <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeName || cand.maritimeCollege || ''}</td>
-    <td style="width:21.37mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">From</td>
+    <td style="width:21.37mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">From</td>
     <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeFrom || cand.educationFrom || ''}</td>
   </tr>
   <tr>
-    <td style="width:46.48mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Department</td>
+    <td style="width:46.48mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">Department</td>
     <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeDepartment || cand.educationDepartment || ''}</td>
-    <td style="width:21.37mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Till</td>
+    <td style="width:21.37mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Till</td>
     <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeTill || cand.collegeTo || cand.educationTill || cand.educationTo || ''}</td>
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
-    <td style="width:70.04mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;text-align:center;" colspan="5">PASSPORTS and CERTIFICATES</td>
+    <td style="width:70.04mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="5">PASSPORTS and CERTIFICATES</td>
     <td style="width:53.49mm;background-color:#FFFFFF;" colspan="5"></td>
   </tr>
   <tr>
-    <td style="width:61.32mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="4">DOCUMENT</td>
-    <td style="width:29.71mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">NUMBER</td>
-    <td style="width:21.22mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
-    <td style="width:21.37mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">VALID UNTIL</td>
-    <td style="width:36.38mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">PLACE</td>
+    <td style="width:61.32mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="4">DOCUMENT</td>
+    <td style="width:29.71mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">NUMBER</td>
+    <td style="width:21.22mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
+    <td style="width:21.37mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">VALID UNTIL</td>
+    <td style="width:36.38mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">PLACE</td>
   </tr>
   ${primaryDocsRows}
   <tr>
-    <td style="width:61.32mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="4">CERTIFICATE</td>
-    <td style="width:29.71mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">NUMBER</td>
-    <td style="width:21.22mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
-    <td style="width:21.37mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">VALID UNTIL</td>
-    <td style="width:36.38mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">PLACE</td>
+    <td style="width:61.32mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="4">CERTIFICATE</td>
+    <td style="width:29.71mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">NUMBER</td>
+    <td style="width:21.22mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
+    <td style="width:21.37mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">VALID UNTIL</td>
+    <td style="width:36.38mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">PLACE</td>
   </tr>
   ${stcwRows}
 </table>
 </div>
 
-<!-- Page 2: Landscape - Foreign Seaman's ID / Record Books -->
-<div class="page-landscape">
-<table>
+<br style="page-break-before:always; mso-break-type:section-break" />
+
+<!-- Page 2: Section 2 Landscape - Foreign Seaman's ID, Previous Sea Service & Employers -->
+<div class="Section2 page-landscape">
+<table style="margin-bottom: 3mm;">
   <colgroup>
     <col style="width:92.95mm">
     <col style="width:53.94mm">
@@ -580,22 +596,19 @@ export const buildApplicationFormHtml = (cand) => {
   </colgroup>
   <tr>
     <td style="width:92.95mm;background-color:#FFFFFF;"></td>
-    <td style="width:107.88mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="2">FOREIGN SEAMAN’S ID / RECORD BOOKS</td>
+    <td style="width:107.88mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="2">FOREIGN SEAMAN’S ID / RECORD BOOKS</td>
     <td style="width:76.17mm;background-color:#FFFFFF;" colspan="2"></td>
   </tr>
   <tr>
-    <td style="width:92.95mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">CERTIFICATE</td>
-    <td style="width:53.94mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">NUMBER</td>
-    <td style="width:53.94mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">ISSUED DATE</td>
-    <td style="width:38.08mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">VALID UNTIL</td>
-    <td style="width:38.08mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;">PLACE</td>
+    <td style="width:92.95mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">CERTIFICATE</td>
+    <td style="width:53.94mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">NUMBER</td>
+    <td style="width:53.94mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">ISSUED DATE</td>
+    <td style="width:38.08mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">VALID UNTIL</td>
+    <td style="width:38.08mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">PLACE</td>
   </tr>
   ${recBookRows}
 </table>
-</div>
 
-<!-- Page 3: Landscape - Previous Sea Service & Employers -->
-<div class="page-landscape">
 <table>
   <colgroup>
     <col style="width:9.00mm">
@@ -619,43 +632,43 @@ export const buildApplicationFormHtml = (cand) => {
     <col style="width:31.00mm">
   </colgroup>
   <tr>
-    <td style="width:275.00mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;text-align:center;" colspan="19">PREVIOUS SEA SERVICE</td>
+    <td style="width:275.00mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="19">PREVIOUS SEA SERVICE</td>
   </tr>
   <tr>
-    <td style="width:18.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">FROM</td>
-    <td style="width:18.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TO</td>
-    <td style="width:15.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">POSITION</td>
-    <td style="width:13.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">SALARY</td>
-    <td style="width:30.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">NAME OF VESSEL</td>
-    <td style="width:28.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">SHIPOWNER</td>
-    <td style="width:28.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TYPE OF VESSEL</td>
-    <td style="width:28.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;" colspan="2">TYPE OF ENGINE</td>
-    <td style="width:15.00mm;background-color:#C5E0B3;font-size:8.5pt;font-weight:bold;white-space:nowrap;">BUILD YEAR</td>
-    <td style="width:14.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">DWT</td>
-    <td style="width:14.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">BHP</td>
-    <td style="width:22.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">FLAG</td>
-    <td style="width:31.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;">CREWING AGENT</td>
+    <td style="width:18.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;" colspan="2">FROM</td>
+    <td style="width:18.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;" colspan="2">TO</td>
+    <td style="width:15.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;">POSITION</td>
+    <td style="width:13.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;">SALARY</td>
+    <td style="width:30.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;" colspan="2">NAME OF VESSEL</td>
+    <td style="width:28.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;" colspan="2">SHIPOWNER</td>
+    <td style="width:28.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;" colspan="2">TYPE OF VESSEL</td>
+    <td style="width:28.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;" colspan="2">TYPE OF ENGINE</td>
+    <td style="width:15.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;white-space:nowrap;">BUILD YEAR</td>
+    <td style="width:14.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;">DWT</td>
+    <td style="width:14.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;">BHP</td>
+    <td style="width:22.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;">FLAG</td>
+    <td style="width:31.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;">CREWING AGENT</td>
   </tr>
   ${seaRows}
   <tr>
-    <td style="width:275.00mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="19">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td>
+    <td style="width:275.00mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="19">BRIEF INFORMATION ABOUT PREVIOUS EMPLOYERS</td>
   </tr>
   <tr>
-    <td style="width:80.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="7">COMPANY</td>
-    <td style="width:114.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="8">PERSON IN CHARGE</td>
-    <td style="width:81.00mm;background-color:#C5E0B3;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="4">CONTACT DETAILS (Phone Number, e-mail)</td>
+    <td style="width:80.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;text-align:center;" colspan="7">COMPANY</td>
+    <td style="width:114.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;text-align:center;" colspan="8">PERSON IN CHARGE</td>
+    <td style="width:81.00mm;background-color:#C5E0B3;font-size:8.0pt;font-weight:bold;text-align:center;" colspan="4">CONTACT DETAILS (Phone Number, e-mail)</td>
   </tr>
   ${empRows}
   <tr>
     <td style="width:27.00mm;background-color:#FFFFFF;" colspan="2"></td>
-    <td style="width:245.00mm;background-color:#FFFFFF;font-size:9.0pt;" colspan="17">I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.</td>
+    <td style="width:245.00mm;background-color:#FFFFFF;font-size:7.5pt;line-height:1.05;" colspan="17">I hereby confirm that above information is true and correct to the best of my knowledge. I understand that this information will be held in the computer database due to my real or possible employment. Signing it, I willfully give my permission to collect and process my personal information and to use it in all and legal way. I give my permission for my personal information to be provided to the possible employers and any other persons, if such need arises for my employment. Besides, I permit the Company employees to request personal information (data) about me from my former employers.</td>
   </tr>
   <tr>
-    <td style="width:18.00mm;background-color:#C5E0B3;font-size:10.0pt;font-weight:bold;white-space:nowrap;" colspan="2">Date:</td>
-    <td style="width:33.00mm;background-color:#FFFFFF;font-size:10.0pt;" colspan="3">${cand.signDate || todayStr}</td>
+    <td style="width:18.00mm;background-color:#C5E0B3;font-size:8.5pt;font-weight:bold;white-space:nowrap;" colspan="2">Date:</td>
+    <td style="width:33.00mm;background-color:#FFFFFF;font-size:8.5pt;" colspan="3">${cand.signDate || todayStr}</td>
     <td style="width:128.00mm;background-color:#FFFFFF;" colspan="9"></td>
-    <td style="width:29.00mm;background-color:#C5E0B3;font-size:10.0pt;font-weight:bold;" colspan="2">Signature:</td>
-    <td style="width:67.00mm;background-color:#FFFFFF;font-size:10.0pt;" colspan="3">${cand.signature || cand.fullName || ''}</td>
+    <td style="width:29.00mm;background-color:#C5E0B3;font-size:8.5pt;font-weight:bold;" colspan="2">Signature:</td>
+    <td style="width:67.00mm;background-color:#FFFFFF;font-size:8.5pt;" colspan="3">${cand.signature || cand.fullName || ''}</td>
   </tr>
 </table>
 </div>
