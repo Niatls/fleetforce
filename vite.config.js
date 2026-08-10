@@ -34,9 +34,12 @@ function removeModuleAttributePlugin() {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   base: './',
-  plugins: [react(), removeModuleAttributePlugin()],
+  plugins: [
+    react(),
+    command === 'build' ? removeModuleAttributePlugin() : null
+  ].filter(Boolean),
   build: {
     target: 'es2015',
     modulePreload: false,
@@ -59,4 +62,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

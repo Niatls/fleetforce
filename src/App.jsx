@@ -228,6 +228,14 @@ function AppContent() {
   }, [sectionVisibility]);
 
   useEffect(() => {
+    if (Array.isArray(candidates) && candidates.length > 0) {
+      try {
+        localStorage.setItem('fleetforce_candidates', JSON.stringify(candidates));
+      } catch (e) {}
+    }
+  }, [candidates]);
+
+  useEffect(() => {
     if (heroTitle) localStorage.setItem('fleetforce_hero_title', heroTitle);
   }, [heroTitle]);
 
@@ -484,7 +492,13 @@ function AppContent() {
   };
 
   const handleCandidateSubmit = (newCandidate) => {
-    setCandidates((prev) => [newCandidate, ...prev]);
+    setCandidates((prev) => {
+      const updated = [newCandidate, ...(prev || [])];
+      try {
+        localStorage.setItem('fleetforce_candidates', JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
 
     // Send to backend API if available
     fetch('/api/candidates', {
