@@ -250,11 +250,17 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
     return obj;
   });
 
+  const getCombinedData = () => ({
+    ...fd,
+    primaryDocs,
+    stcwDocs
+  });
+
   React.useEffect(() => {
     if ((inlinePreview?.type === 'docx_blob' || inlinePreview?.type === 'html') && docxContainerRef.current) {
-      docxContainerRef.current.innerHTML = buildApplicationFormHtml(fd);
+      docxContainerRef.current.innerHTML = buildApplicationFormHtml(getCombinedData());
     }
-  }, [inlinePreview, fd]);
+  }, [inlinePreview, fd, primaryDocs, stcwDocs]);
 
   const handlePreviewHtmlInline = () => {
     setInlinePreview({
@@ -265,7 +271,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
 
   const handlePreviewPdfInline = async () => {
     try {
-      const pdfBytes = await generatePdfBlob(fd);
+      const pdfBytes = await generatePdfBlob(getCombinedData());
       if (!pdfBytes) {
         alert('Не удалось сформировать PDF для просмотра.');
         return;
@@ -285,7 +291,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
 
   const handlePreviewDocInline = async () => {
     try {
-      const docBlob = await generateDocBlob(fd);
+      const docBlob = await generateDocBlob(getCombinedData());
       setInlinePreview({
         title: `Просмотр DOCX анкеты Application form.docx (${fd.fullName || 'Без имени'})`,
         type: 'docx_blob',
@@ -376,15 +382,20 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       signDate: '10.08.2026',
     });
 
-    const pDocs = {};
-    PRIMARY_DOCS_LIST.forEach((d, idx) => {
-      pDocs[d] = {
-        number: `DOC-RU-${202200 + idx}`,
-        issued: `15.03.2022`,
-        expiry: `15.03.2027`,
-        place: `NOVOROSSIYSK`
-      };
-    });
+    const pDocs = {
+      "TRAVEL PASSPORT:": { number: "75 1234567", issued: "14.05.2021", expiry: "14.05.2031", place: "FMS 23001 NOVOROSSIYSK" },
+      "SEAMAN'S BOOK (SID):": { number: "M 0987654", issued: "10.02.2022", expiry: "10.02.2027", place: "PORT NOVOROSSIYSK" },
+      "SEAFARERS'S IDENTITY DOCUMENT(SID):": { number: "SID-RU-884912", issued: "10.02.2022", expiry: "10.02.2027", place: "MAP NOVOROSSIYSK" },
+      "CIVIL PASSPORT:": { number: "03 14 987654", issued: "20.04.2004", expiry: "PERMANENT", place: "MVD NOVOROSSIYSK" },
+      "U.S. VISA:": { number: "R88491204", issued: "20.10.2023", expiry: "19.10.2033", place: "EMBASSY YEREVAN" },
+      "OTHER VALID VISA:": { number: "EST-SCH-88412", issued: "05.01.2024", expiry: "04.01.2026", place: "CONSULATE TALLINN" },
+      "CERTIFICATE OF COMPETENCY # 1": { number: "COC-RU-2022-8841", issued: "15.03.2022", expiry: "15.03.2027", place: "MAP NOVOROSSIYSK" },
+      "RANK_CAPACITY_1": { number: "Master Unlimited (STCW II/2)", issued: "", expiry: "", place: "" },
+      "ENDORSEMENT OF CERTIFICATE #1": { number: "END-RU-2022-8841", issued: "15.03.2022", expiry: "15.03.2027", place: "MAP NOVOROSSIYSK" },
+      "CERTIFICATE OF COMPETENCY # 2": { number: "N/A", issued: "-", expiry: "-", place: "-" },
+      "RANK_CAPACITY_2": { number: "N/A", issued: "", expiry: "", place: "" },
+      "ENDORSEMENT OF CERTIFICATE #2": { number: "N/A", issued: "-", expiry: "-", place: "-" }
+    };
     setPrimaryDocs(pDocs);
 
     const sDocs = {};
@@ -400,7 +411,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
   };
 
   const handlePrintForm = () => {
-    const html = buildApplicationFormHtml(fd);
+    const html = buildApplicationFormHtml(getCombinedData());
     const printWin = window.open('', '_blank');
     if (!printWin) {
       alert('Пожалуйста, разрешите всплывающие окна в браузере для печати.');
@@ -574,6 +585,9 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       seamanBook: { no: fd.seamanBookNo, issued: fd.seamanBookIssued, expiry: fd.seamanBookExpiry, place: fd.seamanBookPlace },
       recordBooks: fd.recordBooks,
       certificates: fd.certificates,
+      primaryDocs: primaryDocs,
+      stcwDocs: stcwDocs,
+      stcwCertificates: stcwDocs,
       seaService: fd.seaService,
       employers: fd.employers,
       attachedFiles: fd.attachedFiles,
@@ -691,7 +705,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                 <tr>
                   <td style={{ ...tdStyle, fontWeight: 600, fontSize: '0.82rem', background: 'rgba(30,41,59,0.3)' }}>No. of Children under 18:</td>
                   <td colSpan={3} style={tdStyle}>
-                    <input style={tableInputStyle} type="number" min="0" max="20" value={fd.childrenUnder18} onChange={e => set('childrenUnder18', e.target.value)} />
+                    <input style={tableInputStyle} type="text" placeholder="e.g. 2 (Dmitriy 2012, Anna 2016) or 0" value={fd.childrenUnder18} onChange={e => set('childrenUnder18', e.target.value)} />
                   </td>
                 </tr>
                 <tr>
@@ -814,7 +828,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                   </td>
                   <td style={{ ...tdStyle, fontWeight: 600, fontSize: '0.82rem', width: '8%', background: 'rgba(30,41,59,0.5)' }}>From:</td>
                   <td style={{ ...tdStyle, width: '12%' }}>
-                    <input style={tableInputStyle} type="number" placeholder="YYYY" value={fd.collegeFrom} onChange={e => set('collegeFrom', e.target.value)} />
+                    <input style={tableInputStyle} type="text" placeholder="e.g. 01.09.2001 or 2001" value={fd.collegeFrom} onChange={e => set('collegeFrom', e.target.value)} />
                   </td>
                 </tr>
                 <tr>
@@ -826,7 +840,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                   </td>
                   <td style={{ ...tdStyle, fontWeight: 600, fontSize: '0.82rem', background: 'rgba(30,41,59,0.5)' }}>Till:</td>
                   <td style={tdStyle}>
-                    <input style={tableInputStyle} type="number" placeholder="YYYY" value={fd.collegeTill} onChange={e => set('collegeTill', e.target.value)} />
+                    <input style={tableInputStyle} type="text" placeholder="e.g. 30.06.2007 or 2007" value={fd.collegeTill} onChange={e => set('collegeTill', e.target.value)} />
                   </td>
                 </tr>
               </tbody>

@@ -464,6 +464,21 @@ export const INITIAL_CANDIDATES = [
     medCertValid: "10.01.2028",
     medCertPlace: "CLINIC SEAMAN NOVOROSS",
 
+    primaryDocs: {
+      "TRAVEL PASSPORT:": { number: "75 1234567", issued: "14.05.2021", expiry: "14.05.2031", place: "FMS 23001 NOVOROSSIYSK" },
+      "SEAMAN'S BOOK (SID):": { number: "M 0987654", issued: "10.02.2022", expiry: "10.02.2027", place: "PORT NOVOROSSIYSK" },
+      "SEAFARERS'S IDENTITY DOCUMENT(SID):": { number: "SID-RU-884912", issued: "10.02.2022", expiry: "10.02.2027", place: "MAP NOVOROSSIYSK" },
+      "CIVIL PASSPORT:": { number: "03 14 987654", issued: "20.04.2004", expiry: "PERMANENT", place: "MVD NOVOROSSIYSK" },
+      "U.S. VISA:": { number: "R88491204", issued: "20.10.2023", expiry: "19.10.2033", place: "EMBASSY YEREVAN" },
+      "OTHER VALID VISA:": { number: "EST-SCH-88412", issued: "05.01.2024", expiry: "04.01.2026", place: "CONSULATE TALLINN" },
+      "CERTIFICATE OF COMPETENCY # 1": { number: "COC-RU-2022-8841", issued: "15.03.2022", expiry: "15.03.2027", place: "MAP NOVOROSSIYSK" },
+      "RANK_CAPACITY_1": { number: "Master Unlimited (STCW II/2)", issued: "", expiry: "", place: "" },
+      "ENDORSEMENT OF CERTIFICATE #1": { number: "END-RU-2022-8841", issued: "15.03.2022", expiry: "15.03.2027", place: "MAP NOVOROSSIYSK" },
+      "CERTIFICATE OF COMPETENCY # 2": { number: "N/A", issued: "-", expiry: "-", place: "-" },
+      "RANK_CAPACITY_2": { number: "N/A", issued: "", expiry: "", place: "" },
+      "ENDORSEMENT OF CERTIFICATE #2": { number: "N/A", issued: "-", expiry: "-", place: "-" }
+    },
+
     // STCW Certificates (all 30 filled)
     stcwCertificates: {
       "GMDSS CERTIFICATE/ENDORSEMENT": { number: "GMDSS-RU-8841", issued: "10.03.2022", expiry: "10.03.2027", place: "NOVOROSSIYSK" },
