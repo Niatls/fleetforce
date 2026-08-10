@@ -162,8 +162,17 @@ export const buildApplicationFormHtml = (cand) => {
     return '';
   };
 
-  const photoHtml = cand.photoDataUrl
-    ? `<img src="${cand.photoDataUrl}" width="113" height="151" style="width:30mm;height:40mm;max-width:30mm;max-height:40mm;object-fit:cover;display:block;margin:0 auto;border:0.75pt solid #000000;" />`
+  const hasValidPhoto = Boolean(cand.photoDataUrl && String(cand.photoDataUrl).startsWith('data:image/'));
+
+  const photoHtml = hasValidPhoto
+    ? `<!--[if gte mso 9]>
+<v:rect id="photoFrame" style="width:30mm;height:40mm;" fillcolor="#ffffff" stroked="f">
+  <v:fill src="${cand.photoDataUrl}" type="frame" />
+</v:rect>
+<![endif]-->
+<![if !mso]>
+<img src="${cand.photoDataUrl}" width="113" height="151" style="width:30mm;height:40mm;max-width:30mm;max-height:40mm;object-fit:cover;display:block;margin:0 auto;border:0.75pt solid #000000;" />
+<![endif]>`
     : `<div class="photo-placeholder">PHOTO 3x4</div>`;
 
   const primaryDocsRows = [
