@@ -414,23 +414,23 @@ export const buildApplicationFormHtml = (cand) => {
     white-space: normal !important;
   }
   @media print {
-    body { background: #fff; width: 100%; }
-    .page-portrait {
+    body { background: #fff !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    .page-portrait, .page-landscape {
       width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
-    }
-    .page-landscape {
-      width: 100% !important;
-      padding: 0 !important;
-      margin: 0 !important;
+      box-shadow: none !important;
+      border: none !important;
+      outline: none !important;
     }
   }
   @media screen {
-    body { background: #e0e0e0; padding: 5mm; }
+    body { background: #f0f0f0; padding: 5mm; }
     .page-portrait, .page-landscape {
       background: #fff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      box-shadow: none !important;
+      border: none !important;
+      outline: none !important;
       margin-bottom: 5mm;
     }
   }
