@@ -283,7 +283,7 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       shoeSize: '43',
       eyesColour: 'Blue',
       hairColour: 'Brown',
-      photoDataUrl: '',
+      photoDataUrl: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="%230b1329"/><rect x="10" y="10" width="280" height="380" rx="8" fill="%231e293b" stroke="%2338bdf8" stroke-width="3"/><circle cx="150" cy="140" r="65" fill="%2338bdf8"/><path d="M50,340 C50,230 250,230 250,340 Z" fill="%230284c7"/><circle cx="150" cy="130" r="45" fill="%23fed7aa"/><path d="M120,110 Q150,90 180,110 Q180,95 150,90 Q120,95 120,110 Z" fill="%2378350f"/><text x="150" y="370" font-family="Arial, sans-serif" font-weight="bold" font-size="18" fill="%23ffffff" text-anchor="middle">FLEETFORCE SEAFARER</text></svg>',
 
       alternativeRank: 'Chief Officer / 1st Mate',
       minSalary: '14000',
