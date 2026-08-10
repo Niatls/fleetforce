@@ -314,22 +314,22 @@ export const buildApplicationFormHtml = (cand) => {
 <![endif]-->
 <style>
   @page {
-    size: 595.35pt 841.99pt;
-    margin: 14.2pt 14.2pt 14.2pt 14.2pt;
+    size: 210mm 297mm;
+    margin: 5mm;
     mso-page-orientation: portrait;
   }
   @page Section1 {
-    size: 595.35pt 841.99pt;
-    margin: 14.2pt 14.2pt 14.2pt 14.2pt;
+    size: 210mm 297mm;
+    margin: 5mm;
     mso-page-orientation: portrait;
   }
   @page Section2 {
-    size: 841.99pt 595.35pt;
-    margin: 14.2pt 14.2pt 14.2pt 14.2pt;
+    size: 297mm 210mm;
+    margin: 5mm;
     mso-page-orientation: landscape;
   }
-  div.Section1 { page: Section1; }
-  div.Section2 { page: Section2; }
+  div.Section1 { page: Section1; mso-page-orientation: portrait; }
+  div.Section2 { page: Section2; mso-page-orientation: landscape; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -555,7 +555,7 @@ export const buildApplicationFormHtml = (cand) => {
 </table>
 </div>
 
-<p class="MsoNormal" style="mso-element:header; page-break-before:always; mso-break-type:section-break;"></p>
+<br style="page-break-before:always; mso-break-type:section-break;" />
 
 <!-- Page 2: Section 2 Landscape - Foreign Seaman's ID, Previous Sea Service & Employers -->
 <div class="Section2 page-landscape" style="page: Section2; mso-page-orientation: landscape;">
