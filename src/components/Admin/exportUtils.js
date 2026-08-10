@@ -31,7 +31,7 @@ const dataUrlToUint8Array = (dataUrl) => {
   return array;
 };
 
-// Download all files: ZIP containing questionnaire (DOCX + PDF) + all attachedFiles
+// Download all files: ZIP containing filled HTML A4 questionnaire (.doc) + all attachedFiles
 export const handleDownloadAllFiles = async (cand) => {
   if (!cand) return;
   const cleanName = (cand.fullName || 'Seafarer').replace(/[^a-zA-Z0-9_\-\u0400-\u04FF\s]/g, '').trim();
@@ -40,18 +40,12 @@ export const handleDownloadAllFiles = async (cand) => {
   const zip = new JSZip();
   const folder = zip.folder(folderName);
 
-  // 1. Add DOC questionnaire (filled template Application form.docx)
+  // 1. Add filled application form (.doc) based on HTML template Application_form (4).html
   const docBlob = await generateDocBlob(cand);
   const docArrayBuffer = await docBlob.arrayBuffer();
-  folder.file(`Application_${cleanName}_${cand.id || 'FORM'}.docx`, docArrayBuffer);
+  folder.file(`Application_${cleanName}_${cand.id || 'FORM'}.doc`, docArrayBuffer);
 
-  // 2. Add PDF questionnaire (async — direct template filling with pdf-lib)
-  const pdfArrayBuffer = await generatePdfBlob(cand);
-  if (pdfArrayBuffer) {
-    folder.file(`Application_${cleanName}_${cand.id || 'FORM'}.pdf`, pdfArrayBuffer);
-  }
-
-  // 3. Add attached files (from base64 dataUrls)
+  // 2. Add attached files (from base64 dataUrls)
   const files = cand.attachedFiles || [];
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -61,7 +55,7 @@ export const handleDownloadAllFiles = async (cand) => {
     }
   }
 
-  // 4. Generate and trigger download
+  // 3. Generate and trigger download
   const zipBlob = await zip.generateAsync({ type: 'blob' });
   const url = URL.createObjectURL(zipBlob);
   const a = document.createElement('a');
