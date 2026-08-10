@@ -163,8 +163,8 @@ export const buildApplicationFormHtml = (cand) => {
   };
 
   const photoHtml = cand.photoDataUrl
-    ? `<img src="${cand.photoDataUrl}" style="max-width:30mm;max-height:40mm;object-fit:cover;display:block;margin:0 auto;" />`
-    : `<div class="photo-placeholder">PHOTO</div>`;
+    ? `<img src="${cand.photoDataUrl}" width="113" height="151" style="width:30mm;height:40mm;max-width:30mm;max-height:40mm;object-fit:cover;display:block;margin:0 auto;border:0.75pt solid #000000;" />`
+    : `<div class="photo-placeholder">PHOTO 3x4</div>`;
 
   const primaryDocsRows = [
     { label: 'TRAVEL PASSPORT:', key: 'TRAVEL PASSPORT:' },
@@ -372,11 +372,19 @@ export const buildApplicationFormHtml = (cand) => {
     overflow-wrap: anywhere;
     white-space: normal;
   }
-  .photo-cell { text-align: center; vertical-align: middle; padding: 1px; }
+  .photo-cell { text-align: center; vertical-align: middle; padding: 1mm 0; }
   .photo-placeholder {
-    width: 24mm; height: 30mm; margin: 0 auto;
-    border: 0.75pt solid #000; color: #999; font-size: 8pt;
-    text-align: center; padding-top: 10mm;
+    width: 30mm !important;
+    height: 40mm !important;
+    margin: 0 auto !important;
+    border: 0.75pt dashed #777777 !important;
+    color: #777777 !important;
+    font-size: 8.5pt !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    line-height: 40mm !important;
+    box-sizing: border-box !important;
+    background-color: #FAFAFA !important;
   }
   .declaration-text {
     font-size: 7.5pt !important;
