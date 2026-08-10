@@ -27,35 +27,136 @@ export const buildApplicationFormHtml = (cand) => {
   const fatherName = cand.fatherName || parsedFatherName || '';
 
   const getDocVal = (docName, field) => {
-    if (cand.primaryDocs && cand.primaryDocs[docName]) {
-      return cand.primaryDocs[docName][field] || '';
+    // 1. Check cand.primaryDocs if present (exact or fuzzy key)
+    if (cand.primaryDocs) {
+      if (cand.primaryDocs[docName] && cand.primaryDocs[docName][field]) {
+        return cand.primaryDocs[docName][field];
+      }
+      const cleanTarget = docName.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const foundKey = Object.keys(cand.primaryDocs).find(k => {
+        const cleanK = k.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        return cleanK.length > 3 && (cleanK.includes(cleanTarget.substring(0, 8)) || cleanTarget.includes(cleanK.substring(0, 8)));
+      });
+      if (foundKey && cand.primaryDocs[foundKey] && cand.primaryDocs[foundKey][field]) {
+        return cand.primaryDocs[foundKey][field];
+      }
     }
-    if (docName.includes('TRAVEL PASSPORT')) {
-      if (field === 'number') return cand.passportNo || '';
-      if (field === 'issued') return cand.passportIssued || '';
-      if (field === 'expiry') return cand.passportExpiry || '';
-      if (field === 'place') return cand.passportPlace || '';
+
+    // 2. Fallback to flat properties
+    const uName = docName.toUpperCase();
+    if (uName.includes('TRAVEL PASSPORT')) {
+      if (field === 'number') return cand.passNo || cand.passportNo || cand.passNum || '';
+      if (field === 'issued') return cand.passIssued || cand.passportIssued || '';
+      if (field === 'expiry') return cand.passValid || cand.passportExpiry || cand.passValidUntil || '';
+      if (field === 'place') return cand.passPlace || cand.passportPlace || '';
     }
-    if (docName.includes('SEAMAN')) {
-      if (field === 'number') return cand.seamanBookNo || '';
-      if (field === 'issued') return cand.seamanBookIssued || '';
-      if (field === 'expiry') return cand.seamanBookExpiry || '';
-      if (field === 'place') return cand.seamanBookPlace || '';
+    if (uName.includes('SEAMAN')) {
+      if (field === 'number') return cand.seamanNo || cand.seamanBookNo || '';
+      if (field === 'issued') return cand.seamanIssued || cand.seamanBookIssued || '';
+      if (field === 'expiry') return cand.seamanValid || cand.seamanBookExpiry || '';
+      if (field === 'place') return cand.seamanPlace || cand.seamanBookPlace || '';
+    }
+    if (uName.includes('SEAFARERS')) {
+      if (field === 'number') return cand.sidNo || cand.sidNumber || '';
+      if (field === 'issued') return cand.sidIssued || '';
+      if (field === 'expiry') return cand.sidValid || cand.sidExpiry || '';
+      if (field === 'place') return cand.sidPlace || '';
+    }
+    if (uName.includes('CIVIL PASSPORT')) {
+      if (field === 'number') return cand.civilPassNo || cand.civilPassportNo || '';
+      if (field === 'issued') return cand.civilPassIssued || '';
+      if (field === 'expiry') return cand.civilPassValid || cand.civilPassportExpiry || '';
+      if (field === 'place') return cand.civilPassPlace || '';
+    }
+    if (uName.includes('U.S. VISA') || uName.includes('US VISA')) {
+      if (field === 'number') return cand.usVisaNo || cand.c1dNo || '';
+      if (field === 'issued') return cand.usVisaIssued || cand.c1dIssued || '';
+      if (field === 'expiry') return cand.usVisaValid || cand.c1dValid || '';
+      if (field === 'place') return cand.usVisaPlace || cand.c1dPlace || '';
+    }
+    if (uName.includes('OTHER VALID VISA')) {
+      if (field === 'number') return cand.schengenNo || cand.otherVisaNo || '';
+      if (field === 'issued') return cand.schengenIssued || cand.otherVisaIssued || '';
+      if (field === 'expiry') return cand.schengenValid || cand.otherVisaValid || '';
+      if (field === 'place') return cand.schengenPlace || cand.otherVisaPlace || '';
+    }
+    if (uName.includes('CERTIFICATE OF COMPETENCY # 1') || uName === 'CERTIFICATE OF COMPETENCY # 1') {
+      if (field === 'number') return cand.cocNo || cand.coc1No || '';
+      if (field === 'issued') return cand.cocIssued || cand.coc1Issued || '';
+      if (field === 'expiry') return cand.cocValid || cand.coc1Valid || '';
+      if (field === 'place') return cand.cocPlace || cand.coc1Place || '';
+    }
+    if (uName === 'RANK_CAPACITY_1') {
+      if (field === 'number') return cand.cocRank || cand.coc1Rank || cand.appliedRank || '';
+    }
+    if (uName.includes('ENDORSEMENT OF CERTIFICATE # 1') || uName.includes('ENDORSEMENT OF CERTIFICATE #1')) {
+      if (field === 'number') return cand.endorseNo || cand.endorse1No || '';
+      if (field === 'issued') return cand.endorseIssued || cand.endorse1Issued || '';
+      if (field === 'expiry') return cand.endorseValid || cand.endorse1Valid || '';
+      if (field === 'place') return cand.endorsePlace || cand.endorse1Place || '';
+    }
+    if (uName.includes('CERTIFICATE OF COMPETENCY # 2') || uName === 'CERTIFICATE OF COMPETENCY # 2') {
+      if (field === 'number') return cand.coc2No || '';
+      if (field === 'issued') return cand.coc2Issued || '';
+      if (field === 'expiry') return cand.coc2Valid || '';
+      if (field === 'place') return cand.coc2Place || '';
+    }
+    if (uName === 'RANK_CAPACITY_2') {
+      if (field === 'number') return cand.coc2Rank || '';
+    }
+    if (uName.includes('ENDORSEMENT OF CERTIFICATE # 2') || uName.includes('ENDORSEMENT OF CERTIFICATE #2')) {
+      if (field === 'number') return cand.endorse2No || '';
+      if (field === 'issued') return cand.endorse2Issued || '';
+      if (field === 'expiry') return cand.endorse2Valid || '';
+      if (field === 'place') return cand.endorse2Place || '';
     }
     return '';
   };
 
   const getStcwVal = (certName, field) => {
-    if (cand.stcwDocs && cand.stcwDocs[certName]) {
-      return cand.stcwDocs[certName][field] || '';
+    // 1. Check cand.stcwCertificates or cand.stcwDocs
+    const stcwMap = cand.stcwCertificates || cand.stcwDocs;
+    if (stcwMap) {
+      if (stcwMap[certName] && stcwMap[certName][field]) {
+        return stcwMap[certName][field];
+      }
+      const cleanTarget = certName.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const foundKey = Object.keys(stcwMap).find(k => {
+        const cleanK = k.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        return cleanK.length > 3 && (cleanK.includes(cleanTarget.substring(0, 8)) || cleanTarget.includes(cleanK.substring(0, 8)));
+      });
+      if (foundKey && stcwMap[foundKey] && stcwMap[foundKey][field]) {
+        return stcwMap[foundKey][field];
+      }
     }
+
+    // 2. Check special flat fields
+    const uCert = certName.toUpperCase();
+    if (uCert.includes('YELLOW FEVER')) {
+      if (field === 'number') return cand.yellowFeverNo || '';
+      if (field === 'issued') return cand.yellowFeverIssued || '';
+      if (field === 'expiry') return cand.yellowFeverValid || '';
+      if (field === 'place') return cand.yellowFeverPlace || '';
+    }
+    if (uCert.includes('MEDICAL CARE') || uCert.includes('MEDICAL CERTIFICATE')) {
+      if (field === 'number') return cand.medCertNo || '';
+      if (field === 'issued') return cand.medCertIssued || '';
+      if (field === 'expiry') return cand.medCertValid || '';
+      if (field === 'place') return cand.medCertPlace || '';
+    }
+
+    // 3. Search in cand.certificates array if present
     if (cand.certificates && Array.isArray(cand.certificates)) {
-      const found = cand.certificates.find(c => c.certName && c.certName.toUpperCase().includes(certName.substring(0, 8).toUpperCase()));
+      const found = cand.certificates.find(c => {
+        const nameInArray = (c.certName || c.name || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const cleanTarget = certName.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        return nameInArray.includes(cleanTarget.substring(0, 8)) || cleanTarget.includes(nameInArray.substring(0, 8));
+      });
       if (found) {
-        if (field === 'number') return found.certNo || '';
-        if (field === 'issued') return found.certIssued || '';
-        if (field === 'expiry') return found.certValid || '';
-        if (field === 'place') return found.rankCapacity || '';
+        if (field === 'number') return found.certNo || found.number || '';
+        if (field === 'issued') return found.certIssued || found.issued || '';
+        if (field === 'expiry') return found.certValid || found.expiry || found.validUntil || '';
+        if (field === 'place') return found.rankCapacity || found.place || '';
       }
     }
     return '';
@@ -353,9 +454,9 @@ export const buildApplicationFormHtml = (cand) => {
   </colgroup>
   <tr>
     <td style="width:31.62mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Positions applied for:</td>
-    <td style="width:44.56mm;background-color:#FFFFFF;font-size:10.0pt;font-weight:bold;" colspan="3">${cand.appliedRank || ''}</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;font-size:10.0pt;font-weight:bold;" colspan="3">${cand.appliedRank || cand.position || ''}</td>
     <td style="width:29.72mm;background-color:#A8D08D;font-size:10.0pt;font-weight:bold;" colspan="2">Date of readiness:</td>
-    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.readyDate || ''}</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.readyDate || cand.readinessDate || ''}</td>
     <td style="width:32.27mm;background-color:#FFFFFF;font-weight:bold;" colspan="3" rowspan="8" class="photo-cell">${photoHtml}</td>
   </tr>
   <tr>
@@ -372,43 +473,43 @@ export const buildApplicationFormHtml = (cand) => {
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Date of birth:</td>
-    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.dob || ''}</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.dob || cand.birthDate || ''}</td>
     <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Nationality:</td>
-    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.nationality || ''}</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.nationality || cand.citizenship || ''}</td>
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Place of birth:</td>
-    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.placeOfBirth || ''}</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.placeOfBirth || cand.birthPlace || ''}</td>
     <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Marital status:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.maritalStatus || ''}</td>
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">N of children under 18:</td>
-    <td style="width:106.11mm;background-color:#FFFFFF;" colspan="8">${cand.childrenUnder18 || ''}</td>
+    <td style="width:106.11mm;background-color:#FFFFFF;" colspan="8">${cand.childrenUnder18 || cand.childrenCount || ''}</td>
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Home Address:</td>
-    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.address || ''}${cand.homeZip ? ` (Zip: ${cand.homeZip})` : ''}</td>
+    <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.address || cand.homeAddress || ''}${cand.homeZip ? ` (Zip: ${cand.homeZip})` : ''}</td>
     <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Contact Phone:</td>
-    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.phone || ''}</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.phone || cand.contactPhone || ''}</td>
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">E-mail:</td>
     <td style="width:44.56mm;background-color:#FFFFFF;" colspan="3">${cand.email || ''}</td>
     <td style="width:29.72mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Skype/Telegram:</td>
-    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.skypeTelegram || ''}</td>
+    <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.skypeTelegram || cand.skype || cand.telegram || ''}</td>
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Next of kin:</td>
-    <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinName || ''}</td>
+    <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinName || cand.nextOfKin || ''}</td>
     <td style="width:31.83mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Relation:</td>
-    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinRelation || ''}</td>
+    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinRelation || cand.nextOfKinRelation || ''}</td>
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Next of kin’s address:</td>
-    <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinAddress || ''}</td>
+    <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinAddress || cand.nextOfKinAddress || ''}</td>
     <td style="width:31.83mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Next of kin’s phone №:</td>
-    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinPhone || ''}</td>
+    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinPhone || cand.nextOfKinPhone || ''}</td>
   </tr>
   <tr>
     <td style="width:15.81mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Height (cm):</td>
@@ -416,15 +517,15 @@ export const buildApplicationFormHtml = (cand) => {
     <td style="width:14.85mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Weight (kg):</td>
     <td style="width:14.85mm;background-color:#FFFFFF;">${cand.weight || ''}</td>
     <td style="width:44.57mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3" rowspan="2">Size of Overall (EUR):</td>
-    <td style="width:10.61mm;background-color:#FFFFFF;" rowspan="2">${cand.overallSize || ''}</td>
+    <td style="width:10.61mm;background-color:#FFFFFF;" rowspan="2">${cand.overallSize || cand.clothesSize || ''}</td>
     <td style="width:42.73mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="4" rowspan="2">Shoes (EUR):</td>
-    <td style="width:10.76mm;background-color:#FFFFFF;" rowspan="2">${cand.shoeSize || ''}</td>
+    <td style="width:10.76mm;background-color:#FFFFFF;" rowspan="2">${cand.shoeSize || cand.shoesSize || ''}</td>
   </tr>
   <tr>
     <td style="width:15.81mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Eyes Colour:</td>
-    <td style="width:15.81mm;background-color:#FFFFFF;">${cand.eyesColour || ''}</td>
+    <td style="width:15.81mm;background-color:#FFFFFF;">${cand.eyesColour || cand.eyeColor || ''}</td>
     <td style="width:14.85mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;">Hair Colour:</td>
-    <td style="width:14.85mm;background-color:#FFFFFF;">${cand.hairColour || ''}</td>
+    <td style="width:14.85mm;background-color:#FFFFFF;">${cand.hairColour || cand.hairColor || ''}</td>
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
@@ -433,15 +534,15 @@ export const buildApplicationFormHtml = (cand) => {
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Name of maritime college or academy</td>
-    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeName || ''}</td>
+    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeName || cand.maritimeCollege || ''}</td>
     <td style="width:21.37mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">From</td>
-    <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeFrom || ''}</td>
+    <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeFrom || cand.educationFrom || ''}</td>
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="3">Department</td>
-    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeDepartment || ''}</td>
+    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeDepartment || cand.educationDepartment || ''}</td>
     <td style="width:21.37mm;background-color:#E2EFD9;font-size:10.0pt;font-weight:bold;" colspan="2">Till</td>
-    <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeTill || ''}</td>
+    <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeTill || cand.collegeTo || cand.educationTill || cand.educationTo || ''}</td>
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
