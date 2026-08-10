@@ -84,10 +84,10 @@ export const buildApplicationFormHtml = (cand) => {
     let html = `
       <tr>
         <td style="width:61.32mm;background-color:#E2EFD9;font-size:10pt;font-weight:bold;" colspan="4">${item.label}</td>
-        <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
+        <td style="width:29.71mm;background-color:#FFFFFF;" colspan="2">${num}</td>
         <td style="width:21.22mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:21.37mm;background-color:#FFFFFF;" colspan="2">${exp}</td>
-        <td style="width:21.52mm;background-color:#FFFFFF;" colspan="2">${plc}</td>
+        <td style="width:36.38mm;background-color:#FFFFFF;" colspan="3">${plc}</td>
       </tr>
     `;
     if (item.hasRank) {
@@ -143,10 +143,10 @@ export const buildApplicationFormHtml = (cand) => {
     return `
       <tr>
         <td class="cert-label-cell" style="width:61.32mm;background-color:#E2EFD9;font-size:10pt;font-weight:bold;" colspan="4" title="${name}">${name}</td>
-        <td style="width:44.57mm;background-color:#FFFFFF;" colspan="3">${num}</td>
+        <td style="width:29.71mm;background-color:#FFFFFF;" colspan="2">${num}</td>
         <td style="width:21.22mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:21.37mm;background-color:#FFFFFF;" colspan="2">${exp}</td>
-        <td style="width:21.52mm;background-color:#FFFFFF;" colspan="2">${plc}</td>
+        <td style="width:36.38mm;background-color:#FFFFFF;" colspan="3">${plc}</td>
       </tr>
     `;
   }).join('');
@@ -450,18 +450,18 @@ export const buildApplicationFormHtml = (cand) => {
   </tr>
   <tr>
     <td style="width:61.32mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="4">DOCUMENT</td>
-    <td style="width:44.57mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">NUMBER</td>
+    <td style="width:29.71mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">NUMBER</td>
     <td style="width:21.22mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
     <td style="width:21.37mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">VALID UNTIL</td>
-    <td style="width:21.52mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">PLACE</td>
+    <td style="width:36.38mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">PLACE</td>
   </tr>
   ${primaryDocsRows}
   <tr>
     <td style="width:61.32mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="4">CERTIFICATE</td>
-    <td style="width:44.57mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">NUMBER</td>
+    <td style="width:29.71mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">NUMBER</td>
     <td style="width:21.22mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
     <td style="width:21.37mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">VALID UNTIL</td>
-    <td style="width:21.52mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="2">PLACE</td>
+    <td style="width:36.38mm;background-color:#E2EFD9;font-size:9.0pt;font-weight:bold;" colspan="3">PLACE</td>
   </tr>
   ${stcwRows}
 </table>
