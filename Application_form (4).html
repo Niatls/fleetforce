@@ -1,59 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seafarer Application Form</title>
+<!--[if gte mso 9]>
+<xml>
+  <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+  </w:WordDocument>
+</xml>
+<![endif]-->
 <style>
   @page {
     size: A4;
     margin: 0;
   }
-  
+  @page Section1 {
+    size: 595.35pt 841.99pt;
+    margin: 14.2pt 14.2pt 14.2pt 14.2pt;
+    mso-page-orientation: portrait;
+  }
+  @page Section2 {
+    size: 841.99pt 595.35pt;
+    margin: 14.2pt 14.2pt 14.2pt 14.2pt;
+    mso-page-orientation: landscape;
+  }
+  div.Section1 { page: Section1; }
+  div.Section2 { page: Section2; }
+
+  @page page-portrait {
+    size: A4 portrait;
+    margin: 4mm;
+  }
+  @page page-landscape {
+    size: A4 landscape;
+    margin: 4mm;
+  }
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-  
   body {
     font-family: Calibri, Arial, sans-serif;
-    font-size: 10pt;
+    font-size: 7.5pt;
     color: #000;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  
-  /* Portrait page section - Table 0 */
   .page-portrait {
-    width: 210mm;
-    min-height: 297mm;
+    page: page-portrait;
+    width: 200mm;
     margin: 0 auto;
-    padding: 20mm 5mm 10mm 5mm;
+    padding: 3mm 2mm 2mm 2mm;
   }
-  
-  /* Landscape page sections - Tables 1, 2 */
   .page-landscape {
-    width: 297mm;
-    min-height: 210mm;
+    page: page-landscape;
+    width: 275mm;
     margin: 0 auto;
-    padding: 20mm 5mm 20mm 5mm;
+    padding: 3mm 2mm 2mm 2mm;
   }
-  
   table {
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
-    border-left: 1pt solid #000000;
-    border-right: 1pt solid #000000;
-  }
-
-  .page-landscape table {
-    height: auto;
-  }
-
-  .page-landscape td {
-    height: 6mm;
   }
 
   tr.no-bottom-border td {
@@ -611,9 +624,11 @@
 </table>
 </div>
 
-<!-- Page 2: Landscape - Foreign Seaman's ID / Record Books -->
-<div class="page-landscape">
-<table>
+<br style="page-break-before:always; mso-break-type:section-break" />
+
+<!-- Page 2: Section 2 Landscape - Foreign Seaman's ID, Previous Sea Service & Employers -->
+<div class="Section2 page-landscape">
+<table style="margin-bottom: 3mm;">
   <colgroup>
     <col style="width:92.95mm">
     <col style="width:53.94mm">
@@ -623,7 +638,7 @@
   </colgroup>
   <tr>
     <td style="width:92.95mm;background-color:#FFFFFF;"></td>
-    <td style="width:107.88mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;" colspan="2">FOREIGN SEAMAN’S ID / RECORD BOOKS</td>
+    <td style="width:107.88mm;background-color:#A8D08D;font-size:9.0pt;font-weight:bold;text-align:center;" colspan="2">FOREIGN SEAMAN’S ID / RECORD BOOKS</td>
     <td style="width:76.17mm;background-color:#FFFFFF;" colspan="2"></td>
   </tr>
   <tr>
@@ -662,10 +677,7 @@
     <td style="width:38.08mm;background-color:#FFFFFF;"></td>
   </tr>
 </table>
-</div>
 
-<!-- Page 3: Landscape - Previous Sea Service -->
-<div class="page-landscape">
 <table>
   <colgroup>
     <col style="width:9.00mm">
