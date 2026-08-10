@@ -359,30 +359,20 @@ export const buildApplicationFormHtml = (cand) => {
     padding: 3mm 2mm 2mm 2mm;
   }
   table {
-    border-collapse: collapse;
+    border-collapse: collapse !important;
     width: 100%;
     table-layout: fixed;
-    border-left: 0.75pt solid #000000;
-    border-right: 0.75pt solid #000000;
+    border: 0.75pt solid #000000 !important;
+    mso-border-alt: solid windowtext .5pt !important;
+    mso-table-lspace: 0pt !important;
+    mso-table-rspace: 0pt !important;
   }
-  .page-portrait tr {
+  tr {
     height: auto !important;
   }
-  .page-portrait td {
-    border: 0.5pt solid #000000;
-    padding: 1px 2.5px !important;
-    vertical-align: middle;
-    font-size: 7.5pt;
-    line-height: 1.1;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-    white-space: normal;
-  }
-  .page-landscape tr {
-    height: auto !important;
-  }
-  .page-landscape td {
-    border: 0.5pt solid #000000;
+  td, th {
+    border: 0.75pt solid #000000 !important;
+    mso-border-alt: solid windowtext .5pt !important;
     padding: 1px 2.5px !important;
     vertical-align: middle;
     font-size: 7.5pt;
@@ -393,9 +383,9 @@ export const buildApplicationFormHtml = (cand) => {
   }
   .photo-cell { text-align: center; vertical-align: middle; padding: 1px; }
   .photo-placeholder {
-    display: flex; align-items: center; justify-content: center;
     width: 24mm; height: 30mm; margin: 0 auto;
-    border: 1pt solid #000; color: #999; font-size: 8pt;
+    border: 0.75pt solid #000; color: #999; font-size: 8pt;
+    text-align: center; padding-top: 10mm;
   }
   .declaration-text {
     font-size: 7.5pt !important;
@@ -449,7 +439,7 @@ export const buildApplicationFormHtml = (cand) => {
 
 <!-- Page 1: Section 1 Portrait - Personal Information, Education, Certificates -->
 <div class="Section1 page-portrait">
-<table>
+<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse; border:0.75pt solid #000000; width:100%; table-layout:fixed;">
   <colgroup>
     <col style="width:15.81mm">
     <col style="width:15.81mm">
@@ -584,7 +574,7 @@ export const buildApplicationFormHtml = (cand) => {
 
 <!-- Page 2: Section 2 Landscape - Foreign Seaman's ID, Previous Sea Service & Employers -->
 <div class="Section2 page-landscape">
-<table style="margin-bottom: 3mm;">
+<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse; border:0.75pt solid #000000; width:100%; table-layout:fixed; margin-bottom:3mm;">
   <colgroup>
     <col style="width:92.95mm">
     <col style="width:53.94mm">
@@ -607,7 +597,7 @@ export const buildApplicationFormHtml = (cand) => {
   ${recBookRows}
 </table>
 
-<table>
+<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse; border:0.75pt solid #000000; width:100%; table-layout:fixed;">
   <colgroup>
     <col style="width:9.00mm">
     <col style="width:9.00mm">
