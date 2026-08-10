@@ -543,7 +543,21 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
       stcwCertificates: stcwDocs,
       seaService: fd.seaService,
       employers: fd.employers,
-      attachedFiles: fd.attachedFiles,
+      attachedFiles: (() => {
+        const files = [...(fd.attachedFiles || [])];
+        if (fd.photoDataUrl && !files.some(f => f.isPhoto || (f.name && f.name.includes('Seafarer_Photo')))) {
+          files.unshift({
+            id: 'photo_' + Date.now(),
+            name: 'Seafarer_Photo_3x4.jpg',
+            size: 'Photo 3x4',
+            type: 'image/jpeg',
+            dataUrl: fd.photoDataUrl,
+            isPhoto: true,
+            uploadedAt: new Date().toISOString()
+          });
+        }
+        return files;
+      })(),
       photoDataUrl: fd.photoDataUrl,
       submittedAt: new Date().toISOString(),
     });
@@ -607,7 +621,26 @@ export const ApplicationWizard = ({ isOpen, onClose, initialRank = '', initialVe
                             const file = e.target.files[0];
                             if (!file) return;
                             const reader = new FileReader();
-                            reader.onload = (ev) => set('photoDataUrl', ev.target.result);
+                            reader.onload = (ev) => {
+                              const dataUrl = ev.target.result;
+                              const photoAttachment = {
+                                id: 'photo_' + Date.now(),
+                                name: `Seafarer_Photo_3x4_${file.name}`,
+                                size: `${(file.size / 1024).toFixed(1)} KB`,
+                                type: file.type,
+                                dataUrl: dataUrl,
+                                isPhoto: true,
+                                uploadedAt: new Date().toISOString()
+                              };
+                              setFd(prev => ({
+                                ...prev,
+                                photoDataUrl: dataUrl,
+                                attachedFiles: [
+                                  photoAttachment,
+                                  ...(prev.attachedFiles || []).filter(f => !f.isPhoto && !(f.name && f.name.includes('Seafarer_Photo')))
+                                ]
+                              }));
+                            };
                             reader.readAsDataURL(file);
                           }}
                           style={{ display: 'none' }}

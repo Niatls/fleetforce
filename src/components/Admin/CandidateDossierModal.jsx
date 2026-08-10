@@ -286,56 +286,70 @@ export const CandidateDossierModal = ({
             </label>
           </div>
 
-          {candidate.attachedFiles && candidate.attachedFiles.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '0.8rem' }}>
-              {candidate.attachedFiles.map((file, fIdx) => (
-                <div key={file.id || fIdx} style={{ background: 'var(--bg-surface)', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.6rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', overflow: 'hidden' }}>
-                    <FileText size={20} color="var(--color-accent)" style={{ flexShrink: 0 }} />
-                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={file.name}>
-                        {file.name}
+          {(() => {
+            const filesList = [...(candidate.attachedFiles || [])];
+            if (candidate.photoDataUrl && !filesList.some(f => f.isPhoto || (f.name && f.name.includes('Seafarer_Photo')))) {
+              filesList.unshift({
+                id: 'photo_auto',
+                name: '📷 Seafarer_Photo_3x4.jpg',
+                size: 'Photo 3x4',
+                type: 'image/jpeg',
+                dataUrl: candidate.photoDataUrl,
+                isPhoto: true
+              });
+            }
+            if (filesList.length === 0) return (
+              <div style={{ textAlign: 'center', padding: '1.2rem', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+                No attached scans or documents yet. Click "Attach File to Candidate" to upload scans or diplomas.
+              </div>
+            );
+            return (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '0.8rem' }}>
+                {filesList.map((file, fIdx) => (
+                  <div key={file.id || fIdx} style={{ background: 'var(--bg-surface)', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.6rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', overflow: 'hidden' }}>
+                      <FileText size={20} color={file.isPhoto ? "var(--color-emerald)" : "var(--color-accent)"} style={{ flexShrink: 0 }} />
+                      <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={file.name}>
+                          {file.name}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{file.size || 'Document'}</div>
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{file.size || 'Document'}</div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.5rem' }}>
+                      <button 
+                        type="button"
+                        onClick={() => onPreviewFile(file)}
+                        className="btn btn-secondary btn-sm"
+                        style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', gap: '0.3rem' }}
+                        title="Preview file online"
+                      >
+                        <Eye size={13} /> View
+                      </button>
+                      <a 
+                        href={file.dataUrl} 
+                        download={file.name} 
+                        className="btn btn-primary btn-sm"
+                        style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', textDecoration: 'none', gap: '0.3rem' }}
+                        title="Download file"
+                      >
+                        <Download size={13} /> Download
+                      </a>
+                      <button 
+                        type="button"
+                        onClick={() => onAdminFileDelete(candidate.id, file.id)}
+                        style={{ background: 'none', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '4px', cursor: 'pointer', padding: '0.3rem' }}
+                        title="Delete file"
+                      >
+                        <Trash2 size={13} />
+                      </button>
                     </div>
                   </div>
-
-                  <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.5rem' }}>
-                    <button 
-                      type="button"
-                      onClick={() => onPreviewFile(file)}
-                      className="btn btn-secondary btn-sm"
-                      style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', gap: '0.3rem' }}
-                      title="Preview file online"
-                    >
-                      <Eye size={13} /> View
-                    </button>
-                    <a 
-                      href={file.dataUrl} 
-                      download={file.name} 
-                      className="btn btn-primary btn-sm"
-                      style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', textDecoration: 'none', gap: '0.3rem' }}
-                      title="Download file"
-                    >
-                      <Download size={13} /> Download
-                    </a>
-                    <button 
-                      type="button"
-                      onClick={() => onAdminFileDelete(candidate.id, file.id)}
-                      style={{ background: 'none', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--color-danger)', borderRadius: '4px', cursor: 'pointer', padding: '0.3rem' }}
-                      title="Delete file"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '1.2rem', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
-              No attached scans or documents yet. Click "Attach File to Candidate" to upload scans or diplomas.
-            </div>
-          )}
+                ))}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Manager Notes */}
