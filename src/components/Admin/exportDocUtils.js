@@ -203,7 +203,7 @@ export const buildApplicationFormHtml = (cand) => {
         <td style="width:29.71mm;background-color:#FFFFFF;" colspan="2">${num}</td>
         <td style="width:21.22mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:21.37mm;background-color:#FFFFFF;" colspan="2">${exp}</td>
-        <td style="width:36.38mm;background-color:#FFFFFF;" colspan="3">${plc}</td>
+        <td style="width:36.38mm;background-color:#FFFFFF;" colspan="4">${plc}</td>
       </tr>
     `;
     if (item.hasRank) {
@@ -211,7 +211,7 @@ export const buildApplicationFormHtml = (cand) => {
       html += `
         <tr>
           <td style="width:31.62mm;background-color:#E2EFD9;font-size:10pt;font-weight:bold;" colspan="2">RANK / CAPACITY</td>
-          <td style="width:138.38mm;background-color:#FFFFFF;" colspan="11">${rankVal}</td>
+          <td style="width:138.38mm;background-color:#FFFFFF;" colspan="12">${rankVal}</td>
         </tr>
       `;
     }
@@ -262,7 +262,7 @@ export const buildApplicationFormHtml = (cand) => {
         <td style="width:29.71mm;background-color:#FFFFFF;" colspan="2">${num}</td>
         <td style="width:21.22mm;background-color:#FFFFFF;" colspan="2">${iss}</td>
         <td style="width:21.37mm;background-color:#FFFFFF;" colspan="2">${exp}</td>
-        <td style="width:36.38mm;background-color:#FFFFFF;" colspan="3">${plc}</td>
+        <td style="width:36.38mm;background-color:#FFFFFF;" colspan="4">${plc}</td>
       </tr>
     `;
   }).join('');
@@ -467,7 +467,7 @@ export const buildApplicationFormHtml = (cand) => {
     <td style="width:44.56mm;background-color:#FFFFFF;font-size:8.5pt;font-weight:bold;" colspan="3">${cand.appliedRank || cand.position || ''}</td>
     <td style="width:29.72mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;" colspan="2">Date of readiness:</td>
     <td style="width:31.83mm;background-color:#FFFFFF;" colspan="3">${cand.readyDate || cand.readinessDate || ''}</td>
-    <td style="width:32.27mm;background-color:#FFFFFF;font-weight:bold;" colspan="3" rowspan="8" class="photo-cell">${photoHtml}</td>
+    <td style="width:43.03mm;background-color:#FFFFFF;font-weight:bold;" colspan="4" rowspan="8" class="photo-cell">${photoHtml}</td>
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;" colspan="2">Surname:</td>
@@ -513,13 +513,13 @@ export const buildApplicationFormHtml = (cand) => {
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Next of kin:</td>
     <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinName || cand.nextOfKin || ''}</td>
     <td style="width:31.83mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">Relation:</td>
-    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinRelation || cand.nextOfKinRelation || ''}</td>
+    <td style="width:43.03mm;background-color:#FFFFFF;" colspan="4">${cand.kinRelation || cand.nextOfKinRelation || ''}</td>
   </tr>
   <tr>
     <td style="width:31.62mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Next of kin’s address:</td>
     <td style="width:74.28mm;background-color:#FFFFFF;" colspan="5">${cand.kinAddress || cand.nextOfKinAddress || ''}</td>
     <td style="width:31.83mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">Next of kin’s phone №:</td>
-    <td style="width:32.27mm;background-color:#FFFFFF;" colspan="3">${cand.kinPhone || cand.nextOfKinPhone || ''}</td>
+    <td style="width:43.03mm;background-color:#FFFFFF;" colspan="4">${cand.kinPhone || cand.nextOfKinPhone || ''}</td>
   </tr>
   <tr>
     <td style="width:15.81mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">Height (cm):</td>
@@ -529,7 +529,7 @@ export const buildApplicationFormHtml = (cand) => {
     <td style="width:44.57mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3" rowspan="2">Size of Overall (EUR):</td>
     <td style="width:10.61mm;background-color:#FFFFFF;" rowspan="2">${cand.overallSize || cand.clothesSize || ''}</td>
     <td style="width:42.73mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="4" rowspan="2">Shoes (EUR):</td>
-    <td style="width:10.76mm;background-color:#FFFFFF;" rowspan="2">${cand.shoeSize || cand.shoesSize || ''}</td>
+    <td style="width:21.52mm;background-color:#FFFFFF;" colspan="2" rowspan="2">${cand.shoeSize || cand.shoesSize || ''}</td>
   </tr>
   <tr>
     <td style="width:15.81mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;">Eyes Colour:</td>
@@ -539,24 +539,24 @@ export const buildApplicationFormHtml = (cand) => {
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
-    <td style="width:70.04mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="5">Marine Education</td>
+    <td style="width:70.04mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="6">Marine Education</td>
     <td style="width:53.49mm;background-color:#FFFFFF;" colspan="5"></td>
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">Name of maritime college or academy</td>
-    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeName || cand.maritimeCollege || ''}</td>
+    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="7">${cand.collegeName || cand.maritimeCollege || ''}</td>
     <td style="width:21.37mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">From</td>
     <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeFrom || cand.educationFrom || ''}</td>
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">Department</td>
-    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="6">${cand.collegeDepartment || cand.educationDepartment || ''}</td>
+    <td style="width:80.65mm;background-color:#FFFFFF;" colspan="7">${cand.collegeDepartment || cand.educationDepartment || ''}</td>
     <td style="width:21.37mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">Till</td>
     <td style="width:21.51mm;background-color:#FFFFFF;" colspan="2">${cand.collegeTill || cand.collegeTo || cand.educationTill || cand.educationTo || ''}</td>
   </tr>
   <tr>
     <td style="width:46.48mm;background-color:#FFFFFF;" colspan="3"></td>
-    <td style="width:70.04mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="5">PASSPORTS and CERTIFICATES</td>
+    <td style="width:70.04mm;background-color:#A8D08D;font-size:8.5pt;font-weight:bold;text-align:center;" colspan="6">PASSPORTS and CERTIFICATES</td>
     <td style="width:53.49mm;background-color:#FFFFFF;" colspan="5"></td>
   </tr>
   <tr>
@@ -564,7 +564,7 @@ export const buildApplicationFormHtml = (cand) => {
     <td style="width:29.71mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">NUMBER</td>
     <td style="width:21.22mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">ISSUED DATE</td>
     <td style="width:21.37mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="2">VALID UNTIL</td>
-    <td style="width:36.38mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="3">PLACE</td>
+    <td style="width:36.38mm;background-color:#E2EFD9;font-size:8.0pt;font-weight:bold;" colspan="4">PLACE</td>
   </tr>
   ${primaryDocsRows}
   <tr>
