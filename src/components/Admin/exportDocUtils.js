@@ -162,17 +162,18 @@ export const buildApplicationFormHtml = (cand) => {
     return '';
   };
 
-  const hasValidPhoto = Boolean(cand.photoDataUrl && String(cand.photoDataUrl).startsWith('data:image/'));
+  const photoUrlStr = String(cand.photoDataUrl || '');
+  const isBase64JpegPng = Boolean(
+    cand.photoDataUrl && (
+      photoUrlStr.startsWith('data:image/jpeg') || 
+      photoUrlStr.startsWith('data:image/png') || 
+      photoUrlStr.startsWith('data:image/jpg') ||
+      photoUrlStr.startsWith('http')
+    )
+  );
 
-  const photoHtml = hasValidPhoto
-    ? `<!--[if gte mso 9]>
-<v:rect id="photoFrame" style="width:30mm;height:40mm;" fillcolor="#ffffff" stroke="true" strokecolor="#000000" strokeweight="0.75pt">
-  <v:fill src="${cand.photoDataUrl}" type="frame" />
-</v:rect>
-<![endif]-->
-<![if !mso]>
-<img src="${cand.photoDataUrl}" width="113" height="151" style="width:30mm;height:40mm;max-width:30mm;max-height:40mm;object-fit:cover;display:block;margin:0 auto;border:0.75pt solid #000000;" />
-<![endif]>`
+  const photoHtml = isBase64JpegPng
+    ? `<img src="${photoUrlStr.replace(/"/g, '&quot;')}" width="113" height="151" style="width:30mm;height:40mm;max-width:30mm;max-height:40mm;object-fit:cover;display:block;margin:0 auto;border:0.75pt solid #000000;" />`
     : `<table border="1" cellspacing="0" cellpadding="0" style="width:30mm;height:40mm;margin:0 auto;border-collapse:collapse;border:0.75pt dashed #888888;background-color:#FAFAFA;">
         <tr>
           <td style="text-align:center;vertical-align:middle;color:#666666;font-size:9.5pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;height:40mm;padding:0;">PHOTO<br/><span style="font-size:7.5pt;font-weight:normal;color:#888888;">3 x 4 cm</span></td>
