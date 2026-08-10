@@ -314,8 +314,9 @@ export const buildApplicationFormHtml = (cand) => {
 <![endif]-->
 <style>
   @page {
-    size: A4;
-    margin: 0;
+    size: 595.35pt 841.99pt;
+    margin: 14.2pt 14.2pt 14.2pt 14.2pt;
+    mso-page-orientation: portrait;
   }
   @page Section1 {
     size: 595.35pt 841.99pt;
@@ -330,14 +331,6 @@ export const buildApplicationFormHtml = (cand) => {
   div.Section1 { page: Section1; }
   div.Section2 { page: Section2; }
 
-  @page page-portrait {
-    size: A4 portrait;
-    margin: 4mm;
-  }
-  @page page-landscape {
-    size: A4 landscape;
-    margin: 4mm;
-  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: Calibri, Arial, sans-serif;
@@ -347,13 +340,11 @@ export const buildApplicationFormHtml = (cand) => {
     print-color-adjust: exact !important;
   }
   .page-portrait {
-    page: page-portrait;
     width: 200mm;
     margin: 0 auto;
     padding: 3mm 2mm 2mm 2mm;
   }
   .page-landscape {
-    page: page-landscape;
     width: 275mm;
     margin: 0 auto;
     padding: 3mm 2mm 2mm 2mm;
@@ -402,20 +393,14 @@ export const buildApplicationFormHtml = (cand) => {
   @media print {
     body { background: #fff; width: 100%; }
     .page-portrait {
-      page: page-portrait;
       width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
-      page-break-after: always !important;
-      break-after: page !important;
     }
     .page-landscape {
-      page: page-landscape;
       width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
-      page-break-after: auto !important;
-      break-after: auto !important;
     }
   }
   @media screen {
@@ -425,8 +410,6 @@ export const buildApplicationFormHtml = (cand) => {
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       margin-bottom: 5mm;
     }
-    .page-portrait { page-break-after: always; }
-    .page-landscape { page-break-after: auto; }
   }
   td[contenteditable="true"] { outline: none; cursor: text; }
   td[contenteditable="true"]:focus {
@@ -571,6 +554,8 @@ export const buildApplicationFormHtml = (cand) => {
   ${stcwRows}
 </table>
 </div>
+
+<p class="MsoNormal" style="mso-element:header; page-break-before:always; mso-break-type:section-break;"></p>
 
 <!-- Page 2: Section 2 Landscape - Foreign Seaman's ID, Previous Sea Service & Employers -->
 <div class="Section2 page-landscape">
