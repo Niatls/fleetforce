@@ -688,6 +688,46 @@ document.querySelectorAll('td').forEach(function(td) {
 // Generate DOC Blob directly from the HTML A4 template (Application_form (4).html)
 export const generateDocBlob = async (cand) => {
   const htmlContent = buildApplicationFormHtml(cand);
+  const photoUrlStr = String(cand?.photoDataUrl || '');
+  const hasPhoto = Boolean(
+    cand?.photoDataUrl && (photoUrlStr.startsWith('data:image/') || photoUrlStr.startsWith('http'))
+  );
+
+  if (hasPhoto && photoUrlStr.includes('base64,')) {
+    const parts = photoUrlStr.split('base64,');
+    const mimeType = parts[0].replace('data:', '').replace(';', '') || 'image/jpeg';
+    const base64Data = parts[1];
+
+    const mhtmlHtml = htmlContent.replace(
+      new RegExp(photoUrlStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+      'cid:seafarer_photo'
+    );
+
+    const boundary = '----=_NextPart_FleetForce_Doc_Boundary';
+    const mhtmlDoc = [
+      'MIME-Version: 1.0',
+      `Content-Type: multipart/related; boundary="${boundary}"`,
+      '',
+      `--${boundary}`,
+      'Content-Type: text/html; charset="utf-8"',
+      'Content-Transfer-Encoding: 8bit',
+      '',
+      mhtmlHtml,
+      '',
+      `--${boundary}`,
+      'Content-Location: seafarer_photo',
+      'Content-ID: <seafarer_photo>',
+      'Content-Transfer-Encoding: base64',
+      `Content-Type: ${mimeType}`,
+      '',
+      base64Data,
+      '',
+      `--${boundary}--`
+    ].join('\r\n');
+
+    return new Blob(['\ufeff', mhtmlDoc], { type: 'application/msword;charset=utf-8' });
+  }
+
   return new Blob(['\ufeff', htmlContent], { type: 'application/msword;charset=utf-8' });
 };
 
