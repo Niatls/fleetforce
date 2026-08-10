@@ -582,8 +582,6 @@ export const buildApplicationFormHtml = (cand) => {
 </table>
 </div>
 
-<br style="page-break-before:always; mso-break-type:section-break" />
-
 <!-- Page 2: Section 2 Landscape - Foreign Seaman's ID, Previous Sea Service & Employers -->
 <div class="Section2 page-landscape">
 <table style="margin-bottom: 3mm;">
